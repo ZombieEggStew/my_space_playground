@@ -1,0 +1,105 @@
+[gd_scene format=3 uid="uid://dghe1wqqqif4x"]
+
+[ext_resource type="Script" uid="uid://cruvugb01a2da" path="res://scripts/ui.gd" id="1_gdt2y"]
+[ext_resource type="Script" uid="uid://uep7f63oxy3s" path="res://scripts/UI_offsetable.gd" id="2_wm3ai"]
+[ext_resource type="Script" uid="uid://cy4dcjs2txjeb" path="res://scripts/line_2d.gd" id="3_8dubc"]
+[ext_resource type="Texture2D" uid="uid://concq22mk2qj4" path="res://textures/cursor2.png" id="4_wm3ai"]
+[ext_resource type="LabelSettings" uid="uid://bmtgobyqp3r64" path="res://UI_material/new_label_settings.tres" id="5_wm3ai"]
+[ext_resource type="Texture2D" uid="uid://b4u1glir4fe07" path="res://textures/rect2.png" id="7_p7vwb"]
+[ext_resource type="Script" uid="uid://dtr77mc4bwlqn" path="res://scripts/crosshair_2.gd" id="8_cgfq5"]
+[ext_resource type="Script" uid="uid://b687lgux8hhp3" path="res://scripts/crosshair_1.gd" id="8_ktti3"]
+[ext_resource type="Script" uid="uid://42lbnj8v4kyx" path="res://scripts/crosshair_3.gd" id="9_cgfq5"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ktti3"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+bg_color = Color(0, 0, 0, 0.3647059)
+corner_detail = 5
+
+[node name="UI" type="CanvasLayer" unique_id=47513985 node_paths=PackedStringArray("offset_node", "crosshair_1", "crosshair_2", "crosshair_3", "crosshair_4", "v_box_container")]
+script = ExtResource("1_gdt2y")
+offset_node = NodePath("Offsetable2")
+crosshair_1 = NodePath("crosshair_1")
+crosshair_2 = NodePath("crosshair_2")
+crosshair_3 = NodePath("crosshair_3")
+crosshair_4 = NodePath("")
+label_set = ExtResource("5_wm3ai")
+v_box_container = NodePath("information/VBoxContainer")
+
+[node name="Offsetable2" type="Node2D" parent="." unique_id=2087354930]
+script = ExtResource("2_wm3ai")
+
+[node name="Line2D" type="Line2D" parent="Offsetable2" unique_id=987225484 node_paths=PackedStringArray("parent_node")]
+z_index = 2
+points = PackedVector2Array(999, 578, 974, 546)
+joint_mode = 2
+begin_cap_mode = 2
+end_cap_mode = 2
+antialiased = true
+script = ExtResource("3_8dubc")
+parent_node = NodePath("..")
+
+[node name="Sprite2D" type="Sprite2D" parent="Offsetable2" unique_id=1359497409]
+z_index = 2
+position = Vector2(960, 540)
+texture = ExtResource("4_wm3ai")
+
+[node name="information" type="PanelContainer" parent="." unique_id=1743699037]
+z_index = -2
+z_as_relative = false
+offset_left = 1326.0
+offset_top = 586.0
+offset_right = 1806.0
+offset_bottom = 757.0
+pivot_offset_ratio = Vector2(1, 1)
+theme_override_styles/panel = SubResource("StyleBoxFlat_ktti3")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="information" unique_id=1111621273]
+z_index = 5
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="default" type="Label" parent="information/VBoxContainer" unique_id=499422687]
+z_index = 10
+layout_mode = 2
+text = "default"
+label_settings = ExtResource("5_wm3ai")
+
+[node name="crosshair_1" type="NinePatchRect" parent="." unique_id=675010790]
+texture_filter = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -896.0
+offset_top = -500.0
+offset_right = -832.0
+offset_bottom = -378.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+texture = ExtResource("7_p7vwb")
+draw_center = false
+patch_margin_left = 3
+patch_margin_top = 3
+patch_margin_right = 3
+patch_margin_bottom = 3
+script = ExtResource("8_ktti3")
+
+[node name="crosshair_2" type="NinePatchRect" parent="." unique_id=1621027858]
+modulate = Color(0, 1, 0, 1)
+offset_right = 32.0
+offset_bottom = 32.0
+texture = ExtResource("7_p7vwb")
+draw_center = false
+patch_margin_left = 16
+patch_margin_top = 16
+patch_margin_right = 16
+patch_margin_bottom = 16
+script = ExtResource("8_cgfq5")
+
+[node name="crosshair_3" type="Node2D" parent="." unique_id=1125441499]
+script = ExtResource("9_cgfq5")

@@ -1,0 +1,11 @@
+[gd_resource type="StandardMaterial3D" format=3 uid="uid://dvifks8sp3xdg"]
+
+[ext_resource type="Texture2D" uid="uid://dbxe1rog8h2hq" path="res://blender_export/rocket2_rocket_2_tex_1.png" id="1_5p47b"]
+
+[resource]
+resource_name = "rocket_mat_1"
+cull_mode = 2
+diffuse_mode = 3
+specular_mode = 1
+albedo_texture = ExtResource("1_5p47b")
+roughness = 0.0

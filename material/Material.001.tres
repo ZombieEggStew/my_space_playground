@@ -1,0 +1,20 @@
+[gd_resource type="StandardMaterial3D" format=3 uid="uid://buv27vka7xpdg"]
+
+[ext_resource type="Texture2D" uid="uid://dawehoudb267" path="res://blender_export/space_craft_1_texture_pbr_20250901.png" id="1_3p7ab"]
+[ext_resource type="Texture2D" uid="uid://8i64m38q1qej" path="res://blender_export/space_craft_1_texture_pbr_20250901_metallic.png-texture_pbr_20250901_roughness.png" id="2_ftq33"]
+[ext_resource type="Texture2D" uid="uid://csw6tevekl14h" path="res://blender_export/space_craft_1_texture_pbr_20250901_normal.png" id="3_wuw3a"]
+
+[resource]
+resource_name = "Material.001"
+cull_mode = 2
+diffuse_mode = 3
+specular_mode = 1
+albedo_texture = ExtResource("1_3p7ab")
+metallic = 1.0
+metallic_texture = ExtResource("2_ftq33")
+metallic_texture_channel = 2
+roughness = 0.0
+roughness_texture = ExtResource("2_ftq33")
+roughness_texture_channel = 1
+normal_enabled = true
+normal_texture = ExtResource("3_wuw3a")

@@ -1,0 +1,11 @@
+[gd_resource type="StandardMaterial3D" format=3 uid="uid://bprwqv5jmjvk"]
+
+[ext_resource type="Texture2D" uid="uid://cldxassjtodof" path="res://blender_export/space_craft_3_tex_sc_3_balls.png" id="1_h6s7j"]
+
+[resource]
+resource_name = "material_sc_3_balls"
+cull_mode = 2
+diffuse_mode = 3
+specular_mode = 1
+albedo_texture = ExtResource("1_h6s7j")
+roughness = 0.0

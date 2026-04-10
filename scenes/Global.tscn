@@ -1,0 +1,12 @@
+[gd_scene format=3 uid="uid://n4tsdidg8kyu"]
+
+[ext_resource type="Script" uid="uid://bog5h82fcxfg8" path="res://scripts/global.gd" id="1_eeqj2"]
+[ext_resource type="PackedScene" uid="uid://cwxsl3xxh0vg" path="res://scenes/modules/module_laser_gun.tscn" id="2_cfqmh"]
+[ext_resource type="PackedScene" uid="uid://cnbvvxebbcvph" path="res://scenes/modules/module_predict_aim.tscn" id="3_5ao6o"]
+[ext_resource type="PackedScene" uid="uid://o5rr3ev5psqc" path="res://scenes/crosshair_1.tscn" id="4_5ao6o"]
+
+[node name="Global" type="Node" unique_id=73665802]
+script = ExtResource("1_eeqj2")
+laser_gun_module_scene = ExtResource("2_cfqmh")
+predict_aim_module_scene = ExtResource("3_5ao6o")
+crosshair_1 = ExtResource("4_5ao6o")

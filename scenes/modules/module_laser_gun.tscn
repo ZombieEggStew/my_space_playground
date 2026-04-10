@@ -1,0 +1,43 @@
+[gd_scene format=3 uid="uid://cwxsl3xxh0vg"]
+
+[ext_resource type="Script" uid="uid://kxpd0572v8e2" path="res://scripts/module_laser_gun.gd" id="1_ckd3c"]
+[ext_resource type="PackedScene" uid="uid://cuxcy0osx6biu" path="res://scenes/bullet_1.tscn" id="2_a2p8t"]
+[ext_resource type="AudioStream" uid="uid://hiopqv2kqb0d" path="res://audio/laser.mp3" id="3_5q5cc"]
+
+[node name="laser_gun" type="Node" unique_id=2104397238 node_paths=PackedStringArray("shoot_timer", "bullets_parent", "left_laser_audio", "right_laser_audio")]
+script = ExtResource("1_ckd3c")
+shoot_timer = NodePath("timer_shoot")
+bullet_scene = ExtResource("2_a2p8t")
+bullets_parent = NodePath("bullets")
+left_laser_audio = NodePath("left_laser")
+right_laser_audio = NodePath("right_laser")
+
+[node name="timer_shoot" type="Timer" parent="." unique_id=1919365830]
+wait_time = 0.05
+one_shot = true
+
+[node name="UI_laser_gun" type="CanvasLayer" parent="." unique_id=1440941481]
+
+[node name="PanelContainer" type="PanelContainer" parent="UI_laser_gun" unique_id=368037788]
+offset_left = 1423.0
+offset_top = 618.0
+offset_right = 1740.0
+offset_bottom = 862.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UI_laser_gun/PanelContainer" unique_id=848685413]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="UI_laser_gun/PanelContainer/VBoxContainer" unique_id=1384748151]
+layout_mode = 2
+
+[node name="bullets" type="Node" parent="." unique_id=299725284]
+
+[node name="left_laser" type="AudioStreamPlayer" parent="." unique_id=172123881]
+stream = ExtResource("3_5q5cc")
+volume_db = -20.0
+
+[node name="right_laser" type="AudioStreamPlayer" parent="." unique_id=490689004]
+stream = ExtResource("3_5q5cc")
+volume_db = -20.0

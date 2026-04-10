@@ -1,0 +1,7 @@
+[gd_resource type="StandardMaterial3D" format=3 uid="uid://c5ntpa35xbpgf"]
+
+[resource]
+resource_name = "camera_mat_2.001"
+cull_mode = 2
+albedo_color = Color(0.20554899, 0.20554899, 0.20554899, 1)
+roughness = 0.5

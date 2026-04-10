@@ -1,0 +1,10 @@
+[gd_resource type="StandardMaterial3D" format=3 uid="uid://eltao7gxoxn4"]
+
+[resource]
+resource_name = "space_craft_1_mat_glass"
+transparency = 4
+cull_mode = 2
+diffuse_mode = 3
+specular_mode = 1
+albedo_color = Color(0.9063318, 0.9063318, 0.9063318, 0.20689654)
+roughness = 0.0

@@ -1,0 +1,43 @@
+[gd_resource type="VisualShader" format=3 uid="uid://b0lqlfuxab2c8"]
+
+[sub_resource type="VisualShaderNodeColorParameter" id="VisualShaderNodeColorParameter_tkd7x"]
+parameter_name = "ColorParameter"
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_tkd7x"]
+noise_type = 2
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_5ktbn"]
+noise = SubResource("FastNoiseLite_tkd7x")
+
+[sub_resource type="VisualShaderNodeTexture" id="VisualShaderNodeTexture_1egel"]
+texture = SubResource("NoiseTexture2D_5ktbn")
+
+[sub_resource type="VisualShaderNodeGlobalExpression" id="VisualShaderNodeGlobalExpression_hh70o"]
+size = Vector2(480, 300.00003)
+
+[sub_resource type="VisualShaderNodeExpression" id="VisualShaderNodeExpression_rwbhc"]
+size = Vector2(286.45834, 171.875)
+
+[resource]
+mode = 3
+flags/use_half_res_pass = false
+flags/use_quarter_res_pass = false
+flags/disable_fog = false
+flags/use_debanding = false
+nodes/sky/2/node = SubResource("VisualShaderNodeColorParameter_tkd7x")
+nodes/sky/2/position = Vector2(17.454544, 104.72727)
+nodes/sky/3/node = SubResource("VisualShaderNodeTexture_1egel")
+nodes/sky/3/position = Vector2(20.200262, 432.43674)
+nodes/sky/4/node = SubResource("VisualShaderNodeGlobalExpression_hh70o")
+nodes/sky/4/position = Vector2(17.454544, 750.5454)
+nodes/sky/4/size = Vector2(480, 300.00003)
+nodes/sky/4/input_ports = ""
+nodes/sky/4/output_ports = ""
+nodes/sky/4/expression = ""
+nodes/sky/5/node = SubResource("VisualShaderNodeExpression_rwbhc")
+nodes/sky/5/position = Vector2(279.2727, 576)
+nodes/sky/5/size = Vector2(286.45834, 171.875)
+nodes/sky/5/input_ports = ""
+nodes/sky/5/output_ports = ""
+nodes/sky/5/expression = ""
+nodes/sky/connections = PackedInt32Array(2, 0, 0, 0)

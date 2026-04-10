@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://c8v4258rite72"]
+
+[ext_resource type="Script" uid="uid://chtyunbjhs7vs" path="res://scripts/able_to_be_locked.gd" id="1_hbkq1"]
+
+[node name="able_to_be_locked" type="Node" unique_id=965229763]
+script = ExtResource("1_hbkq1")

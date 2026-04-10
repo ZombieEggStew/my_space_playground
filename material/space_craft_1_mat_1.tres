@@ -1,0 +1,9 @@
+[gd_resource type="StandardMaterial3D" format=3 uid="uid://cjqbk0daw1gpm"]
+
+[resource]
+resource_name = "space_craft_1_mat_1"
+cull_mode = 2
+diffuse_mode = 3
+specular_mode = 1
+albedo_color = Color(0.58333343, 0.58333343, 0.58333343, 1)
+roughness = 0.0

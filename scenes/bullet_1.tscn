@@ -1,0 +1,25 @@
+[gd_scene format=3 uid="uid://cuxcy0osx6biu"]
+
+[ext_resource type="Script" uid="uid://wfx2kb3r1fb8" path="res://scripts/bullet_1.gd" id="1_j3m4d"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_qnck4"]
+size = Vector3(0.4, 0.4, 1.2)
+
+[sub_resource type="TubeTrailMesh" id="TubeTrailMesh_j3m4d"]
+radius = 0.1
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_j3m4d"]
+shading_mode = 0
+diffuse_mode = 3
+specular_mode = 1
+
+[node name="Area3D" type="Area3D" unique_id=114187908]
+script = ExtResource("1_j3m4d")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=910362604]
+shape = SubResource("BoxShape3D_qnck4")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=2040517206]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0)
+mesh = SubResource("TubeTrailMesh_j3m4d")
+surface_material_override/0 = SubResource("StandardMaterial3D_j3m4d")
