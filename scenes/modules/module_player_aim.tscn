@@ -1,7 +1,6 @@
 [gd_scene format=3 uid="uid://cc1r6mss3o2ds"]
 
-[ext_resource type="Script" uid="uid://da6jmvtr64hva" path="res://scripts/module_player_aim.gd" id="1_gvq42"]
-[ext_resource type="PackedScene" uid="uid://o5rr3ev5psqc" path="res://scenes/crosshair_1.tscn" id="2_4pkdw"]
+[ext_resource type="Script" uid="uid://da6jmvtr64hva" path="res://scripts/modules/module_player_aim.gd" id="1_gvq42"]
 [ext_resource type="PackedScene" uid="uid://cdlapu2jn5572" path="res://scenes/crosshair_2.tscn" id="4_2wn06"]
 [ext_resource type="Script" uid="uid://dqopwssmwnyig" path="res://scripts/dead_zone_indicator.gd" id="5_0xan3"]
 [ext_resource type="Script" uid="uid://42lbnj8v4kyx" path="res://scripts/crosshair_3.gd" id="5_e53qb"]
@@ -9,7 +8,6 @@
 [node name="module_player_aim" type="Node" unique_id=1372324135 node_paths=PackedStringArray("crosshair_container", "crosshair_2", "crosshair_3")]
 script = ExtResource("1_gvq42")
 crosshair_container = NodePath("CanvasLayer")
-crosshair_1 = ExtResource("2_4pkdw")
 crosshair_2 = NodePath("CanvasLayer/crosshair_2")
 crosshair_3 = NodePath("CanvasLayer/crosshair_3")
 

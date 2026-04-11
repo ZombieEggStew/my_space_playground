@@ -1,0 +1,7 @@
+[gd_scene format=3 uid="uid://b4wmsv8bsyw60"]
+
+[ext_resource type="Script" uid="uid://twyon1v3vlvv" path="res://scripts/modules/module_move_controller.gd" id="1_kws0a"]
+
+[node name="module_move_controller" type="Node" unique_id=962253100 node_paths=PackedStringArray("particle_speed_up")]
+script = ExtResource("1_kws0a")
+particle_speed_up = NodePath("")

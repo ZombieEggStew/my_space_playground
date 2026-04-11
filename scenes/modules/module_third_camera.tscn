@@ -1,0 +1,10 @@
+[gd_scene format=3 uid="uid://bap1uk0wacqru"]
+
+[ext_resource type="Script" uid="uid://b5pkcalcuklvq" path="res://scripts/modules/module_third_camera.gd" id="1_66rgt"]
+
+[node name="module_third_camera" type="Node" unique_id=394964716 node_paths=PackedStringArray("cam_spring_arm", "cam_pivot", "model_node", "collision_shape")]
+script = ExtResource("1_66rgt")
+cam_spring_arm = NodePath("")
+cam_pivot = NodePath("")
+model_node = NodePath("")
+collision_shape = NodePath("")

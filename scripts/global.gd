@@ -1,6 +1,11 @@
 extends Node
 
-@export var laser_gun_module_scene: PackedScene
-@export var predict_aim_module_scene: PackedScene
+
+@export var module_move_controller_scene: PackedScene
+@export var module_third_camera_scene: PackedScene
+@export var module_player_aim_scene: PackedScene
+
+@export var module_laser_gun_scene: PackedScene
+@export var module_predict_aim_scene: PackedScene
 
 @export var crosshair_1: PackedScene #白色 一级锁定

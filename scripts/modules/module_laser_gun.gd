@@ -17,11 +17,20 @@ var is_shooting := false
 var _fire_from_left := true
 var bullet_spread_deg := 0  # 子弹随机散布角度（度）
 
+var default_bullet_speed := 500.0
 
 func _ready() -> void:
+	set_bullet_speed(default_bullet_speed)
+
 	cam_main = root.get_main_camera()
 	gun_pivot_left = root.get_gun_pivot_left()
+	if cam_main == null or gun_pivot_left == null:
+		log_error("Main camera or gun pivot not found in CharacterBody3D.")
+		queue_free()
 	aim_modrule = modules_manager.get_aim_module()
+	if aim_modrule == null:
+		log_error("Aim module not found in ModulesManager.")
+		queue_free()
 
 func _get_next_muzzle_pos() -> Vector3:
 	var left_global_pos := gun_pivot_left.global_transform.origin

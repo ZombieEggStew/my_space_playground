@@ -1,8 +1,8 @@
-extends Module
+extends BasicMoveModule
 
 
 
-@export var particle_speed_up: GPUParticles3D
+var particle_speed_up: GPUParticles3D
 
 # normal
 var max_speed := 40.0
@@ -22,7 +22,39 @@ var roll_accel := 3.0  # 按下 left/right 时的滚转加速度（rad/s^2）
 var roll_decel := 2.0  # 松开按键后的滚转减速度（rad/s^2）
 var roll_rate := 0.0
 
+# track mouse
+var auto_track_enabled := true
+var smooth_factor := 10.0     # 越大越“跟手”
 
+var max_yaw_speed := 3.0      # rad/s
+var max_pitch_speed := 2.0    # rad/s
+var target_yaw := 0.0
+var target_pitch := 0.0
+var _yaw_speed := 0.0
+var _pitch_speed := 0.0
+
+var is_ship_rolling := true
+
+var model_node: Node3D
+
+
+func _ready() -> void:
+	particle_speed_up = root.get_boost_particle()
+	SignalBus.on_track_mouse_change.connect(_on_track_mouse_change)
+
+	if particle_speed_up == null:
+		log_missing_component()
+		queue_free()
+	model_node = root.get_model_node()
+	if model_node == null:
+		log_missing_component()
+		queue_free()
+
+func get_rotation_speed() -> Vector2:
+	return Vector2(_yaw_speed, _pitch_speed)
+
+func _on_track_mouse_change(enable: bool) -> void:
+	auto_track_enabled = enable
 
 func speed_up() -> void:
 	particle_speed_up.emitting = true
@@ -74,10 +106,55 @@ func handle_move(delta: float) -> void:
 	root.velocity.z = direction.z * forward_speed
 
 
-func _physics_process(delta: float) -> void:
+func track_mouse(delta: float) -> void:
+	if Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
+		return
+	if auto_track_enabled:
+		var viewport_size = get_viewport().get_visible_rect().size
+		var center = viewport_size * 0.5
+		
+		var mouse_pos = get_viewport().get_mouse_position()
 
+		var offset = mouse_pos - center
+
+		# 死区：鼠标接近中心时不转，避免抖动
+		if offset.length() <= PlayerInfo.dead_zone_px:
+			var t_stop = 1.0 - exp(-smooth_factor * delta)
+			_yaw_speed = lerp(_yaw_speed, 0.0, t_stop)
+			_pitch_speed = lerp(_pitch_speed, 0.0, t_stop)
+		else:
+			# 归一化到 [-1, 1]
+			var nx = clamp(offset.x / max(center.x, 1.0), -1.0, 1.0)
+			var ny = clamp(offset.y / max(center.y, 1.0), -1.0, 1.0)
+
+			target_yaw = -nx * max_yaw_speed
+			target_pitch = ny * max_pitch_speed
+
+
+	else:
+		target_pitch = 0.0
+		target_yaw = 0.0
+
+func _physics_process(delta: float) -> void:
+	track_mouse(delta)
+	handle_move(delta)
 	handle_speed_change()
 
-	handle_move(delta)
+	var t := 1.0 - exp(-smooth_factor * delta)
+	_yaw_speed = lerp(_yaw_speed, target_yaw, t)
+	_pitch_speed = lerp(_pitch_speed, target_pitch, t)
+	root.rotate_object_local(Vector3.UP, _yaw_speed * delta)
+	root.rotate_object_local(Vector3.RIGHT, _pitch_speed * delta)
+
+
+	if is_ship_rolling:
+		model_node.rotation.z = - _yaw_speed * 0.1
+
+		model_node.rotation.x = _pitch_speed * 0.1
 
 	root.move_and_slide()
+
+func _input(_event: InputEvent) -> void:
+	if Input.is_action_just_pressed("toggle_track"):
+		
+		auto_track_enabled = not auto_track_enabled

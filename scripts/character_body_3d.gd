@@ -64,9 +64,12 @@ extends CharacterBody3D
 @export var cam_main_pivot: Node3D
 
 
-@export var enemies_parent: Node
+@export var particle_speed_up: GPUParticles3D
 
 
+@export var cam_spring_arm: SpringArm3D 
+@export var cam_pivot: Node3D
+@export var model_node: Node3D	
 
 var health := 100.0
 
@@ -77,27 +80,48 @@ var fov_smooth := 8.0         # FOV 平滑插值速度
 @export var gun_pivot_left : Node3D
 
 
+
+@export var modules_manager: ModulesManager
+
 func _ready() -> void:
 	cam_main.current = true
+
+	modules_manager.install_module(Global.module_move_controller_scene)
+	modules_manager.install_module(Global.module_third_camera_scene)
+	modules_manager.install_module(Global.module_player_aim_scene)
+
+	var laser := modules_manager.install_module(Global.module_laser_gun_scene)
+	var laser_predict := modules_manager.install_module(Global.module_predict_aim_scene)
+	laser_predict.init_module(laser)
 
 func get_gun_pivot_left() -> Node:
 	return gun_pivot_left
 
+func get_cam_pivot() -> Node3D:
+	return cam_pivot
+
+func get_cam_spring_arm() -> SpringArm3D:
+	return cam_spring_arm
 
 func get_main_camera() -> Camera3D:
 	return cam_main
 
+func get_boost_particle() -> GPUParticles3D:
+	return particle_speed_up
 
-func _extract_enemy_nodes() -> Array[Node3D]:
-	var result: Array[Node3D] = []
+func get_model_node() -> Node3D:
+	return model_node
 
-	for node in enemies_parent.get_children():
-		if node == self:
-			continue
-		if node.has_method("get_team_id") and node.call("get_team_id") != team_id:
-			result.append(node)
+# func _extract_enemy_nodes() -> Array[Node3D]:
+# 	var result: Array[Node3D] = []
 
-	return result
+# 	for node in enemies_parent.get_children():
+# 		if node == self:
+# 			continue
+# 		if node.has_method("get_team_id") and node.call("get_team_id") != team_id:
+# 			result.append(node)
+
+# 	return result
 
 
 

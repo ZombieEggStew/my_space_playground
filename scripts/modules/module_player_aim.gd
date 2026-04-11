@@ -28,6 +28,10 @@ func _ready() -> void:
 
 	cam_main = root.get_main_camera()
 
+	if cam_main == null:
+		log_missing_component()
+		queue_free()
+
 func _process(_delta: float) -> void:
 	handle_targets()
 	handle_hover()
@@ -37,10 +41,14 @@ func _process(_delta: float) -> void:
 func _input(event: InputEvent) -> void:
 	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_RIGHT:
 		if hovered_target != null:
-			locked_target = hovered_target
+			set_locked_target(hovered_target)
 
 		# else:
 		# 	locked_target = null
+
+func set_locked_target(target: AbleToBeLocked) -> void:
+	locked_target = target
+	SignalBus.on_player_lock_target.emit(target)
 
 func init_crosshair_1(crosshair:Node) -> void:
 	crosshair_container.add_child(crosshair)

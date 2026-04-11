@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://cnbvvxebbcvph"]
 
-[ext_resource type="Script" uid="uid://c5yswx28oaq6g" path="res://scripts/module_predict_aim.gd" id="1_805g5"]
-[ext_resource type="Script" uid="uid://cm2yfqcvh5mry" path="res://scripts/crosshair_4.gd" id="2_bnu1g"]
+[ext_resource type="Script" uid="uid://c5yswx28oaq6g" path="res://scripts/modules/module_predict_aim.gd" id="1_805g5"]
+[ext_resource type="PackedScene" uid="uid://ciro2b3ywl5e5" path="res://scenes/crosshair_4.tscn" id="2_bnu1g"]
 
 [node name="module_predict_aim" type="Node" unique_id=161722950 node_paths=PackedStringArray("crosshair_4")]
 script = ExtResource("1_805g5")
@@ -9,5 +9,4 @@ crosshair_4 = NodePath("CanvasLayer/crosshair_4")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=643892487]
 
-[node name="crosshair_4" type="Node2D" parent="CanvasLayer" unique_id=348833089]
-script = ExtResource("2_bnu1g")
+[node name="crosshair_4" parent="CanvasLayer" unique_id=283765866 instance=ExtResource("2_bnu1g")]

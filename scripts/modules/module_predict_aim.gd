@@ -6,9 +6,8 @@ var cam_main: Camera3D
 
 @export var crosshair_4: Node2D #绿色 预判指示
 
+var bullet_speed := 0.0
 
-
-var predicted_aim_data :Dictionary = {}
 var _locked_enemy_target : AbleToBeLocked
 var is_auto_aiming := false
 
@@ -17,27 +16,40 @@ var is_aim_assist_enabled := true
 
 var is_aim_dead_zone_enabled := false
 
+func init_module(module:WeaponModule) -> void:
+	bullet_speed = module.get_bullet_speed()
+	module.on_bullet_speed_change.connect(_on_bullet_speed_change)
 
 func _ready() -> void:
 	SignalBus.on_player_lock_target.connect(_on_player_lock_target)
 	cam_main = root.get_main_camera()
 
+	if cam_main == null:
+		log_missing_component()
+		queue_free()
+
 
 func _process(_delta: float) -> void:
 	pass
-	# if _locked_enemy_target == null:
-	# 	crosshair_4.call("reset")
-	# 	return
+	if _locked_enemy_target == null:
+		crosshair_4.call("reset")
+		return
 
-	# if _locked_enemy_target.is_visible:
-	# 	crosshair_4.call("set_target_pos", predicted_aim_data.get("screen_pos", Vector2.ZERO))
-	# else:
-	# 	crosshair_4.call("reset")
+	if _locked_enemy_target.is_visible:
+		if bullet_speed == 0.0:
+			print("cannot get bullet speed")
+
+		crosshair_4.call("set_target_pos", get_predicted_aim_data(bullet_speed).get("screen_pos", Vector2.ZERO))
+	else:
+		crosshair_4.call("reset")
 	# if bool(root.is_aim_assist_enabled) and crosshair_4 and crosshair_4.visible:
 	# 	var assist_radius := float(crosshair_4.get("circle_diameter")) * 0.5
 	# 	assist_pos = crosshair_4.position
 	# 	is_assist_active = mouse_pos.distance_to(assist_pos) <= assist_radius
 
+
+func _on_bullet_speed_change(new_speed: float) -> void:
+	bullet_speed = new_speed
 
 func _on_player_lock_target(target: AbleToBeLocked) -> void:
 	_locked_enemy_target = target
@@ -79,7 +91,7 @@ static func _get_target_velocity(target: Node3D) -> Vector3:
 		return v
 	return Vector3.ZERO
 
-func get_predicted_aim_data(bullet_speed :float) -> Dictionary:
+func get_predicted_aim_data(_bullet_speed :float) -> Dictionary:
 	var out := {"valid": false, "screen_pos": Vector2.ZERO, "world_pos": Vector3.ZERO, "time": 0.0}
 	if cam_main == null:
 		return out
@@ -93,7 +105,7 @@ func get_predicted_aim_data(bullet_speed :float) -> Dictionary:
 
 	var shooter_pos := root.global_transform.origin
 	var relative_pos := target_world_pos - shooter_pos
-	var intercept_t := solve_intercept_time(relative_pos, target_vel, bullet_speed) as float
+	var intercept_t := solve_intercept_time(relative_pos, target_vel, _bullet_speed) as float
 	intercept_t = max(intercept_t, 0.0)
 
 	var predicted_world_pos := target_world_pos + target_vel * intercept_t

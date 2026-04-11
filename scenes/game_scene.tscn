@@ -503,9 +503,8 @@ test_box = NodePath("enemies/test_box")
 [node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=2142292844]
 environment = SubResource("Environment_utbpp")
 
-[node name="CharacterBody3D" parent="." unique_id=150363559 node_paths=PackedStringArray("enemies_parent") instance=ExtResource("1_w5aja")]
+[node name="CharacterBody3D" parent="." unique_id=150363559 instance=ExtResource("1_w5aja")]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, 0, 0)
-enemies_parent = NodePath("../enemies")
 
 [node name="MeshInstance3D2" type="MeshInstance3D" parent="." unique_id=1413072732]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.5143378, 0)
