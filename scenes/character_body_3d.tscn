@@ -5,7 +5,6 @@
 [ext_resource type="Script" uid="uid://djlf0twc8wjom" path="res://scripts/spring_arm_3d.gd" id="2_nr340"]
 [ext_resource type="Material" uid="uid://dmqmjaurrd0qm" path="res://material/cam_material.tres" id="3_cthcg"]
 [ext_resource type="Material" uid="uid://dvifks8sp3xdg" path="res://material/rocket_mat_1.tres" id="4_86qqj"]
-[ext_resource type="PackedScene" uid="uid://de51a8r88bbmh" path="res://scenes/modules/module_basic_ui.tscn" id="5_1u7qd"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_nr340"]
 size = Vector3(0.6, 0.6, 0.6)
@@ -361,7 +360,7 @@ diffuse_mode = 3
 specular_mode = 1
 roughness = 0.0
 
-[node name="CharacterBody3D" type="CharacterBody3D" unique_id=150363559 node_paths=PackedStringArray("cam_main", "cam_main_pivot", "particle_speed_up", "cam_spring_arm", "cam_pivot", "model_node", "collision_shape", "gun_pivot_left", "modules_manager")]
+[node name="CharacterBody3D" type="CharacterBody3D" unique_id=150363559 node_paths=PackedStringArray("cam_main", "cam_main_pivot", "particle_speed_up", "cam_spring_arm", "cam_pivot", "model_node", "gun_pivot_left", "modules_manager")]
 script = ExtResource("1_o7tup")
 cam_main = NodePath("cam_pivot/SpringArm3D/Node3D_cam/Camera3D")
 cam_main_pivot = NodePath("cam_pivot")
@@ -369,14 +368,11 @@ particle_speed_up = NodePath("GPUParticles3D")
 cam_spring_arm = NodePath("cam_pivot/SpringArm3D")
 cam_pivot = NodePath("cam_pivot")
 model_node = NodePath("rocket2")
-collision_shape = NodePath("CollisionShape3D")
 gun_pivot_left = NodePath("gun_pivot")
 modules_manager = NodePath("modules_manager")
 
 [node name="modules_manager" type="Node" parent="." unique_id=1158619260]
 script = ExtResource("2_lxkhp")
-
-[node name="module_basic_ui" parent="modules_manager" unique_id=1676037488 instance=ExtResource("5_1u7qd")]
 
 [node name="cam_pivot" type="Node3D" parent="." unique_id=49556795]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4, 0)

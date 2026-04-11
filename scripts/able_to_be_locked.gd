@@ -19,7 +19,7 @@ var distance_to_player := 0.0
 
 func _ready() -> void:
     target_node3d = get_parent()
-    crosshair_1 = Global.crosshair_1.instantiate()
+    crosshair_1 = Scenes.crosshair_1.instantiate()
     SignalBus.on_lockable_target_init.emit(crosshair_1)
 
 func _process(_delta: float) -> void:

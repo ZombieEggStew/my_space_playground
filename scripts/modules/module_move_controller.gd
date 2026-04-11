@@ -1,4 +1,4 @@
-extends BasicMoveModule
+extends MoveModule
 
 
 

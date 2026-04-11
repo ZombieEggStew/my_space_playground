@@ -2,7 +2,8 @@ extends CharacterBody3D
 
 var team_id := 2
 
-var hit_count := 0
+var hit_count := IntStat.new(0,10)
+
 
 var speed := 10.0
 var _orbit_angle := 0.0
@@ -58,15 +59,15 @@ func _physics_process(delta: float) -> void:
     move_and_slide()
 
 func reset() -> void:
-    hit_count = 0
+    hit_count.value = 0
     _randomize_spawn_and_orbit()
 
-func get_hit_count() -> int:
+func get_hit_count() -> IntStat:
     return hit_count
 
-func get_hit(damage: float) -> void:
-    hit_count += 1
-    if hit_count >= 10:
+func get_hit(_damage: float) -> void:
+    hit_count.value += 1
+    if hit_count.value >= 10:
         reset()
 
 func get_pivot_offset() -> Vector3:

@@ -5,13 +5,6 @@ const TEAM_NEUTRAL := 0
 const TEAM_PLAYER := 1
 const TEAM_ENEMY := 2
 
-# enum State {
-#     PATROL,
-#     CHASE,
-#     STRAFE,
-#     EVADE
-# }
-
 static var instance: GameManager
 
 @export var bullet_scene: PackedScene

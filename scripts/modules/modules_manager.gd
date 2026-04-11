@@ -11,7 +11,7 @@ var player_aim_module: BasicAimModule
 func install_module(module_scene:PackedScene) -> Module:
 	var module = module_scene.instantiate()
 
-	if module is BasicMoveModule:
+	if module is MoveModule:
 		movement_module = module
 	if module is BasicAimModule:
 		player_aim_module = module
@@ -25,6 +25,6 @@ func install_module(module_scene:PackedScene) -> Module:
 func get_aim_module() -> BasicAimModule:
 	return player_aim_module
 
-func get_move_module() -> BasicMoveModule:
+func get_move_module() -> MoveModule:
 	return movement_module
 

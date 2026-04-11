@@ -21,7 +21,8 @@ config/icon="res://icon.svg"
 LockManager="*uid://c61gmx7uvwu4w"
 PlayerInfo="*uid://ty7qhiaic3a5"
 SignalBus="*uid://n28y07d33e6b"
-Global="*uid://n4tsdidg8kyu"
+Scenes="*uid://n4tsdidg8kyu"
+Global="*uid://b0deqim4astxl"
 
 [display]
 
@@ -30,6 +31,10 @@ window/size/viewport_height=1080
 window/stretch/mode="canvas_items"
 mouse_cursor/custom_image="uid://bqj7tq2uwopav"
 mouse_cursor/custom_image_hotspot=Vector2(32, 32)
+
+[gui]
+
+theme/custom="uid://sx3qo1dv0jb8"
 
 [input]
 

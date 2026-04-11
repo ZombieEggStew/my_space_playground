@@ -4,7 +4,7 @@ extends ThirdCameraModule
 var cam_spring_arm: SpringArm3D 
 var cam_pivot: Node3D
 
-var move_controller: BasicMoveModule
+var move_controller: MoveModule
 
 # 自动追踪参数
 

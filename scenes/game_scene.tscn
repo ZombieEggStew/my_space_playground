@@ -5,7 +5,7 @@
 [ext_resource type="PackedScene" uid="uid://cuxcy0osx6biu" path="res://scenes/bullet_1.tscn" id="5_y3j0m"]
 [ext_resource type="PackedScene" uid="uid://bbphmbqcb4qr5" path="res://scenes/earth.tscn" id="7_kk2rg"]
 [ext_resource type="PackedScene" uid="uid://du22jo3gvxf3g" path="res://scenes/space_craft_1.tscn" id="8_b5spy"]
-[ext_resource type="Script" uid="uid://rc8mf3fvqios" path="res://scripts/test.gd" id="8_utbpp"]
+[ext_resource type="Script" uid="uid://rc8mf3fvqios" path="res://scripts/tool/test_box.gd" id="8_utbpp"]
 [ext_resource type="Script" uid="uid://bxurlpyhbiqd7" path="res://scripts/game_Manager.gd" id="9_1kk2r"]
 [ext_resource type="Material" uid="uid://djeunexyuwbdk" path="res://material/test_material.tres" id="10_mw25s"]
 [ext_resource type="Script" uid="uid://chtyunbjhs7vs" path="res://scripts/able_to_be_locked.gd" id="11_rvs2r"]

@@ -1,0 +1,22 @@
+[gd_scene format=3 uid="uid://n4tsdidg8kyu"]
+
+[ext_resource type="Script" uid="uid://bog5h82fcxfg8" path="res://scripts/tool/my_scenes.gd" id="1_wnasu"]
+[ext_resource type="PackedScene" uid="uid://b4wmsv8bsyw60" path="res://scenes/modules/module_move_controller.tscn" id="2_wodrj"]
+[ext_resource type="PackedScene" uid="uid://bap1uk0wacqru" path="res://scenes/modules/module_third_camera.tscn" id="3_w4hoe"]
+[ext_resource type="PackedScene" uid="uid://cc1r6mss3o2ds" path="res://scenes/modules/module_player_aim.tscn" id="4_yd5cc"]
+[ext_resource type="PackedScene" uid="uid://cwxsl3xxh0vg" path="res://scenes/modules/module_laser_gun.tscn" id="5_wn1o2"]
+[ext_resource type="PackedScene" uid="uid://cnbvvxebbcvph" path="res://scenes/modules/module_predict_aim.tscn" id="6_ggl4t"]
+[ext_resource type="PackedScene" uid="uid://o5rr3ev5psqc" path="res://scenes/crosshair_1.tscn" id="7_1ln6m"]
+[ext_resource type="PackedScene" uid="uid://dldi60ppqknmu" path="res://scenes/modules/module_basic_info_ui.tscn" id="8_i2qcm"]
+[ext_resource type="PackedScene" uid="uid://bmfeq4avctqqd" path="res://scenes/modules/module_test.tscn" id="9_0s4dd"]
+
+[node name="Scenes" type="Node" unique_id=73665802]
+script = ExtResource("1_wnasu")
+module_move_controller_scene = ExtResource("2_wodrj")
+module_third_camera_scene = ExtResource("3_w4hoe")
+module_player_aim_scene = ExtResource("4_yd5cc")
+module_laser_gun_scene = ExtResource("5_wn1o2")
+module_predict_aim_scene = ExtResource("6_ggl4t")
+crosshair_1 = ExtResource("7_1ln6m")
+basic_info_ui_scene = ExtResource("8_i2qcm")
+test_module_scene = ExtResource("9_0s4dd")
