@@ -4,6 +4,9 @@ class_name PredictAimModule
 var cam_main: Camera3D
 
 
+@export var lead_time_label: Label
+@export var distance_label: Label
+
 @export var crosshair_4: Node2D #绿色 预判指示
 
 var bullet_speed := 0.0
@@ -19,7 +22,7 @@ var is_aim_dead_zone_enabled := false
 func init_module(module:WeaponModule) -> void:
 	bullet_speed = module.get_bullet_speed()
 	module.on_bullet_speed_change.connect(_on_bullet_speed_change)
-
+	
 func _ready() -> void:
 	SignalBus.on_player_lock_target.connect(_on_player_lock_target)
 	cam_main = root.get_main_camera()
@@ -33,19 +36,21 @@ func _process(_delta: float) -> void:
 	pass
 	if _locked_enemy_target == null:
 		crosshair_4.call("reset")
+		lead_time_label.text = "--"
+		distance_label.text = "--"
 		return
+
+	var aim_data := get_predicted_aim_data(bullet_speed)
+	lead_time_label.text = "%.2f s" % aim_data.get("time", 0.0)
+	distance_label.text = "Distance: %.2f m" % (root.global_transform.origin.distance_to(aim_data.get("world_pos", Vector3.ZERO)))
 
 	if _locked_enemy_target.is_visible:
 		if bullet_speed == 0.0:
 			print("cannot get bullet speed")
 
-		crosshair_4.call("set_target_pos", get_predicted_aim_data(bullet_speed).get("screen_pos", Vector2.ZERO))
+		crosshair_4.call("set_target_pos", aim_data.get("screen_pos", Vector2.ZERO))
 	else:
 		crosshair_4.call("reset")
-	# if bool(root.is_aim_assist_enabled) and crosshair_4 and crosshair_4.visible:
-	# 	var assist_radius := float(crosshair_4.get("circle_diameter")) * 0.5
-	# 	assist_pos = crosshair_4.position
-	# 	is_assist_active = mouse_pos.distance_to(assist_pos) <= assist_radius
 
 
 func _on_bullet_speed_change(new_speed: float) -> void:

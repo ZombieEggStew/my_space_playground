@@ -9,7 +9,7 @@ func _enter_tree() -> void:
     root = modules_manager.get_parent()
 
 func log_error(message: String) -> void:
-    print("Error in module ", self.name, ": ", message)
+    print("[ERROE] ", self.name, ": ", message)
 
 func log_missing_component() -> void:
-    log_error("Missing required component !" )
+    log_error("Missing required component !")

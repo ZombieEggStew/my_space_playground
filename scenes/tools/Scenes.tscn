@@ -5,6 +5,7 @@
 [ext_resource type="PackedScene" uid="uid://bap1uk0wacqru" path="res://scenes/modules/module_third_camera.tscn" id="3_w4hoe"]
 [ext_resource type="PackedScene" uid="uid://cc1r6mss3o2ds" path="res://scenes/modules/module_player_aim.tscn" id="4_yd5cc"]
 [ext_resource type="PackedScene" uid="uid://cwxsl3xxh0vg" path="res://scenes/modules/module_laser_gun.tscn" id="5_wn1o2"]
+[ext_resource type="PackedScene" uid="uid://ctoco7y53upyw" path="res://scenes/modules/module_screen.tscn" id="5_wodrj"]
 [ext_resource type="PackedScene" uid="uid://cnbvvxebbcvph" path="res://scenes/modules/module_predict_aim.tscn" id="6_ggl4t"]
 [ext_resource type="PackedScene" uid="uid://o5rr3ev5psqc" path="res://scenes/crosshair_1.tscn" id="7_1ln6m"]
 [ext_resource type="PackedScene" uid="uid://dldi60ppqknmu" path="res://scenes/modules/module_basic_info_ui.tscn" id="8_i2qcm"]
@@ -15,6 +16,7 @@ script = ExtResource("1_wnasu")
 module_move_controller_scene = ExtResource("2_wodrj")
 module_third_camera_scene = ExtResource("3_w4hoe")
 module_player_aim_scene = ExtResource("4_yd5cc")
+module_screen_scene = ExtResource("5_wodrj")
 module_laser_gun_scene = ExtResource("5_wn1o2")
 module_predict_aim_scene = ExtResource("6_ggl4t")
 crosshair_1 = ExtResource("7_1ln6m")

@@ -27,9 +27,9 @@
 #TO DO :
 #TO DO : 锁定设计：锁定后出现预测射击指示器，屏幕边缘显示相对位置：1级：手动锁定；2级：自动锁定，最大锁定目标为1；3-级：自动锁定，最大锁定目标为多个
 #TO DO :
-#TO DO :
+#TO DO : 镜头穿模
 #TO DO : 受击ui效果，转向ui效果,ui扫描码效果
-#TO DO :
+#TO DO : 绿框下显示血条
 #TO DO :
 #TO DO : 连续开火散布增大
 #TO DO : 武器跟踪鼠标：考虑炮管转速
@@ -92,8 +92,10 @@ func _ready() -> void:
 	cam_main.current = true
 	modules_manager.install_module(Scenes.module_move_controller_scene)
 	modules_manager.install_module(Scenes.module_third_camera_scene)
-	modules_manager.install_module(Scenes.module_player_aim_scene)
+	modules_manager.install_module(Scenes.module_screen_scene)
+
 	modules_manager.install_module(Scenes.basic_info_ui_scene)
+	modules_manager.install_module(Scenes.module_player_aim_scene)
 	modules_manager.install_module(Scenes.test_module_scene)
 
 	var laser := modules_manager.install_module(Scenes.module_laser_gun_scene)

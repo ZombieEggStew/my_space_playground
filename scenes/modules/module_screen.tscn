@@ -1,0 +1,18 @@
+[gd_scene format=3 uid="uid://ctoco7y53upyw"]
+
+[ext_resource type="Script" uid="uid://cipnsrjx87suv" path="res://scripts/modules/module_screen.gd" id="1_uvdkp"]
+
+[node name="ModuleScreen" type="Node" unique_id=1053321223 node_paths=PackedStringArray("hud_container")]
+script = ExtResource("1_uvdkp")
+hud_container = NodePath("CanvasLayer/Control")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=353123102]
+
+[node name="Control" type="Control" parent="CanvasLayer" unique_id=1886801528]
+texture_filter = 2
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2

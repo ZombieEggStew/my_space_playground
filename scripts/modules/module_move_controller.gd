@@ -148,7 +148,7 @@ func _physics_process(delta: float) -> void:
 
 
 	if is_ship_rolling:
-		model_node.rotation.z = - _yaw_speed * 0.1
+		model_node.rotation.z = - _yaw_speed * 0.2
 
 		model_node.rotation.x = _pitch_speed * 0.1
 

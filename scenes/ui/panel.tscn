@@ -1,0 +1,44 @@
+[gd_scene format=3 uid="uid://ca3qg5um82s3a"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bnu1g"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+bg_color = Color(0.101960786, 0.101960786, 0.101960786, 0)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(1, 1, 1, 1)
+corner_detail = 1
+
+[node name="panel" type="PanelContainer" unique_id=1207227512]
+texture_filter = 2
+offset_left = 1436.0
+offset_top = 653.0
+offset_right = 1741.0
+offset_bottom = 747.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_bnu1g")
+metadata/_edit_group_ = true
+
+[node name="MarginContainer" type="MarginContainer" parent="." unique_id=2118604566]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer" unique_id=1624715213]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer" unique_id=246165885]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer" unique_id=1336559166]
+layout_mode = 2
+text = "default : "
+
+[node name="Label2" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer" unique_id=429914020]
+layout_mode = 2
+text = "--"

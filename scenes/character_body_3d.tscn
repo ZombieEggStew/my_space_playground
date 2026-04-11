@@ -440,7 +440,7 @@ bones/3/rotation = Quaternion(0, 0, -0.70710677, 0.70710677)
 bones/3/scale = Vector3(0.99999994, 0.99999994, 1)
 
 [node name="bone_cam" type="BoneAttachment3D" parent="rocket2/armature_cam/Skeleton3D" unique_id=1541037590]
-transform = Transform3D(-0.99999994, 0, 5.4754764e-07, -4.951072e-07, -0.28872067, -0.9574135, 1.5494908e-07, -0.9574133, 0.2887206, 0.91792107, 3.5266254, 1.4078465)
+transform = Transform3D(-0.99999994, 0, 5.475461e-07, -4.9510555e-07, -0.28872123, -0.9574132, 1.5494892e-07, -0.957413, 0.28872117, 0.91792107, 3.5266252, 1.4078422)
 bone_name = "bone_cam"
 bone_idx = 3
 
@@ -450,7 +450,7 @@ mesh = SubResource("ArrayMesh_6xit5")
 surface_material_override/0 = ExtResource("3_cthcg")
 
 [node name="bone_rod_3" type="BoneAttachment3D" parent="rocket2/armature_cam/Skeleton3D" unique_id=832116013]
-transform = Transform3D(0, 1, 1.4901161e-08, -0.2887207, -1.4855703e-08, -0.9574135, -0.9574134, -1.1630754e-09, 0.2887206, 0, 3.5266254, 1.4078465)
+transform = Transform3D(0, 1, 1.4901161e-08, -0.28872126, -1.48557024e-08, -0.9574132, -0.9574131, -1.1630661e-09, 0.28872117, 0, 3.5266252, 1.4078422)
 bone_name = "bone_rod_3"
 bone_idx = 2
 
@@ -465,7 +465,7 @@ mesh = SubResource("ArrayMesh_ohrcw")
 surface_material_override/0 = ExtResource("3_cthcg")
 
 [node name="bone_rod_2" type="BoneAttachment3D" parent="rocket2/armature_cam/Skeleton3D" unique_id=1769553706]
-transform = Transform3D(1, 0, 0, 0, -0.07805258, -0.9969494, 0, 0.9969493, -0.07805267, 0, 4.025368, -4.962483)
+transform = Transform3D(1, 0, 0, 0, -0.078051955, -0.9969493, 0, 0.99694926, -0.078052044, 0, 4.025364, -4.9624867)
 bone_name = "bone_rod_2"
 bone_idx = 1
 
@@ -480,7 +480,7 @@ mesh = SubResource("ArrayMesh_0x68p")
 surface_material_override/0 = ExtResource("3_cthcg")
 
 [node name="bone_rod_1" type="BoneAttachment3D" parent="rocket2/armature_cam/Skeleton3D" unique_id=782531984]
-transform = Transform3D(1, 0, 0, 0, 0.62996554, 0.776623, 0, -0.77662295, 0.6299656, 0, 0, 0)
+transform = Transform3D(1, 0, 0, 0, 0.6299649, 0.7766236, 0, -0.77662355, 0.62996495, 0, 0, 0)
 bone_name = "bone_rod_1"
 bone_idx = 0
 
