@@ -76,7 +76,7 @@ func handle_shooting() -> void:
 		var offset_y := randf_range(-spread, spread)
 		var shot_dir := (forward + right * offset_x + up * offset_y).normalized() as Vector3
 		var muzzle_pos := _get_next_muzzle_pos()
-		spawn_bullet(muzzle_pos, shot_dir, GameManager.TEAM_PLAYER)
+		spawn_bullet(muzzle_pos, shot_dir, TeamID.TEAM_PLAYER)
 		shoot_timer.start()
 
 

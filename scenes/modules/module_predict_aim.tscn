@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://c5yswx28oaq6g" path="res://scripts/modules/module_predict_aim.gd" id="1_805g5"]
 [ext_resource type="Script" uid="uid://2vkrypm03q0o" path="res://scripts/tool/hud_manager.gd" id="2_2jaa1"]
-[ext_resource type="PackedScene" uid="uid://ciro2b3ywl5e5" path="res://scenes/crosshair_4.tscn" id="2_bnu1g"]
+[ext_resource type="PackedScene" uid="uid://ciro2b3ywl5e5" path="res://scenes/ui/crosshair_4.tscn" id="2_bnu1g"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bnu1g"]
 content_margin_left = 0.0

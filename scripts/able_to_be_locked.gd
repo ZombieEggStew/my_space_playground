@@ -14,16 +14,14 @@ var distance_to_player := 0.0
 
 
 func _ready() -> void:
-    target_node3d = get_parent()
-    LockManager.register_target(self)
-    SignalBus.on_lockable_target_spawned.emit(self)
-        
-
+	target_node3d = get_parent()
+	SignalBus.on_lockable_target_spawned.emit(self)
+		
 func get_team_id() -> int:
-    return team_id
-    
+	return team_id
+	
 func get_pivot_offset() -> Vector3:
-    return piovot_offset
+	return piovot_offset
 
 func _exit_tree() -> void:
-    LockManager.unregister_target(self)
+	SignalBus.on_lockable_target_died.emit(self)

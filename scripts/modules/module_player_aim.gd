@@ -2,35 +2,72 @@
 
 extends Module
 class_name BasicAimModule
+
+signal on_aim_dead_zone_changed(new_dead_zone_px: float)
+
 var cam_main: Camera3D
 var use_occlusion_check := true
 
-var hovered_target: AbleToBeLocked
+var hovered_target: AbleToBeLocked 
 var locked_target: AbleToBeLocked
-@export var crosshair_container : CanvasLayer
 
-@export var crosshair_2: Node2D #绿色 二级锁定
-@export var crosshair_3: Node2D #绿色 十字准心
+@export var crosshair_container : Node
+
+var crosshair_2: Node2D #绿色 二级锁定
+
+var crosshair_3: Node2D #绿色 十字准心
 
 
-@export var indicator_margin := 32.0
+var indicator_margin := 32.0
 
+var rader_module: RadarModule
+
+var targets_found : Array[AbleToBeLocked] = []
+
+# 机炮最大转向角度
+var aim_dead_zone_px: float = 64.0:
+	set(v):
+		aim_dead_zone_px = v
+		on_aim_dead_zone_changed.emit(v)
 
 var aim_ray_length := 5000.0 #非锁定时使用，预测射击点
 
-# 机炮最大转向角度
-var aim_dead_zone_px := 64.0
 
 var crosshair_2_detect_radius := 128.0
 
 func _ready() -> void:
-	SignalBus.on_lockable_target_spawned.connect(_spawn_ui_for_target)
-
+	
+	init_dead_zone_indicator()
+	init_crosshair_2()
+	init_crosshair_3()
 	cam_main = root.get_main_camera()
 
 	if cam_main == null:
-		log_missing_component()
+		log_missing_component("main camera")
 		queue_free()
+
+	rader_module = modules_manager.get_radar_module()
+
+	if rader_module == null:
+		log_missing_component("RadarModule")
+		queue_free()
+	
+	rader_module.on_target_found.connect(_spawn_ui_for_target)
+	targets_found = rader_module.get_targets_found()
+
+func init_crosshair_2() -> void:
+	crosshair_2 = Scenes.crosshair_2.instantiate()
+	crosshair_container.add_child(crosshair_2)
+
+func init_crosshair_3() -> void:
+	crosshair_3 = Scenes.crosshair_3.instantiate()
+	crosshair_container.add_child(crosshair_3)
+
+func init_dead_zone_indicator() -> void:
+	var indicator := Scenes.dead_zone_indicator_scene.instantiate() as Node2D
+	crosshair_container.add_child(indicator)
+	indicator.setup(aim_dead_zone_px)
+	on_aim_dead_zone_changed.connect(indicator.update_indicator)
 
 func _process(_delta: float) -> void:
 	handle_targets()
@@ -95,7 +132,7 @@ func _is_enemy_visible_from_camera(target: Node3D) -> bool:
 	return collider == target or target.is_ancestor_of(collider)
 
 func handle_targets():
-	for target in LockManager.targetable_objects:
+	for target in targets_found:
 		var target_node := target.target_node3d
 		target.world_pos = target_node.global_transform.origin + target.get_pivot_offset() as Vector3
 		target.distance_to_player = root.global_position.distance_to(target.world_pos)
@@ -134,7 +171,6 @@ func handle_cross_hair_2():
 		crosshair_2.set_target_pos(cam_main.unproject_position(hovered_target.world_pos))
 	else:
 		crosshair_2.reset()
-
 
 func handle_cross_hair_3():
 	if crosshair_3 == null:

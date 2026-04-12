@@ -1,3 +1,8 @@
+# meta-name: target template
+# meta-description: 生命组件；阵营ID；受击接口;死亡
+# meta-default: false
+# meta-space-indent: 4
+
 extends CharacterBody3D
 
 var team_id := TeamID.TEAM_ENEMY

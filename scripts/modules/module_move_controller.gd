@@ -43,11 +43,11 @@ func _ready() -> void:
 	SignalBus.on_track_mouse_change.connect(_on_track_mouse_change)
 
 	if particle_speed_up == null:
-		log_missing_component()
+		log_missing_component("boost particle")
 		queue_free()
 	model_node = root.get_model_node()
 	if model_node == null:
-		log_missing_component()
+		log_missing_component("model node")
 		queue_free()
 
 func get_rotation_speed() -> Vector2:

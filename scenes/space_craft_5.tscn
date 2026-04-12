@@ -1,9 +1,10 @@
 [gd_scene format=4 uid="uid://dvopp258cqkyy"]
 
-[ext_resource type="Script" uid="uid://7w7fw1xi7sow" path="res://scripts/space_craft_5.gd" id="1_oihk3"]
+[ext_resource type="Script" uid="uid://nvatpo7axdb8" path="res://scripts/space_craft_5.gd" id="1_oihk3"]
 [ext_resource type="Material" uid="uid://b2ypfyebn18tb" path="res://material/color/white.tres" id="1_vfsme"]
 [ext_resource type="Material" uid="uid://c77gikh5654xq" path="res://material/color/red.tres" id="2_oihk3"]
 [ext_resource type="Script" uid="uid://chtyunbjhs7vs" path="res://scripts/able_to_be_locked.gd" id="4_aujeq"]
+[ext_resource type="Script" uid="uid://dbjgkv3ndhbm6" path="res://scripts/component/base/health_component.gd" id="5_1grbo"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_eha02"]
 
@@ -105,8 +106,19 @@ _surfaces = [{
 blend_shape_mode = 0
 shadow_mesh = SubResource("ArrayMesh_lqyhr")
 
-[node name="space_craft_5" type="Node3D" unique_id=72913326]
+[sub_resource type="BoxShape3D" id="BoxShape3D_oihk3"]
+size = Vector3(5.145, 2.57, 10.24)
+
+[node name="space_craft_5" type="CharacterBody3D" unique_id=1578308677]
 script = ExtResource("1_oihk3")
+
+[node name="HealthComponent" type="Node" parent="." unique_id=1678657678]
+script = ExtResource("5_1grbo")
+metadata/_custom_type_script = "uid://dbjgkv3ndhbm6"
+
+[node name="AbleToBeLocked" type="Node" parent="." unique_id=730235150]
+script = ExtResource("4_aujeq")
+metadata/_custom_type_script = "uid://chtyunbjhs7vs"
 
 [node name="球体_002" type="MeshInstance3D" parent="." unique_id=1146429533]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1.3992597)
@@ -123,6 +135,5 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1.3992597)
 mesh = SubResource("ArrayMesh_5guva")
 surface_material_override/0 = ExtResource("2_oihk3")
 
-[node name="AbleToBeLocked" type="Node" parent="." unique_id=730235150]
-script = ExtResource("4_aujeq")
-metadata/_custom_type_script = "uid://chtyunbjhs7vs"
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1744172207]
+shape = SubResource("BoxShape3D_oihk3")

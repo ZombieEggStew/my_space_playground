@@ -27,6 +27,9 @@
 #TO DO :
 #TO DO : 锁定设计：锁定后出现预测射击指示器，屏幕边缘显示相对位置：1级：手动锁定；2级：自动锁定，最大锁定目标为1；3-级：自动锁定，最大锁定目标为多个
 #TO DO :
+#TO DO :
+#TO DO : 血条动画
+#TO DO :
 #TO DO : 镜头穿模
 #TO DO : 受击ui效果，转向ui效果,ui扫描码效果
 #TO DO : 绿框下显示血条
@@ -56,9 +59,7 @@
 #FIX ME :
 extends CharacterBody3D
 
-signal health_changed(new_health: float)
-
-@export var team_id := 1
+var team_id := TeamID.TEAM_PLAYER
 
 # --- Component references ---
 @export var cam_main: Camera3D
@@ -72,11 +73,7 @@ signal health_changed(new_health: float)
 @export var cam_pivot: Node3D
 @export var model_node: Node3D	
 
-
-var default_health := 100.0
-var health_stat := FloatStat.new(default_health,default_health)
-
-
+@onready var health : HealthComponent = $HealthComponent
 
 
 var fov_smooth := 8.0         # FOV 平滑插值速度
@@ -89,10 +86,15 @@ var fov_smooth := 8.0         # FOV 平滑插值速度
 @export var modules_manager: ModulesManager
 
 func _ready() -> void:
+
+	health.setup(100, 100)
+	health.on_death.connect(die)
 	cam_main.current = true
 	modules_manager.install_module(Scenes.module_move_controller_scene)
 	modules_manager.install_module(Scenes.module_third_camera_scene)
 	modules_manager.install_module(Scenes.module_screen_scene)
+
+	modules_manager.install_module(Scenes.module_radar_scene)
 
 	modules_manager.install_module(Scenes.basic_info_ui_scene)
 	modules_manager.install_module(Scenes.module_player_aim_scene)
@@ -120,37 +122,29 @@ func get_boost_particle() -> GPUParticles3D:
 func get_model_node() -> Node3D:
 	return model_node
 
-func get_health_stat() -> FloatStat:
-	return health_stat
+func get_health_component() -> HealthComponent:
+	return health
 
 func get_speed_string() -> String:
 	return "%.2f" % velocity.length()
-# func _extract_enemy_nodes() -> Array[Node3D]:
-# 	var result: Array[Node3D] = []
 
-# 	for node in enemies_parent.get_children():
-# 		if node == self:
-# 			continue
-# 		if node.has_method("get_team_id") and node.call("get_team_id") != team_id:
-# 			result.append(node)
-
-# 	return result
-
-
-
-func get_hit(damage: float) -> void:
-	if health_stat.value - damage <= 0:
-		health_stat.value = 0
-
-	else:
-
-		health_stat.value -= damage
-
+func hit(damage: int) -> void:
+	health.take_damage(damage)
 
 func get_team_id() -> int:
 	return team_id
 
+func die() -> void:
+	pass
 
+
+func _input(event: InputEvent) -> void:
+	if event is InputEventKey and event.pressed and event.keycode == Key.KEY_Q:
+		health.take_damage(10)
+	if event is InputEventKey and event.pressed and event.keycode == Key.KEY_F:
+		health.take_damage(20)
+	if event is InputEventKey and event.pressed and event.keycode == Key.KEY_E:
+		health.heal(10)
 
 
 

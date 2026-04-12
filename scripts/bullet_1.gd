@@ -96,7 +96,7 @@ func _extract_team_id(collider: Node) -> int:
 func _print_hit_message(collider_team: int, collider: Node) -> void:
 	if team_id == Team.ENEMY and collider_team == Team.PLAYER:
 		print("Enemy hit player: ", collider.name)
-		collider.call("get_hit", 10.0) # 直接调用接口造成伤害，后续可以改成发信号或者其他方式解耦
+		collider.call("hit", 10.0) # 直接调用接口造成伤害，后续可以改成发信号或者其他方式解耦
 	elif team_id == Team.PLAYER and collider_team == Team.ENEMY:
 		print("Player hit enemy: ", collider.name)
-		collider.call("get_hit", 10.0) # 直接调用接口造成伤害，后续可以改成发信号或者其他方式解耦
+		collider.call("hit", 10.0) # 直接调用接口造成伤害，后续可以改成发信号或者其他方式解耦

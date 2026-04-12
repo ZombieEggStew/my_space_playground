@@ -18,7 +18,6 @@ config/icon="res://icon.svg"
 
 [autoload]
 
-LockManager="*uid://c61gmx7uvwu4w"
 PlayerInfo="*uid://ty7qhiaic3a5"
 SignalBus="*uid://n28y07d33e6b"
 Scenes="*uid://n4tsdidg8kyu"

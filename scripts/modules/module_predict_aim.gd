@@ -28,7 +28,7 @@ func _ready() -> void:
 	cam_main = root.get_main_camera()
 
 	if cam_main == null:
-		log_missing_component()
+		log_missing_component("main camera")
 		queue_free()
 
 

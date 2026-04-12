@@ -11,5 +11,5 @@ func _enter_tree() -> void:
 func log_error(message: String) -> void:
     print("[ERROE] ", self.name, ": ", message)
 
-func log_missing_component() -> void:
-    log_error("Missing required component !")
+func log_missing_component(module : String) -> void:
+    log_error("Missing component: %s" % module)

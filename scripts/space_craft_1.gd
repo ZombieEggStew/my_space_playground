@@ -17,7 +17,7 @@ var hit_count := 0
 @export var combat_sm: Node
 @export var collision_shape: CollisionShape3D
 
-func get_hit(damage: float) -> void:
+func hit(damage: float) -> void:
 	health -= damage
 	hit_count += 1
 	if health <= 0:

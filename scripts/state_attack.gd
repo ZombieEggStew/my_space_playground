@@ -115,4 +115,4 @@ func _fire_once() -> void:
 		var up := _ship.global_transform.basis.y.normalized()
 		dir = (dir + right * randf_range(-spread, spread) + up * randf_range(-spread, spread)).normalized()
 
-	GameManager.instance.spawn_bullet(muzzle_pos, dir, GameManager.TEAM_ENEMY, _ship)
+	GameManager.instance.spawn_bullet(muzzle_pos, dir, TeamID.TEAM_ENEMY, _ship)

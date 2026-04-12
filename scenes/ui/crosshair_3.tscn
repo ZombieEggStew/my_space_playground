@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://der6tymwb0uo0"]
+
+[ext_resource type="Script" uid="uid://42lbnj8v4kyx" path="res://scripts/crosshair_3.gd" id="1_27pta"]
+
+[node name="crosshair_3" type="Node2D" unique_id=365945416]
+script = ExtResource("1_27pta")

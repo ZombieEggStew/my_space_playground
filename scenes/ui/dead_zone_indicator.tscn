@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://bxxkpontk1uym"]
+
+[ext_resource type="Script" uid="uid://dqopwssmwnyig" path="res://scripts/dead_zone_indicator.gd" id="1_2nn6b"]
+
+[node name="dead_zone_indicator" type="Node2D" unique_id=1027265993]
+script = ExtResource("1_2nn6b")

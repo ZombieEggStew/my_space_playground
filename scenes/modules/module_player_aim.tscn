@@ -1,58 +1,11 @@
 [gd_scene format=3 uid="uid://cc1r6mss3o2ds"]
 
 [ext_resource type="Script" uid="uid://da6jmvtr64hva" path="res://scripts/modules/module_player_aim.gd" id="1_gvq42"]
-[ext_resource type="PackedScene" uid="uid://cdlapu2jn5572" path="res://scenes/crosshair_2.tscn" id="4_2wn06"]
-[ext_resource type="Script" uid="uid://dqopwssmwnyig" path="res://scripts/dead_zone_indicator.gd" id="5_0xan3"]
-[ext_resource type="Script" uid="uid://42lbnj8v4kyx" path="res://scripts/crosshair_3.gd" id="5_e53qb"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_s0s52"]
-bg_color = Color(1, 1, 1, 0)
-border_width_left = 1
-border_width_top = 1
-border_width_right = 1
-border_width_bottom = 1
-border_color = Color(1, 1, 1, 1)
-
-[sub_resource type="Curve" id="Curve_s0s52"]
-_data = [Vector2(0, 1), 0.0, 0.0, 0, 0]
-point_count = 1
-
-[sub_resource type="CurveTexture" id="CurveTexture_jae7w"]
-curve = SubResource("Curve_s0s52")
-
-[node name="module_player_aim" type="Node" unique_id=1372324135 node_paths=PackedStringArray("crosshair_container", "crosshair_2", "crosshair_3")]
+[node name="module_player_aim" type="Node" unique_id=1372324135 node_paths=PackedStringArray("crosshair_container")]
 script = ExtResource("1_gvq42")
-crosshair_container = NodePath("CanvasLayer")
-crosshair_2 = NodePath("CanvasLayer/crosshair_2")
-crosshair_3 = NodePath("CanvasLayer/crosshair_3")
+crosshair_container = NodePath("CanvasLayer/crosshair_group")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=860523627]
 
-[node name="crosshair_2" parent="CanvasLayer" unique_id=1268323382 instance=ExtResource("4_2wn06")]
-
-[node name="crosshair_3" type="Node2D" parent="CanvasLayer" unique_id=309862515]
-script = ExtResource("5_e53qb")
-
-[node name="dead_zone_indicator" type="Node2D" parent="CanvasLayer" unique_id=837090880]
-script = ExtResource("5_0xan3")
-
-[node name="hp_bar_mask" type="ColorRect" parent="CanvasLayer" unique_id=546367981]
-clip_children = 1
-offset_top = 69.0
-offset_right = 100.0
-offset_bottom = 81.0
-size_flags_horizontal = 4
-size_flags_vertical = 4
-metadata/_edit_group_ = true
-
-[node name="hp_bar" type="PanelContainer" parent="CanvasLayer/hp_bar_mask" unique_id=2062976029]
-layout_mode = 0
-offset_right = 100.0
-offset_bottom = 12.0
-theme_override_styles/panel = SubResource("StyleBoxFlat_s0s52")
-
-[node name="TextureProgressBar" type="TextureProgressBar" parent="CanvasLayer/hp_bar_mask/hp_bar" unique_id=1201702903]
-layout_mode = 2
-value = 50.0
-nine_patch_stretch = true
-texture_progress = SubResource("CurveTexture_jae7w")
+[node name="crosshair_group" type="Node" parent="CanvasLayer" unique_id=1605981316]

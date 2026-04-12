@@ -1,0 +1,41 @@
+[gd_scene format=3 uid="uid://bul2d5gykq6ee"]
+
+[ext_resource type="Script" uid="uid://baf2hs2qwrlm1" path="res://scripts/ui/hp_bar_target.gd" id="1_6ubop"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_s0s52"]
+bg_color = Color(1, 1, 1, 0)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(1, 1, 1, 1)
+
+[sub_resource type="Curve" id="Curve_s0s52"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0]
+point_count = 1
+
+[sub_resource type="CurveTexture" id="CurveTexture_jae7w"]
+curve = SubResource("Curve_s0s52")
+
+[node name="hp_bar_mask" type="ColorRect" unique_id=2144446811 node_paths=PackedStringArray("hp_bar")]
+clip_children = 1
+offset_top = 69.0
+offset_right = 100.0
+offset_bottom = 81.0
+size_flags_horizontal = 4
+size_flags_vertical = 4
+script = ExtResource("1_6ubop")
+hp_bar = NodePath("hp_bar/TextureProgressBar")
+metadata/_edit_group_ = true
+
+[node name="hp_bar" type="PanelContainer" parent="." unique_id=624053324]
+layout_mode = 0
+offset_right = 100.0
+offset_bottom = 12.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_s0s52")
+
+[node name="TextureProgressBar" type="TextureProgressBar" parent="hp_bar" unique_id=1142868685]
+layout_mode = 2
+value = 50.0
+nine_patch_stretch = true
+texture_progress = SubResource("CurveTexture_jae7w")

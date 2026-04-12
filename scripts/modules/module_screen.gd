@@ -32,3 +32,4 @@ func add_hud(hud: CanvasLayer) -> void:
 			# 应用旋转 (角度或弧度)
 			# 这里假设使用 degree，乘以系数控制幅度
 			child.rotation_degrees = direction * distance * rotation_intensity
+

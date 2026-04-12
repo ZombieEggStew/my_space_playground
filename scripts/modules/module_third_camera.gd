@@ -30,7 +30,7 @@ func _ready() -> void:
 	move_controller = modules_manager.get_move_module()
 
 	if cam_pivot == null or cam_spring_arm == null or move_controller == null:
-		log_missing_component()
+		log_missing_component("camera pivot or spring arm or move controller")
 		queue_free()
 
 

@@ -11,6 +11,7 @@
 [ext_resource type="Script" uid="uid://chtyunbjhs7vs" path="res://scripts/able_to_be_locked.gd" id="11_rvs2r"]
 [ext_resource type="PackedScene" uid="uid://csvjfmieyjaub" path="res://scenes/space_craft_6.tscn" id="11_tcjrq"]
 [ext_resource type="PackedScene" uid="uid://dvopp258cqkyy" path="res://scenes/space_craft_5.tscn" id="12_rvs2r"]
+[ext_resource type="Script" uid="uid://dbjgkv3ndhbm6" path="res://scripts/component/base/health_component.gd" id="12_tqxxy"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_kk2rg"]
 shader = ExtResource("4_rurhu")
@@ -548,6 +549,10 @@ shape = SubResource("BoxShape3D_b5spy")
 [node name="AbleToBeLocked" type="Node" parent="enemies/test_box" unique_id=1533443231]
 script = ExtResource("11_rvs2r")
 metadata/_custom_type_script = "uid://chtyunbjhs7vs"
+
+[node name="HealthComponent" type="Node" parent="enemies/test_box" unique_id=256359715]
+script = ExtResource("12_tqxxy")
+metadata/_custom_type_script = "uid://dbjgkv3ndhbm6"
 
 [node name="space_craft_5" parent="enemies" unique_id=72913326 instance=ExtResource("12_rvs2r")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 31.93112, -0.443339, -0.76441383)

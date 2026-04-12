@@ -3,26 +3,10 @@
 [ext_resource type="Script" uid="uid://cdb3cchx3xuve" path="res://scripts/modules/module_basic_info_ui.gd" id="1_chcyh"]
 [ext_resource type="Script" uid="uid://2vkrypm03q0o" path="res://scripts/tool/hud_manager.gd" id="2_ru8r4"]
 [ext_resource type="LabelSettings" uid="uid://rvf70tp83o1k" path="res://font_style/font_size_32.tres" id="2_tdvs8"]
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tdvs8"]
-content_margin_left = 0.0
-content_margin_top = 0.0
-content_margin_right = 0.0
-content_margin_bottom = 0.0
-bg_color = Color(0.1, 0.1, 0.1, 0.6)
-border_width_left = 1
-border_width_top = 1
-border_width_right = 1
-border_width_bottom = 1
-border_color = Color(1, 1, 1, 1)
-corner_detail = 1
-
-[sub_resource type="Curve" id="Curve_chcyh"]
-_data = [Vector2(0, 1), 0.0, 0.0, 0, 0]
-point_count = 1
-
-[sub_resource type="CurveTexture" id="CurveTexture_tdvs8"]
-curve = SubResource("Curve_chcyh")
+[ext_resource type="Script" uid="uid://gptjye17aeil" path="res://scripts/ui/hp_bar.gd" id="4_p4vrk"]
+[ext_resource type="StyleBox" uid="uid://chm4boyviwuw4" path="res://style/hp_bar_container.tres" id="5_eq387"]
+[ext_resource type="Texture2D" uid="uid://35piuouavkat" path="res://textures/white_1x1px.png" id="5_qbege"]
+[ext_resource type="Texture2D" uid="uid://c8bhpxdqfp07i" path="res://textures/white_100x100px.png" id="5_w1gke"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ru8r4"]
 bg_color = Color(0.6, 0.6, 0.6, 0)
@@ -32,62 +16,39 @@ border_width_right = 3
 border_width_bottom = 3
 border_color = Color(1, 1, 1, 1)
 
-[node name="module_basic_info_ui" type="Node" unique_id=2111012816 node_paths=PackedStringArray("hp_label", "hp_bar", "speed_label")]
+[sub_resource type="AtlasTexture" id="AtlasTexture_w1gke"]
+atlas = ExtResource("5_w1gke")
+region = Rect2(0, 0, 10, 25)
+
+[sub_resource type="Curve" id="Curve_ru8r4"]
+_data = [Vector2(0.005906038, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_p4vrk"]
+curve = SubResource("Curve_ru8r4")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_ru8r4"]
+particle_flag_disable_z = true
+emission_shape_offset = Vector3(0, 15, 0)
+angle_min = 1.0728835e-05
+angle_max = 1.0728835e-05
+gravity = Vector3(0, 98, 0)
+alpha_curve = SubResource("CurveTexture_p4vrk")
+
+[node name="module_basic_info_ui" type="Node" unique_id=2111012816 node_paths=PackedStringArray("hp_bar", "speed_label")]
 script = ExtResource("1_chcyh")
-hp_label = NodePath("CanvasLayer/hp_bar_and_label/HBoxContainer/hp_value")
-hp_bar = NodePath("CanvasLayer/hp_bar_and_label/PanelContainer/TextureProgressBar")
+hp_bar = NodePath("CanvasLayer/hp_bar_and_label")
 speed_label = NodePath("CanvasLayer/panel_speed/VBoxContainer/MarginContainer/HBoxContainer/speed_value")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=1201809729]
 script = ExtResource("2_ru8r4")
-
-[node name="hp_bar_and_label" type="VBoxContainer" parent="CanvasLayer" unique_id=5052555]
-anchors_preset = 3
-anchor_left = 1.0
-anchor_top = 1.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = -528.9999
-offset_top = -157.99988
-offset_right = -28.999878
-offset_bottom = -83.99988
-grow_horizontal = 0
-grow_vertical = 0
-size_flags_vertical = 3
-metadata/_edit_group_ = true
-
-[node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/hp_bar_and_label" unique_id=1244936140]
-layout_mode = 2
-
-[node name="HP_label" type="Label" parent="CanvasLayer/hp_bar_and_label/HBoxContainer" unique_id=1056189793]
-layout_mode = 2
-text = "HP : "
-label_settings = ExtResource("2_tdvs8")
-
-[node name="hp_value" type="Label" parent="CanvasLayer/hp_bar_and_label/HBoxContainer" unique_id=204169307]
-layout_mode = 2
-text = "100/100"
-label_settings = ExtResource("2_tdvs8")
-
-[node name="PanelContainer" type="PanelContainer" parent="CanvasLayer/hp_bar_and_label" unique_id=1888318659]
-layout_mode = 2
-size_flags_vertical = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_tdvs8")
-
-[node name="TextureProgressBar" type="TextureProgressBar" parent="CanvasLayer/hp_bar_and_label/PanelContainer" unique_id=1819935985]
-custom_minimum_size = Vector2(0, 25)
-layout_mode = 2
-step = -1.0
-value = 50.0
-nine_patch_stretch = true
-texture_progress = SubResource("CurveTexture_tdvs8")
 
 [node name="panel_speed" type="PanelContainer" parent="CanvasLayer" unique_id=866523806]
 texture_filter = 2
 offset_left = 1419.0
 offset_top = 759.0
 offset_right = 1795.0
-offset_bottom = 819.0
+offset_bottom = 825.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_ru8r4")
 metadata/_edit_group_ = true
 
@@ -113,3 +74,56 @@ label_settings = ExtResource("2_tdvs8")
 layout_mode = 2
 text = "--"
 label_settings = ExtResource("2_tdvs8")
+
+[node name="hp_bar_and_label" type="VBoxContainer" parent="CanvasLayer" unique_id=5052555 node_paths=PackedStringArray("hp_bar", "hp_label", "health_down_effect")]
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -528.9999
+offset_top = -157.99988
+offset_right = -29.0
+offset_bottom = -83.99988
+grow_horizontal = 0
+grow_vertical = 0
+size_flags_vertical = 3
+script = ExtResource("4_p4vrk")
+hp_bar = NodePath("hp_bar/TextureProgressBar")
+hp_label = NodePath("HBoxContainer/hp_value")
+health_down_effect = NodePath("hp_bar/GPUParticles2D")
+metadata/_edit_group_ = true
+
+[node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/hp_bar_and_label" unique_id=1244936140]
+layout_mode = 2
+
+[node name="HP_label" type="Label" parent="CanvasLayer/hp_bar_and_label/HBoxContainer" unique_id=1056189793]
+layout_mode = 2
+text = "HP : "
+label_settings = ExtResource("2_tdvs8")
+
+[node name="hp_value" type="Label" parent="CanvasLayer/hp_bar_and_label/HBoxContainer" unique_id=204169307]
+layout_mode = 2
+text = "--/--"
+label_settings = ExtResource("2_tdvs8")
+
+[node name="hp_bar" type="PanelContainer" parent="CanvasLayer/hp_bar_and_label" unique_id=1888318659]
+layout_mode = 2
+size_flags_vertical = 2
+theme_override_styles/panel = ExtResource("5_eq387")
+
+[node name="TextureProgressBar" type="TextureProgressBar" parent="CanvasLayer/hp_bar_and_label/hp_bar" unique_id=1819935985]
+custom_minimum_size = Vector2(0, 25)
+layout_mode = 2
+value = 50.0
+rounded = true
+nine_patch_stretch = true
+texture_progress = ExtResource("5_qbege")
+
+[node name="GPUParticles2D" type="GPUParticles2D" parent="CanvasLayer/hp_bar_and_label/hp_bar" unique_id=250556252]
+position = Vector2(313.99988, -36.000122)
+emitting = false
+amount = 1
+texture = SubResource("AtlasTexture_w1gke")
+one_shot = true
+process_material = SubResource("ParticleProcessMaterial_ru8r4")

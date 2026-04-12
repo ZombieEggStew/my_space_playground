@@ -3,7 +3,9 @@
 [ext_resource type="Script" uid="uid://byfpdbxqcd48k" path="res://scripts/character_body_3d.gd" id="1_o7tup"]
 [ext_resource type="Script" uid="uid://durtpqo3gh0s3" path="res://scripts/modules/modules_manager.gd" id="2_lxkhp"]
 [ext_resource type="Script" uid="uid://djlf0twc8wjom" path="res://scripts/spring_arm_3d.gd" id="2_nr340"]
+[ext_resource type="Script" uid="uid://dbjgkv3ndhbm6" path="res://scripts/component/base/health_component.gd" id="2_v00sg"]
 [ext_resource type="Material" uid="uid://dmqmjaurrd0qm" path="res://material/cam_material.tres" id="3_cthcg"]
+[ext_resource type="PackedScene" uid="uid://brgpgqvf2a5v" path="res://scenes/modules/module_radar.tscn" id="3_xrsio"]
 [ext_resource type="Material" uid="uid://dvifks8sp3xdg" path="res://material/rocket_mat_1.tres" id="4_86qqj"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_nr340"]
@@ -371,8 +373,14 @@ model_node = NodePath("rocket2")
 gun_pivot_left = NodePath("gun_pivot")
 modules_manager = NodePath("modules_manager")
 
+[node name="HealthComponent" type="Node" parent="." unique_id=537363609]
+script = ExtResource("2_v00sg")
+metadata/_custom_type_script = "uid://dbjgkv3ndhbm6"
+
 [node name="modules_manager" type="Node" parent="." unique_id=1158619260]
 script = ExtResource("2_lxkhp")
+
+[node name="module_radar" parent="modules_manager" unique_id=1821595785 instance=ExtResource("3_xrsio")]
 
 [node name="cam_pivot" type="Node3D" parent="." unique_id=49556795]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4, 0)
@@ -440,7 +448,7 @@ bones/3/rotation = Quaternion(0, 0, -0.70710677, 0.70710677)
 bones/3/scale = Vector3(0.99999994, 0.99999994, 1)
 
 [node name="bone_cam" type="BoneAttachment3D" parent="rocket2/armature_cam/Skeleton3D" unique_id=1541037590]
-transform = Transform3D(-0.99999994, 0, 5.475461e-07, -4.9510555e-07, -0.28872123, -0.9574132, 1.5494892e-07, -0.957413, 0.28872117, 0.91792107, 3.5266252, 1.4078422)
+transform = Transform3D(-0.99999994, 0, 5.4754764e-07, -4.951072e-07, -0.28872067, -0.9574135, 1.5494908e-07, -0.9574133, 0.2887206, 0.91792107, 3.5266254, 1.4078465)
 bone_name = "bone_cam"
 bone_idx = 3
 
@@ -450,7 +458,7 @@ mesh = SubResource("ArrayMesh_6xit5")
 surface_material_override/0 = ExtResource("3_cthcg")
 
 [node name="bone_rod_3" type="BoneAttachment3D" parent="rocket2/armature_cam/Skeleton3D" unique_id=832116013]
-transform = Transform3D(0, 1, 1.4901161e-08, -0.28872126, -1.48557024e-08, -0.9574132, -0.9574131, -1.1630661e-09, 0.28872117, 0, 3.5266252, 1.4078422)
+transform = Transform3D(0, 1, 1.4901161e-08, -0.2887207, -1.4855703e-08, -0.9574135, -0.9574134, -1.1630754e-09, 0.2887206, 0, 3.5266254, 1.4078465)
 bone_name = "bone_rod_3"
 bone_idx = 2
 
@@ -465,7 +473,7 @@ mesh = SubResource("ArrayMesh_ohrcw")
 surface_material_override/0 = ExtResource("3_cthcg")
 
 [node name="bone_rod_2" type="BoneAttachment3D" parent="rocket2/armature_cam/Skeleton3D" unique_id=1769553706]
-transform = Transform3D(1, 0, 0, 0, -0.078051955, -0.9969493, 0, 0.99694926, -0.078052044, 0, 4.025364, -4.9624867)
+transform = Transform3D(1, 0, 0, 0, -0.07805258, -0.9969494, 0, 0.9969493, -0.07805267, 0, 4.025368, -4.962483)
 bone_name = "bone_rod_2"
 bone_idx = 1
 
@@ -480,7 +488,7 @@ mesh = SubResource("ArrayMesh_0x68p")
 surface_material_override/0 = ExtResource("3_cthcg")
 
 [node name="bone_rod_1" type="BoneAttachment3D" parent="rocket2/armature_cam/Skeleton3D" unique_id=782531984]
-transform = Transform3D(1, 0, 0, 0, 0.6299649, 0.7766236, 0, -0.77662355, 0.62996495, 0, 0, 0)
+transform = Transform3D(1, 0, 0, 0, 0.62996554, 0.776623, 0, -0.77662295, 0.6299656, 0, 0, 0)
 bone_name = "bone_rod_1"
 bone_idx = 0
 

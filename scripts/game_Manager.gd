@@ -1,9 +1,7 @@
 extends Node3D
 class_name GameManager
 
-const TEAM_NEUTRAL := 0
-const TEAM_PLAYER := 1
-const TEAM_ENEMY := 2
+
 
 static var instance: GameManager
 
