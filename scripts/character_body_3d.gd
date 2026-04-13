@@ -25,12 +25,14 @@
 #TO DO :
 #TO DO : 地平线指示器？
 #TO DO :
+#TO DO : 拾取音效：清脆
+#TO DO :
 #TO DO : 锁定设计：锁定后出现预测射击指示器，屏幕边缘显示相对位置：1级：手动锁定；2级：自动锁定，最大锁定目标为1；3-级：自动锁定，最大锁定目标为多个
 #TO DO :
-#TO DO :
+#TO DO : buff 重叠效果处理
 #TO DO : 血条动画
 #TO DO :
-#TO DO : 镜头穿模
+#TO DO : 处理镜头穿模
 #TO DO : 受击ui效果，转向ui效果,ui扫描码效果
 #TO DO : 绿框下显示血条
 #TO DO :
@@ -58,6 +60,7 @@
 #FIX ME :
 #FIX ME :
 extends CharacterBody3D
+class_name PlayerShip
 
 var team_id := TeamID.TEAM_PLAYER
 
@@ -86,7 +89,7 @@ var fov_smooth := 8.0         # FOV 平滑插值速度
 @export var modules_manager: ModulesManager
 
 func _ready() -> void:
-
+	GameManager.register_player(self)
 	health.setup(100, 100)
 	health.on_death.connect(die)
 	cam_main.current = true
@@ -96,7 +99,7 @@ func _ready() -> void:
 
 	modules_manager.install_module(Scenes.module_radar_scene)
 
-	modules_manager.install_module(Scenes.basic_info_ui_scene)
+	modules_manager.install_module(Scenes.module_basic_info_ui_scene)
 	modules_manager.install_module(Scenes.module_player_aim_scene)
 	modules_manager.install_module(Scenes.test_module_scene)
 
@@ -131,6 +134,9 @@ func get_speed_string() -> String:
 func hit(damage: int) -> void:
 	health.take_damage(damage)
 
+func get_module_manager() -> ModulesManager:
+	return modules_manager
+
 func get_team_id() -> int:
 	return team_id
 
@@ -145,6 +151,8 @@ func _input(event: InputEvent) -> void:
 		health.take_damage(20)
 	if event is InputEventKey and event.pressed and event.keycode == Key.KEY_E:
 		health.heal(10)
+	if event is InputEventKey and event.pressed and event.keycode == Key.KEY_R:
+		BuffManager.apply_buff(self, self,BuffManager.BUFFS.healing , 1)
 
 
 

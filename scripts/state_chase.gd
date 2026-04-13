@@ -1,5 +1,5 @@
 class_name StateChase
-extends State
+extends StateBase
 
 var chase_speed := 16.0
 var stop_distance := 40.0
@@ -12,7 +12,7 @@ var _combat_sm: Node = null
 
 func _ready() -> void:
 	super()
-	name = GameManager.chase_state_name
+	name = State.chase_state_name
 
 func enter(_prev_state_name: StringName = StringName("")) -> void:
 	super(_prev_state_name)
@@ -52,7 +52,7 @@ func physics_update(delta: float) -> void:
 		parent_sm.set_desired_velocity(Vector3.ZERO)
 		_cache_combat_sm()
 		if _combat_sm and _combat_sm.has_method("transition_to"):
-			_combat_sm.transition_to(GameManager.attack_state_name)
+			_combat_sm.transition_to(State.attack_state_name)
 		return
 
 	if dist <= 0.001:
@@ -78,6 +78,6 @@ func _set_attack_enabled(enabled: bool) -> void:
 	_cache_combat_sm()
 	if _combat_sm == null or not _combat_sm.has_method("get_state_by_name"):
 		return
-	var attack_state = _combat_sm.get_state_by_name(GameManager.attack_state_name)
+	var attack_state = _combat_sm.get_state_by_name(State.attack_state_name)
 	if attack_state and attack_state.has_method("set_chase_active"):
 		attack_state.set_chase_active(enabled)

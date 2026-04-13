@@ -20,8 +20,9 @@ config/icon="res://icon.svg"
 
 PlayerInfo="*uid://ty7qhiaic3a5"
 SignalBus="*uid://n28y07d33e6b"
-Scenes="*uid://n4tsdidg8kyu"
-Global="*uid://b0deqim4astxl"
+BuffManager="*uid://bmfuvmnghtwf6"
+Scenes="*uid://bog5h82fcxfg8"
+GameManager="*uid://b2lxty558matd"
 
 [display]
 

@@ -1,5 +1,5 @@
 class_name StatePatrol
-extends State
+extends StateBase
 
 var patrol_speed := 8.0
 var min_change_interval := 1.0
@@ -23,7 +23,7 @@ var _debug_material: StandardMaterial3D = null
 
 func _ready() -> void:
 	super()
-	name = GameManager.patrol_state_name
+	name = State.patrol_state_name
 
 	randomize()
 
@@ -50,7 +50,7 @@ func physics_update(delta: float) -> void:
 
 	if _can_see_player():
 		print("Player detected, switching to chase state")
-		parent_sm.transition_to(GameManager.chase_state_name)
+		parent_sm.transition_to(State.chase_state_name)
 		return
 
 	_change_timer -= delta

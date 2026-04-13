@@ -1,9 +1,9 @@
 extends SpringArm3D
 
-var spring_arm_boost_z := -3.0  # 加速时 SpringArm 的目标 Z 偏移
+var spring_arm_boost_z := -10.0  # 加速时 SpringArm 的目标 Z 偏移
 var spring_arm_backward_z := 21.0  # 看向后方时 SpringArm 的目标 Z 偏移
 
-var spring_arm_smooth := 2        # SpringArm Z 偏移平滑插值速度
+var spring_arm_smooth := 5        # SpringArm Z 偏移平滑插值速度
 var spring_arm_rot_smooth := 6.0  # SpringArm Y 旋转平滑插值速度- 8
 
 var backward_y_deg := -180.0
@@ -43,6 +43,12 @@ func _process(delta: float) -> void:
 
 func on_boosting(is_boosting: bool) -> void:
 	_is_boosting = is_boosting
+
+	if _is_boosting:
+		spring_arm_smooth = 5
+	else:
+		spring_arm_smooth = 2
+
 	_update_target_pose()
 
 

@@ -5,7 +5,7 @@ var _parent_sm: Node = null
 var _is_active := false
 
 func _ready() -> void:
-	name = GameManager.idle_state_name
+	name = State.idle_state_name
 	_parent_sm = get_parent()
 	_parent_sm.register_state(self)
 

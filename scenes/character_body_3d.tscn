@@ -5,8 +5,10 @@
 [ext_resource type="Script" uid="uid://djlf0twc8wjom" path="res://scripts/spring_arm_3d.gd" id="2_nr340"]
 [ext_resource type="Script" uid="uid://dbjgkv3ndhbm6" path="res://scripts/component/base/health_component.gd" id="2_v00sg"]
 [ext_resource type="Material" uid="uid://dmqmjaurrd0qm" path="res://material/cam_material.tres" id="3_cthcg"]
-[ext_resource type="PackedScene" uid="uid://brgpgqvf2a5v" path="res://scenes/modules/module_radar.tscn" id="3_xrsio"]
 [ext_resource type="Material" uid="uid://dvifks8sp3xdg" path="res://material/rocket_mat_1.tres" id="4_86qqj"]
+[ext_resource type="Script" uid="uid://cvwx0m0kuysng" path="res://scripts/modules/module_buff_hud.gd" id="4_lxkhp"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_xrsio"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_nr340"]
 size = Vector3(0.6, 0.6, 0.6)
@@ -380,7 +382,25 @@ metadata/_custom_type_script = "uid://dbjgkv3ndhbm6"
 [node name="modules_manager" type="Node" parent="." unique_id=1158619260]
 script = ExtResource("2_lxkhp")
 
-[node name="module_radar" parent="modules_manager" unique_id=1821595785 instance=ExtResource("3_xrsio")]
+[node name="module_buff_manager" type="Node" parent="modules_manager" unique_id=716731037 node_paths=PackedStringArray("buff_container", "buff_hud_container")]
+script = ExtResource("4_lxkhp")
+buff_container = NodePath("buff_container")
+buff_hud_container = NodePath("CanvasLayer/buff_hud/hud_container")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="modules_manager/module_buff_manager" unique_id=755427343]
+
+[node name="buff_hud" type="PanelContainer" parent="modules_manager/module_buff_manager/CanvasLayer" unique_id=1044716887]
+offset_left = 1415.0
+offset_top = 93.0
+offset_right = 1836.0
+offset_bottom = 375.0
+theme_override_styles/panel = SubResource("StyleBoxEmpty_xrsio")
+metadata/_edit_group_ = true
+
+[node name="hud_container" type="HFlowContainer" parent="modules_manager/module_buff_manager/CanvasLayer/buff_hud" unique_id=1034818870]
+layout_mode = 2
+
+[node name="buff_container" type="Node" parent="modules_manager/module_buff_manager" unique_id=1355712823]
 
 [node name="cam_pivot" type="Node3D" parent="." unique_id=49556795]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4, 0)

@@ -1,0 +1,7 @@
+[gd_scene format=3 uid="uid://paxsiravbljg"]
+
+[ext_resource type="PackedScene" uid="uid://d8jxxx1p10es" path="res://scenes/buff/base/buff.tscn" id="1_cvc6h"]
+[ext_resource type="Script" uid="uid://pv62xqm7f4hr" path="res://scripts/buff/buff_healing.gd" id="2_k03xh"]
+
+[node name="Buff" unique_id=967536127 instance=ExtResource("1_cvc6h")]
+script = ExtResource("2_k03xh")

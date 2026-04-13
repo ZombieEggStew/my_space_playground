@@ -1,7 +1,7 @@
 extends Node
-class_name State
+class_name StateBase
 
-var state_name: StringName = GameManager.default_state_name
+var state_name: StringName = State.default_state_name
 
 var parent_sm: Node = null
 var ship: CharacterBody3D = null
@@ -31,8 +31,8 @@ func physics_update(_delta: float) -> void:
 func cache_refs() -> void:
     if ship == null:
         ship = parent_sm.get_controlled_ship()
-    if player == null and GameManager.instance:
-        player = GameManager.instance.get_player()
+    if player == null:
+        player = GameManager.player_instance
 
 func cache_ship() -> void:
     if ship:
@@ -42,5 +42,4 @@ func cache_ship() -> void:
 func cache_player() -> void:
     if player:
         return
-    if GameManager.instance:
-        player = GameManager.instance.get_player()
+    player = GameManager.player_instance

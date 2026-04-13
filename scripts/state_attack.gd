@@ -16,7 +16,7 @@ var _player: CharacterBody3D = null
 var _fire_cd := 0.0
 
 func _ready() -> void:
-	name = GameManager.attack_state_name
+	name = State.attack_state_name
 	_parent_sm = get_parent()
 	_parent_sm.register_state(self)
 	_cache_refs()
@@ -63,8 +63,8 @@ func _cache_refs() -> void:
 	if _ship == null and _parent_sm and _parent_sm.has_method("get_controlled_ship"):
 		_ship = _parent_sm.get_controlled_ship()
 
-	if _player == null and GameManager.instance:
-		_player = GameManager.instance.get_player()
+	if _player == null:
+		_player = GameManager.player_instance
 
 
 func _can_shoot_player() -> bool:
@@ -96,8 +96,6 @@ func _can_shoot_player() -> bool:
 func _fire_once() -> void:
 	if _ship == null or _player == null:
 		return
-	if GameManager.instance == null:
-		return
 
 	var muzzle_pos := _ship.global_position + _ship.global_transform.basis.z * muzzle_forward_offset
 
@@ -115,4 +113,5 @@ func _fire_once() -> void:
 		var up := _ship.global_transform.basis.y.normalized()
 		dir = (dir + right * randf_range(-spread, spread) + up * randf_range(-spread, spread)).normalized()
 
-	GameManager.instance.spawn_bullet(muzzle_pos, dir, TeamID.TEAM_ENEMY, _ship)
+	############# fix me
+	# Main.instance.spawn_bullet(muzzle_pos, dir, TeamID.TEAM_ENEMY, _ship)

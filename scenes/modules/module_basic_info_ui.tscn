@@ -35,6 +35,26 @@ angle_max = 1.0728835e-05
 gravity = Vector3(0, 98, 0)
 alpha_curve = SubResource("CurveTexture_p4vrk")
 
+[sub_resource type="AtlasTexture" id="AtlasTexture_eq387"]
+atlas = ExtResource("5_w1gke")
+region = Rect2(0, 0, 5, 50)
+
+[sub_resource type="Curve" id="Curve_eq387"]
+bake_resolution = 5
+_data = [Vector2(0.015431061, 1), 0.0, 0.0, 0, 0, Vector2(1, 0.025948167), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_1fqis"]
+curve = SubResource("Curve_eq387")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_eq387"]
+particle_flag_disable_z = true
+direction = Vector3(0, 0, 0)
+gravity = Vector3(0, 0, 0)
+alpha_curve = SubResource("CurveTexture_1fqis")
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_eq387"]
+
 [node name="module_basic_info_ui" type="Node" unique_id=2111012816 node_paths=PackedStringArray("hp_bar", "speed_label")]
 script = ExtResource("1_chcyh")
 hp_bar = NodePath("CanvasLayer/hp_bar_and_label")
@@ -45,10 +65,10 @@ script = ExtResource("2_ru8r4")
 
 [node name="panel_speed" type="PanelContainer" parent="CanvasLayer" unique_id=866523806]
 texture_filter = 2
-offset_left = 1419.0
-offset_top = 759.0
-offset_right = 1795.0
-offset_bottom = 825.0
+offset_left = 1435.0
+offset_top = 684.0
+offset_right = 1811.0
+offset_bottom = 750.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_ru8r4")
 metadata/_edit_group_ = true
 
@@ -75,23 +95,25 @@ layout_mode = 2
 text = "--"
 label_settings = ExtResource("2_tdvs8")
 
-[node name="hp_bar_and_label" type="VBoxContainer" parent="CanvasLayer" unique_id=5052555 node_paths=PackedStringArray("hp_bar", "hp_label", "health_down_effect")]
+[node name="hp_bar_and_label" type="VBoxContainer" parent="CanvasLayer" unique_id=5052555 node_paths=PackedStringArray("hp_bar", "hp_label", "health_down_effect", "health_up_effect", "hp_bar_catch")]
 anchors_preset = 3
 anchor_left = 1.0
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = -528.9999
-offset_top = -157.99988
-offset_right = -29.0
-offset_bottom = -83.99988
+offset_left = -631.0
+offset_top = -168.0
+offset_right = -131.00012
+offset_bottom = -84.0
 grow_horizontal = 0
 grow_vertical = 0
 size_flags_vertical = 3
 script = ExtResource("4_p4vrk")
-hp_bar = NodePath("hp_bar/TextureProgressBar")
+hp_bar = NodePath("hp_bar/hp_bar_true")
 hp_label = NodePath("HBoxContainer/hp_value")
-health_down_effect = NodePath("hp_bar/GPUParticles2D")
+health_down_effect = NodePath("hp_bar/health_down_effect")
+health_up_effect = NodePath("hp_bar/health_up_effect")
+hp_bar_catch = NodePath("hp_bar/hp_bar_under")
 metadata/_edit_group_ = true
 
 [node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/hp_bar_and_label" unique_id=1244936140]
@@ -104,7 +126,7 @@ label_settings = ExtResource("2_tdvs8")
 
 [node name="hp_value" type="Label" parent="CanvasLayer/hp_bar_and_label/HBoxContainer" unique_id=204169307]
 layout_mode = 2
-text = "--/--"
+text = "--/--(--%)"
 label_settings = ExtResource("2_tdvs8")
 
 [node name="hp_bar" type="PanelContainer" parent="CanvasLayer/hp_bar_and_label" unique_id=1888318659]
@@ -112,7 +134,7 @@ layout_mode = 2
 size_flags_vertical = 2
 theme_override_styles/panel = ExtResource("5_eq387")
 
-[node name="TextureProgressBar" type="TextureProgressBar" parent="CanvasLayer/hp_bar_and_label/hp_bar" unique_id=1819935985]
+[node name="hp_bar_true" type="TextureProgressBar" parent="CanvasLayer/hp_bar_and_label/hp_bar" unique_id=1819935985]
 custom_minimum_size = Vector2(0, 25)
 layout_mode = 2
 value = 50.0
@@ -120,10 +142,85 @@ rounded = true
 nine_patch_stretch = true
 texture_progress = ExtResource("5_qbege")
 
-[node name="GPUParticles2D" type="GPUParticles2D" parent="CanvasLayer/hp_bar_and_label/hp_bar" unique_id=250556252]
-position = Vector2(313.99988, -36.000122)
+[node name="hp_bar_under" type="TextureProgressBar" parent="CanvasLayer/hp_bar_and_label/hp_bar" unique_id=914898527]
+modulate = Color(1, 1, 1, 0.45490196)
+layout_mode = 2
+value = 75.0
+nine_patch_stretch = true
+texture_progress = ExtResource("5_qbege")
+
+[node name="health_down_effect" type="GPUParticles2D" parent="CanvasLayer/hp_bar_and_label/hp_bar" unique_id=250556252]
 emitting = false
 amount = 1
 texture = SubResource("AtlasTexture_w1gke")
 one_shot = true
 process_material = SubResource("ParticleProcessMaterial_ru8r4")
+
+[node name="health_up_effect" type="GPUParticles2D" parent="CanvasLayer/hp_bar_and_label/hp_bar" unique_id=1746576306]
+position = Vector2(388.99988, 18.999878)
+emitting = false
+amount = 1
+texture = SubResource("AtlasTexture_eq387")
+one_shot = true
+process_material = SubResource("ParticleProcessMaterial_eq387")
+
+[node name="VBoxContainer" type="HFlowContainer" parent="CanvasLayer" unique_id=640689833]
+offset_left = 1505.0
+offset_top = 124.0
+offset_right = 1757.0
+offset_bottom = 390.0
+
+[node name="PanelContainer" type="PanelContainer" parent="CanvasLayer/VBoxContainer" unique_id=1296766194]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+
+[node name="PanelContainer2" type="PanelContainer" parent="CanvasLayer/VBoxContainer" unique_id=803212248]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+
+[node name="PanelContainer3" type="PanelContainer" parent="CanvasLayer/VBoxContainer" unique_id=692438688]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+
+[node name="PanelContainer4" type="PanelContainer" parent="CanvasLayer/VBoxContainer" unique_id=584984001]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+
+[node name="PanelContainer5" type="PanelContainer" parent="CanvasLayer/VBoxContainer" unique_id=50531563]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+
+[node name="PanelContainer6" type="PanelContainer" parent="CanvasLayer/VBoxContainer" unique_id=1268781635]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+
+[node name="PanelContainer" type="PanelContainer" parent="CanvasLayer" unique_id=566318656]
+offset_left = 1284.0
+offset_top = 771.0
+offset_right = 1772.0
+offset_bottom = 895.0
+theme_override_styles/panel = SubResource("StyleBoxEmpty_eq387")
+metadata/_edit_group_ = true
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/PanelContainer" unique_id=2058611304]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="CanvasLayer/PanelContainer/VBoxContainer" unique_id=892318121]
+layout_mode = 2
+text = "energy:"
+
+[node name="TextureProgressBar" type="TextureProgressBar" parent="CanvasLayer/PanelContainer/VBoxContainer" unique_id=425986796]
+layout_mode = 2
+nine_patch_stretch = true

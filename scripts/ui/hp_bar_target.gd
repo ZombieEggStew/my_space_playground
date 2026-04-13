@@ -15,10 +15,10 @@ func setup(_target: AbleToBeLocked) -> void:
 		hp_bar_catch.show_behind_parent = true
 		hp_bar_catch.modulate = Color(1, 1, 1, 0.3)
 		
-	health.changed.connect(_updata_hp_bar)
+	health.health_changed.connect(_updata_hp_bar)
 
 
-func _updata_hp_bar(new_health: int) -> void:
+func _updata_hp_bar(new_health: int , _amount:int) -> void:
 	if health == null:
 		return
 	var target_value = (float(new_health) / health.max_health) * 100.0

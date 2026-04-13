@@ -10,5 +10,5 @@ func set_desired_velocity(v: Vector3) -> void:
 	_desired_velocity = v
 
 func _init() -> void:
-	initial_state = GameManager.patrol_state_name
+	initial_state = State.patrol_state_name
 

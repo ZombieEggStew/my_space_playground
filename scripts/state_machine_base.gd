@@ -7,7 +7,7 @@ var current_state: Node = null
 
 var state_by_name: Dictionary = {}
 
-var initial_state: StringName = GameManager.default_state_name
+var initial_state: StringName = State.default_state_name
 
 func _ready() -> void:
 	if initial_state:
@@ -28,7 +28,7 @@ func get_state_by_name(state_name: StringName) -> Node:
 
 
 func transition_to(next_state_name: StringName) -> void:
-	if next_state_name == GameManager.default_state_name:
+	if next_state_name == State.default_state_name:
 		push_error("Cannot transition to default state. Please set a valid initial state.")
 		return
 
