@@ -1,52 +1,8 @@
 [gd_scene format=3 uid="uid://ctoco7y53upyw"]
 
 [ext_resource type="Script" uid="uid://cipnsrjx87suv" path="res://scripts/modules/module_screen.gd" id="1_uvdkp"]
-[ext_resource type="Script" uid="uid://1wuvthmkj82j" path="res://scripts/ui/effect_manager.gd" id="2_3djty"]
-[ext_resource type="Script" uid="uid://idnc24of6yk8" path="res://scripts/ui/ui_float_effect.gd" id="2_4d4rr"]
-[ext_resource type="Script" uid="uid://cq16e0xs7dp58" path="res://scripts/ui/ui_rotation_effect.gd" id="3_wjdb7"]
-[ext_resource type="Script" uid="uid://dkaunpasnf272" path="res://scripts/ui/ui_boost_offset_effect.gd" id="4_wrl20"]
-[ext_resource type="Script" uid="uid://bif7ajwev85ag" path="res://scripts/ui/ui_boost_shake_effect.gd" id="6_l8044"]
 
-[node name="ModuleScreen" type="Node" unique_id=1053321223 node_paths=PackedStringArray("hud_container")]
+[node name="ModuleScreen" type="Node" unique_id=1053321223]
 script = ExtResource("1_uvdkp")
-hud_container = NodePath("UI_Layer/ui_containter")
 
 [node name="UI_Layer" type="CanvasLayer" parent="." unique_id=353123102]
-
-[node name="EffectManager" type="Control" parent="UI_Layer" unique_id=1803959591]
-texture_filter = 2
-layout_mode = 3
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-script = ExtResource("2_3djty")
-
-[node name="UI_FloatEffect" type="Node" parent="UI_Layer/EffectManager" unique_id=110475109 node_paths=PackedStringArray("hud_container")]
-script = ExtResource("2_4d4rr")
-active = true
-hud_container = NodePath("../../ui_containter")
-
-[node name="UI_RotationEffect" type="Node" parent="UI_Layer/EffectManager" unique_id=437039632]
-script = ExtResource("3_wjdb7")
-active = true
-
-[node name="UI_BoostOffsetEffect" type="Node" parent="UI_Layer/EffectManager" unique_id=1874033442 node_paths=PackedStringArray("hud_container")]
-script = ExtResource("4_wrl20")
-active = true
-hud_container = NodePath("../../ui_containter")
-
-[node name="UI_BoostShakeEffect" type="Node" parent="UI_Layer/EffectManager" unique_id=1404740602 node_paths=PackedStringArray("hud_container", "viewport")]
-script = ExtResource("6_l8044")
-hud_container = NodePath("../../ui_containter")
-viewport = NodePath("")
-
-[node name="ui_containter" type="Control" parent="UI_Layer" unique_id=1828352771]
-texture_filter = 2
-layout_mode = 3
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2

@@ -3,7 +3,6 @@
 extends Module
 class_name BasicAimModule
 
-signal on_aim_dead_zone_changed(new_dead_zone_px: float)
 
 var cam_main: Camera3D
 var use_occlusion_check := true
@@ -13,9 +12,7 @@ var locked_target: AbleToBeLocked
 
 @export var crosshair_container : Node
 
-var crosshair_2: Node2D #绿色 二级锁定
-
-var crosshair_3: Node2D #绿色 十字准心
+var crosshair_2: Node #绿色 二级锁定
 
 
 var indicator_margin := 32.0
@@ -24,11 +21,7 @@ var rader_module: RadarModule
 
 var targets_found : Array[AbleToBeLocked] = []
 
-# 机炮最大转向角度
-var aim_dead_zone_px: float = 64.0:
-	set(v):
-		aim_dead_zone_px = v
-		on_aim_dead_zone_changed.emit(v)
+
 
 var aim_ray_length := 5000.0 #非锁定时使用，预测射击点
 
@@ -36,10 +29,8 @@ var aim_ray_length := 5000.0 #非锁定时使用，预测射击点
 var crosshair_2_detect_radius := 128.0
 
 func _ready() -> void:
-	
-	init_dead_zone_indicator()
 	init_crosshair_2()
-	init_crosshair_3()
+
 	cam_main = root.get_main_camera()
 
 	if cam_main == null:
@@ -56,23 +47,11 @@ func _ready() -> void:
 	targets_found = rader_module.get_targets_found()
 
 func init_crosshair_2() -> void:
-	crosshair_2 = Scenes.crosshair_2.instantiate()
-	crosshair_container.add_child(crosshair_2)
-
-func init_crosshair_3() -> void:
-	crosshair_3 = Scenes.crosshair_3.instantiate()
-	crosshair_container.add_child(crosshair_3)
-
-func init_dead_zone_indicator() -> void:
-	var indicator := Scenes.dead_zone_indicator_scene.instantiate() as Node2D
-	crosshair_container.add_child(indicator)
-	indicator.setup(aim_dead_zone_px)
-	on_aim_dead_zone_changed.connect(indicator.update_indicator)
+	crosshair_2 = GameManager.hud_manager.register_hud_static(Scenes.crosshair_2)
 
 func _process(_delta: float) -> void:
 	handle_targets()
 	handle_cross_hair_2()
-	handle_cross_hair_3()
 
 func _input(event: InputEvent) -> void:
 	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_RIGHT:
@@ -92,11 +71,10 @@ func set_locked_target(target: AbleToBeLocked) -> void:
 	SignalBus.on_player_lock_target.emit(target)
 
 func _spawn_ui_for_target(target:AbleToBeLocked) -> void:
-	var ui_inst = Scenes.crosshair_1.instantiate()
+	var ui_inst = GameManager.hud_manager.register_hud_static(Scenes.crosshair_1)
 	ui_inst.mouse_entered.connect(_on_mouse_enter_target)
 	ui_inst.mouse_exited.connect(_on_mouse_exit_target)
 
-	crosshair_container.add_child(ui_inst)
 	ui_inst.setup(target, cam_main) # 完成绑定
 
 func _is_enemy_visible_from_camera(target: Node3D) -> bool:
@@ -171,25 +149,11 @@ func handle_cross_hair_2():
 		crosshair_2.set_target_pos(cam_main.unproject_position(hovered_target.world_pos))
 	else:
 		crosshair_2.reset()
-
-func handle_cross_hair_3():
-	if crosshair_3 == null:
-		return
 	
-	var mouse_pos = get_viewport().get_mouse_position()
-	crosshair_3.update_from_mouse(mouse_pos, aim_dead_zone_px, true)
-	
-func _get_crosshair3_screen_pos() -> Vector2:
-	if crosshair_3 and crosshair_3.visible:
-		return crosshair_3.position  
-	else:
-		return get_viewport().get_mouse_position()
-
-func get_aim_direction_from_crosshair() -> Vector3:
+func get_aim_direction_from_crosshair(aim_screen_pos:Vector2) -> Vector3:
 	if locked_target:
 		aim_ray_length = locked_target.distance_to_player
 
-	var aim_screen_pos := _get_crosshair3_screen_pos()
 	var ray_origin := cam_main.project_ray_origin(aim_screen_pos)
 	var ray_dir := cam_main.project_ray_normal(aim_screen_pos).normalized()
 	var aim_point := ray_origin + ray_dir * aim_ray_length

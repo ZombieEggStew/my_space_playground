@@ -1,4 +1,6 @@
 extends Node2D
+class_name Crosshair3
+
 
 @export var half_size := 32.0
 @export var line_width := 2.0
@@ -7,8 +9,8 @@ extends Node2D
 
 var _line_h: Line2D
 var _line_v: Line2D
-var _indicator_line: Line2D
 
+var aim_dead_zone_px := 64.0
 
 func _ready() -> void:
 	_line_h = _create_line()
@@ -16,6 +18,8 @@ func _ready() -> void:
 	_update_lines()
 	reset()
 
+func setup(dead_zone:float) -> void:
+	aim_dead_zone_px = dead_zone
 
 func _create_line() -> Line2D:
 	var line := Line2D.new()
@@ -47,38 +51,20 @@ func set_target_pos(target_pos: Vector2) -> void:
 	visible = true
 
 
-func update_from_mouse(mouse_pos: Vector2, dead_zone_px: float, dead_zone_enabled: bool = true) -> void:
-	if not dead_zone_enabled:
-		set_target_pos(mouse_pos)
-		if _indicator_line:
-			_indicator_line.visible = false
-		return
-
+func update_from_mouse(mouse_pos: Vector2) -> void:
 	var viewport_size := get_viewport().get_visible_rect().size
 	var center := viewport_size * 0.5
 	var to_mouse := mouse_pos - center
-	var radius := max(dead_zone_px, 0.0) as float
+	var radius := max(aim_dead_zone_px, 0.0) as float
 
 	if to_mouse.length() <= radius:
 		set_target_pos(mouse_pos)
-		if _indicator_line:
-			_indicator_line.visible = false
-		return
+
 
 	var dir := to_mouse.normalized()
 	var clamped_pos := center + dir * radius
 	set_target_pos(clamped_pos)
 
-	if _indicator_line:
-		_indicator_line.visible = true
-		_indicator_line.points = PackedVector2Array([
-			Vector2.ZERO,
-			mouse_pos - clamped_pos
-		])
-
-
 func reset() -> void:
 	position = get_viewport().get_visible_rect().size / 2.0
 	visible = true
-	if _indicator_line:
-		_indicator_line.visible = false

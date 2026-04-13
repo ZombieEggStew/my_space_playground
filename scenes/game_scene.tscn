@@ -1,9 +1,15 @@
 [gd_scene format=4 uid="uid://cvft2wh5fxiw3"]
 
 [ext_resource type="PackedScene" uid="uid://pm68m6d7csk4" path="res://scenes/character_body_3d.tscn" id="1_w5aja"]
+[ext_resource type="Script" uid="uid://c61m8sol5tklx" path="res://scripts/ui/ui_manager.gd" id="2_ldkr4"]
 [ext_resource type="Script" uid="uid://bj471fsaood7v" path="res://scripts/ui/HUD_manager.gd" id="3_ldkr4"]
+[ext_resource type="Script" uid="uid://1wuvthmkj82j" path="res://scripts/ui/effect_manager.gd" id="4_6aqbo"]
 [ext_resource type="Shader" uid="uid://fsv2qc31tla1" path="res://shader/my_shy_shader.gdshader" id="4_rurhu"]
+[ext_resource type="Script" uid="uid://idnc24of6yk8" path="res://scripts/ui/ui_float_effect.gd" id="5_ro0ie"]
+[ext_resource type="Script" uid="uid://cq16e0xs7dp58" path="res://scripts/ui/ui_rotation_effect.gd" id="6_103ce"]
 [ext_resource type="PackedScene" uid="uid://bbphmbqcb4qr5" path="res://scenes/earth.tscn" id="7_kk2rg"]
+[ext_resource type="Script" uid="uid://dkaunpasnf272" path="res://scripts/ui/ui_boost_offset_effect.gd" id="7_pb36m"]
+[ext_resource type="Script" uid="uid://bif7ajwev85ag" path="res://scripts/ui/ui_boost_shake_effect.gd" id="8_85lt4"]
 [ext_resource type="PackedScene" uid="uid://du22jo3gvxf3g" path="res://scenes/space_craft_1.tscn" id="8_b5spy"]
 [ext_resource type="Script" uid="uid://rc8mf3fvqios" path="res://scripts/tool/test_box.gd" id="8_utbpp"]
 [ext_resource type="Script" uid="uid://bxurlpyhbiqd7" path="res://scripts/Main.gd" id="9_1kk2r"]
@@ -500,12 +506,12 @@ _surfaces = [{
 blend_shape_mode = 0
 shadow_mesh = SubResource("ArrayMesh_y4hbq")
 
-[node name="Main" type="Node" unique_id=1228066136 node_paths=PackedStringArray("player_ship", "test_box")]
+[node name="Main" type="Node" unique_id=1228066136 node_paths=PackedStringArray("hud_manager")]
 script = ExtResource("9_1kk2r")
-player_ship = NodePath("3D_ViewportDistortion/MainSubViewport/World_Container/CharacterBody3D")
-test_box = NodePath("3D_ViewportDistortion/MainSubViewport/World_Container/enemies/test_box")
+hud_manager = NodePath("HUD_Manager")
 
 [node name="UI_Manager" type="CanvasLayer" parent="." unique_id=858621350]
+script = ExtResource("2_ldkr4")
 
 [node name="Main_Menu" type="Control" parent="UI_Manager" unique_id=1455508483]
 layout_mode = 3
@@ -514,15 +520,24 @@ offset_right = 40.0
 offset_bottom = 40.0
 
 [node name="Transition_Rect" type="ColorRect" parent="UI_Manager" unique_id=1246220926]
-offset_right = 40.0
-offset_bottom = 40.0
+visible = false
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
 
-[node name="HUD_Manager" type="CanvasLayer" parent="." unique_id=1271957356]
-layer = 5
+[node name="HUD_Manager" type="CanvasLayer" parent="." unique_id=1271957356 node_paths=PackedStringArray("hud_container", "hud_static", "flow_effect", "rotation_effect", "boost_offset_effect")]
+layer = 10
 script = ExtResource("3_ldkr4")
+hud_container = NodePath("HUD_SubViewportContainer/HUD_SubViewport/hud_container")
+hud_static = NodePath("hud_static")
+flow_effect = NodePath("HUD_SubViewportContainer/HUD_SubViewport/EffectManager/UI_FloatEffect")
+rotation_effect = NodePath("HUD_SubViewportContainer/HUD_SubViewport/EffectManager/UI_RotationEffect")
+boost_offset_effect = NodePath("HUD_SubViewportContainer/HUD_SubViewport/EffectManager/UI_BoostOffsetEffect")
 
-[node name="UI_SubViewportContainer" type="SubViewportContainer" parent="HUD_Manager" unique_id=889639703]
-modulate = Color(1, 1, 1, 0)
+[node name="HUD_SubViewportContainer" type="SubViewportContainer" parent="HUD_Manager" unique_id=889639703]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -531,19 +546,34 @@ grow_vertical = 2
 mouse_filter = 0
 stretch = true
 
-[node name="UI_SubViewport" type="SubViewport" parent="HUD_Manager/UI_SubViewportContainer" unique_id=1141590734]
+[node name="HUD_SubViewport" type="SubViewport" parent="HUD_Manager/HUD_SubViewportContainer" unique_id=1141590734]
+disable_3d = true
 transparent_bg = true
 handle_input_locally = false
+msaa_2d = 2
 size = Vector2i(1920, 1080)
 render_target_update_mode = 4
 
-[node name="Control" type="Control" parent="HUD_Manager/UI_SubViewportContainer/UI_SubViewport" unique_id=1010339711]
-layout_mode = 3
-anchors_preset = 0
-offset_right = 40.0
-offset_bottom = 40.0
+[node name="hud_container" type="Node" parent="HUD_Manager/HUD_SubViewportContainer/HUD_SubViewport" unique_id=413283149]
 
-[node name="ScreenShaderEffect" type="ColorRect" parent="HUD_Manager" unique_id=2053631606 node_paths=PackedStringArray("viewport")]
+[node name="EffectManager" type="Node" parent="HUD_Manager/HUD_SubViewportContainer/HUD_SubViewport" unique_id=2110931767]
+script = ExtResource("4_6aqbo")
+
+[node name="UI_FloatEffect" type="Node" parent="HUD_Manager/HUD_SubViewportContainer/HUD_SubViewport/EffectManager" unique_id=1062517989]
+script = ExtResource("5_ro0ie")
+
+[node name="UI_RotationEffect" type="Node" parent="HUD_Manager/HUD_SubViewportContainer/HUD_SubViewport/EffectManager" unique_id=2080976993]
+script = ExtResource("6_103ce")
+
+[node name="UI_BoostOffsetEffect" type="Node" parent="HUD_Manager/HUD_SubViewportContainer/HUD_SubViewport/EffectManager" unique_id=1825103867]
+script = ExtResource("7_pb36m")
+
+[node name="UI_BoostShakeEffect" type="Node" parent="HUD_Manager/HUD_SubViewportContainer/HUD_SubViewport/EffectManager" unique_id=973526376]
+script = ExtResource("8_85lt4")
+
+[node name="hud_static" type="Node" parent="HUD_Manager" unique_id=1919498439]
+
+[node name="ScreenShaderEffect" type="ColorRect" parent="." unique_id=2053631606 node_paths=PackedStringArray("viewport")]
 visible = false
 material = SubResource("ShaderMaterial_liy57")
 anchors_preset = 15
@@ -553,7 +583,7 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 script = ExtResource("14_ldkr4")
-viewport = NodePath("../UI_SubViewportContainer/UI_SubViewport")
+viewport = NodePath("../HUD_Manager/HUD_SubViewportContainer/HUD_SubViewport")
 
 [node name="3D_ViewportDistortion" type="SubViewportContainer" parent="." unique_id=734301556]
 anchors_preset = 15
@@ -562,6 +592,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 stretch = true
+metadata/_edit_lock_ = true
 
 [node name="MainSubViewport" type="SubViewport" parent="3D_ViewportDistortion" unique_id=1795853704]
 handle_input_locally = false

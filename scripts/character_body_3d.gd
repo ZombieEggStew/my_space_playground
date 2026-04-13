@@ -28,11 +28,11 @@
 #TO DO : 拾取音效：清脆
 #TO DO :
 #TO DO : 锁定设计：锁定后出现预测射击指示器，屏幕边缘显示相对位置：1级：手动锁定；2级：自动锁定，最大锁定目标为1；3-级：自动锁定，最大锁定目标为多个
-#TO DO :
+#TO DO : 
 #TO DO : buff 重叠效果处理
 #TO DO : 血条动画
 #TO DO :
-#TO DO : 处理镜头穿模
+#TO DO : 
 #TO DO : 受击ui效果，转向ui效果,ui扫描码效果
 #TO DO : 绿框下显示血条
 #TO DO :
@@ -47,8 +47,8 @@
 
 
 
-#FIX ME :
-#FIX ME :
+#FIX ME : 不同分辨率下各个准心大小问题
+#FIX ME : 处理镜头穿模
 #FIX ME :
 #FIX ME :
 #FIX ME :

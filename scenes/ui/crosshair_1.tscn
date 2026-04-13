@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://o5rr3ev5psqc"]
 
 [ext_resource type="Texture2D" uid="uid://b4u1glir4fe07" path="res://textures/rect2.png" id="1_5v8if"]
-[ext_resource type="Script" uid="uid://b687lgux8hhp3" path="res://scripts/crosshair_1.gd" id="2_1qucd"]
+[ext_resource type="Script" uid="uid://b687lgux8hhp3" path="res://scripts/hud/crosshair_1.gd" id="2_1qucd"]
 
 [node name="Node" type="Node" unique_id=995854012 node_paths=PackedStringArray("rect")]
 script = ExtResource("2_1qucd")

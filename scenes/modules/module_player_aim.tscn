@@ -4,8 +4,4 @@
 
 [node name="module_player_aim" type="Node" unique_id=1372324135 node_paths=PackedStringArray("crosshair_container")]
 script = ExtResource("1_gvq42")
-crosshair_container = NodePath("CanvasLayer/crosshair_group")
-
-[node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=860523627]
-
-[node name="crosshair_group" type="Node" parent="CanvasLayer" unique_id=1605981316]
+crosshair_container = NodePath("")

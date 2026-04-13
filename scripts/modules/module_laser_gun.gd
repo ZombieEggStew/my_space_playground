@@ -8,6 +8,7 @@ var cam_main: Camera3D
 
 @export var left_laser_audio : AudioStreamPlayer
 @export var right_laser_audio : AudioStreamPlayer
+@export var aim_system: LaserGunAimSystem
 
 var gun_pivot_left : Node3D
 
@@ -19,11 +20,19 @@ var bullet_spread_deg := 0  # 子弹随机散布角度（度）
 
 var default_bullet_speed := 500.0
 
+
+var crosshair_3: Crosshair3 #绿色 十字准心
+
+# 机炮最大转向角度
+const aim_dead_zone_px: float = 64.0
+
 func _ready() -> void:
+	aim_system.setup(aim_dead_zone_px)
 	set_bullet_speed(default_bullet_speed)
 
 	cam_main = root.get_main_camera()
 	gun_pivot_left = root.get_gun_pivot_left()
+
 	if cam_main == null or gun_pivot_left == null:
 		log_error("Main camera or gun pivot not found in CharacterBody3D.")
 		queue_free()
@@ -31,6 +40,14 @@ func _ready() -> void:
 	if aim_modrule == null:
 		log_error("Aim module not found in ModulesManager.")
 		queue_free()
+
+
+func _get_crosshair3_screen_pos() -> Vector2:
+	if crosshair_3 :
+		return crosshair_3.position  
+	else:
+		return get_viewport().get_mouse_position()
+
 
 func _get_next_muzzle_pos() -> Vector3:
 	var left_global_pos := gun_pivot_left.global_transform.origin
@@ -68,7 +85,7 @@ func handle_shooting() -> void:
 		is_shooting = false
 
 	if is_shooting and shoot_timer.is_stopped():
-		var forward := aim_modrule.get_aim_direction_from_crosshair()
+		var forward := aim_modrule.get_aim_direction_from_crosshair(aim_system.get_aim_point_screen_pos())
 		var right := cam_main.global_transform.basis.x.normalized() if cam_main else root.global_transform.basis.x.normalized()
 		var up := cam_main.global_transform.basis.y.normalized() if cam_main else root.global_transform.basis.y.normalized()
 		var spread := deg_to_rad(bullet_spread_deg)
