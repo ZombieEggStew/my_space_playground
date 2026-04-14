@@ -1,27 +1,28 @@
 extends Node
+class_name UIBoostShakeEffect
 
-@export var active: bool = false
-@export var hud_container: Control
-@export var viewport: SubViewportContainer
+var shake_intensity := 2.0
+var shake_speed := 20.0
+var groups: Array[Control] = []
 
-var shake_intensity := 5.0
+func setup(group: Control) -> void:
+	if group not in groups:
+		groups.append(group)
 
 func _process(_delta: float) -> void:
-	if not active: return
 	_update_shake(_delta)
 
 func _update_shake(_delta: float) -> void:
-	if get_parent().is_boosting:
-		var shake_offset = Vector2(
-			randf_range(-shake_intensity, shake_intensity),
-			randf_range(-shake_intensity, shake_intensity)
-		)
-		# 同时抖动 UI 容器和 3D Viewport 容器
-		hud_container.position += shake_offset
-		if viewport:
-			viewport.position += shake_offset
-	else:
-		# 停止加速时，UI 容器由于已经有 _update_ui_float 的 lerp 逻辑，会自动归位
-		# 3D Viewport 需要手动归位（假设初始位置是 Vector2.ZERO）
-		if viewport:
-			viewport.position = viewport.position.lerp(Vector2.ZERO, _delta * 10.0)
+	var is_boosting: bool = get_parent().is_boosting if "is_boosting" in get_parent() else false
+	
+	for group in groups:
+		var target_offset := Vector2.ZERO
+		if is_boosting:
+			target_offset = Vector2(
+				randf_range(-shake_intensity, shake_intensity),
+				randf_range(-shake_intensity, shake_intensity)
+			)
+		
+		# # 平滑插值应用偏移
+		# group.position = group.position.lerp(target_offset, _delta * shake_speed)
+		group.position += target_offset

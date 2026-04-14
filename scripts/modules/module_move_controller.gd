@@ -1,8 +1,8 @@
-extends MoveModule
+extends EngineModule
+class_name MoveControllerModule
 
 
 
-var particle_speed_up: GPUParticles3D
 
 # normal
 var max_speed := 40.0
@@ -11,10 +11,6 @@ var forward_brake := 45.0
 var forward_accel := 30.0
 var boost_release_decel := 60.0
 
-# boost
-var _is_boosting := false
-var boost_speed := 100.0
-var boost_accel := 120.0
 
 # roll
 var roll_speed := 1  # 最大滚转角速度（rad/s）
@@ -40,18 +36,20 @@ var model_node: Node3D
 var is_looking_around := false
 
 func _ready() -> void:
-	particle_speed_up = root.get_boost_particle()
+	# particle_speed_up = root.get_boost_particle()
 	SignalBus.on_track_mouse_change.connect(_on_track_mouse_change)
 	SignalBus.on_player_look_backward.connect(_on_look_backward_change)
-	SignalBus.on_player_boost.connect(_handle_boost_input)
+	# SignalBus.on_player_boost.connect(_handle_boost_input)
 	SignalBus.on_player_look_around.connect(_on_look_around_change)
-	if particle_speed_up == null:
-		log_missing_component("boost particle")
-		queue_free()
+	# if particle_speed_up == null:
+	# 	log_missing_component("boost particle")
+	# 	queue_free()
 	model_node = root.get_model_node()
 	if model_node == null:
 		log_missing_component("model node")
 		queue_free()
+
+
 
 func get_rotation_speed() -> Vector2:
 	return Vector2(_yaw_speed, _pitch_speed)
@@ -66,35 +64,26 @@ func _on_look_around_change(enable: bool) -> void:
 	SignalBus.on_track_mouse_change.emit(not enable)
 	is_looking_around = enable
 
-func _handle_boost_input(enable: bool) -> void:
-	if enable:
-		speed_up()
-	else:
-		stop_speed_up()
-
-func speed_up() -> void:
-	particle_speed_up.emitting = true
-	_is_boosting = true
-
-func stop_speed_up() -> void:
-	particle_speed_up.emitting = false
-	_is_boosting = false
-
 
 func handle_move(delta: float) -> void:
 	var is_forward_pressed := Input.is_action_pressed("forward")
 	var is_backward_pressed := Input.is_action_pressed("backward")
-	var target_max_speed := boost_speed if _is_boosting else max_speed
-	var accel_rate := boost_accel if _is_boosting else forward_accel as float
+	
+	var is_boosting :bool = booster_module.is_boosting() if booster_module else false
+	var boost_speed : float = booster_module.get_boost_speed() if booster_module else max_speed
+	var boost_accel : float = booster_module.get_boost_accel() if booster_module else forward_accel
+
+	var target_max_speed := boost_speed if is_boosting else max_speed
+	var accel_rate := boost_accel if is_boosting else forward_accel as float
 
 	if is_backward_pressed:
 		forward_speed = move_toward(forward_speed, 0.0, forward_brake * delta)
 	elif is_forward_pressed:
 		forward_speed = move_toward(forward_speed, target_max_speed, accel_rate * delta)
-	elif _is_boosting and forward_speed > 0.0:
+	elif is_boosting and forward_speed > 0.0:
 		# Boost while cruising quickly ramps to boost speed even without holding W.
 		forward_speed = move_toward(forward_speed, boost_speed, boost_accel * delta)
-	elif not _is_boosting and forward_speed > max_speed:
+	elif not is_boosting and forward_speed > max_speed:
 		# On boost release, fall back to max cruise speed.
 		forward_speed = move_toward(forward_speed, max_speed, boost_release_decel * delta)
 

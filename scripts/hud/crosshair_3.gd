@@ -1,4 +1,4 @@
-extends Node2D
+extends HUDFarBase
 class_name Crosshair3
 
 
@@ -17,6 +17,9 @@ func _ready() -> void:
 	_line_v = _create_line()
 	_update_lines()
 	reset()
+	
+func _process(_delta):
+	update_from_center(hud.nose_pos_2d, hud.mouse_pos, hud.is_on_screen)
 
 func setup(dead_zone:float) -> void:
 	aim_dead_zone_px = dead_zone

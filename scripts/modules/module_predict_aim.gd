@@ -27,7 +27,7 @@ func _ready() -> void:
 	_init_crosshair_4()
 	SignalBus.on_player_lock_target.connect(_on_player_lock_target)
 	cam_main = root.get_main_camera()
-	GameManager.hud_manager.register_hud_group(hud_container).set_flow_effect().set_rotation_effect().set_boost_offset_effect()
+	GameManager.hud_manager.register_hud_group(hud_container).set_flow_effect(ControlGroup.Index.GROUP_1).set_rotation_effect().set_boost_offset_effect()
 	if cam_main == null:
 		log_missing_component("main camera")
 		queue_free()
@@ -44,7 +44,7 @@ func _process(_delta: float) -> void:
 
 	var aim_data := get_predicted_aim_data(bullet_speed)
 	lead_time_label.text = "%.2f s" % aim_data.get("time", 0.0)
-	distance_label.text = "Distance: %.2f m" % (root.global_transform.origin.distance_to(aim_data.get("world_pos", Vector3.ZERO)))
+	distance_label.text = "%.1f m" % (root.global_transform.origin.distance_to(aim_data.get("world_pos", Vector3.ZERO)))
 
 	if _locked_enemy_target.is_on_screen():
 		if bullet_speed == 0.0:

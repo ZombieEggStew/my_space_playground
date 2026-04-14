@@ -6,6 +6,8 @@ var module_player_aim_scene: PackedScene = preload("res://scenes/modules/module_
 var module_screen_scene: PackedScene = preload("res://scenes/modules/module_screen.tscn")
 var module_basic_info_ui_scene: PackedScene = preload("res://scenes/modules/module_basic_info_ui.tscn")
 
+var module_booster_scene: PackedScene = preload("res://scenes/modules/module_booster.tscn")
+
 var module_radar_scene: PackedScene = preload("res://scenes/modules/module_radar.tscn")
 
 var module_laser_gun_scene: PackedScene = preload("res://scenes/modules/module_laser_gun.tscn")

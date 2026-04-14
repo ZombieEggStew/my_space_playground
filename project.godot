@@ -23,7 +23,6 @@ SignalBus="*uid://n28y07d33e6b"
 BuffManager="*uid://bmfuvmnghtwf6"
 Scenes="*uid://bog5h82fcxfg8"
 GameManager="*uid://b2lxty558matd"
-InputManager="*uid://bu0xfm7ox3sut"
 
 [display]
 

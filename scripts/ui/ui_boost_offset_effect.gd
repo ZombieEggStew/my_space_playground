@@ -26,7 +26,6 @@ func _update_boost_effect(delta: float) -> void:
 	# 遍历所有 UI 子节点
 	for group in groups:
 		for ui_element in group.get_children():
-			
 				# 计算目标 Boost 偏移量
 				var target_boost_pos = Vector2.ZERO
 				

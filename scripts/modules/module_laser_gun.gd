@@ -10,6 +10,19 @@ var cam_main: Camera3D
 @export var right_laser_audio : AudioStreamPlayer
 @export var aim_system: LaserGunHudSystem
 
+@export var cool_down_timer:Timer
+
+@export var heat_bar : TextureProgressBar
+
+# 过热系统变量
+@export var max_heat: float = 100.0
+@export var heat_per_shot: float = 1.0
+
+@export var heat_recovery_rate: float = 20.0  # 每秒降低的热量
+
+var current_heat: float = 0.0
+var is_overheated: bool = false
+
 # 存储机炮发射角度
 var forward: Vector3
 
@@ -46,6 +59,10 @@ func _ready() -> void:
 	if aim_modrule == null:
 		log_error("Aim module not found in ModulesManager.")
 		queue_free()
+	
+	if heat_bar:
+		heat_bar.max_value = max_heat
+		heat_bar.value = current_heat
 
 
 func _get_crosshair3_screen_pos() -> Vector2:
@@ -86,6 +103,8 @@ func spawn_bullet(pos: Vector3, dir: Vector3, team_id: int, shooter: Node = null
 
 func handle_shooting(enable: bool) -> void:
 	if enable:
+		if is_overheated:
+			return
 		shoot()
 		shoot_timer.start()       # 开始循环计时
 	else:
@@ -94,10 +113,46 @@ func handle_shooting(enable: bool) -> void:
 
 
 func _on_shoot_timer_timeout() -> void:
+	if is_overheated:
+		shoot_timer.stop()
+		return
 	shoot()
 
 
+func _process(delta: float) -> void:
+	# 只要计时器没在运行，就降低热量
+	if cool_down_timer and cool_down_timer.is_stopped():
+		if current_heat > 0:
+			current_heat = max(0, current_heat - heat_recovery_rate * delta)
+			# 如果处于过热状态且热量降低到0，则解除过热
+			if is_overheated and current_heat <= 0:
+				is_overheated = false
+	
+	if heat_bar:
+		heat_bar.value = current_heat
+
+func enter_overheat() -> void:
+	is_overheated = true
+	shoot_timer.stop()
+	# 过热时启动冷却延迟计时，确保停止射击后延迟开始降热
+	if cool_down_timer:
+		cool_down_timer.start()
+
 func shoot() -> void:
+	if is_overheated:
+		return
+
+	# 增加热量
+	current_heat += heat_per_shot
+	
+	# 每次射击重置/启动计时器，实现 heat_cooldown_delay 的延迟效果
+	if cool_down_timer and not is_overheated:
+		cool_down_timer.start()
+	
+	if current_heat >= max_heat:
+		current_heat = max_heat
+		enter_overheat()
+
 	var aim_screen_pos = aim_system.get_aim_point_screen_pos()
 
 

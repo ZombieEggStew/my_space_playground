@@ -1,12 +1,16 @@
 [gd_scene format=4 uid="uid://cvft2wh5fxiw3"]
 
 [ext_resource type="PackedScene" uid="uid://pm68m6d7csk4" path="res://scenes/character_body_3d.tscn" id="1_w5aja"]
-[ext_resource type="Script" uid="uid://c61m8sol5tklx" path="res://scripts/ui/ui_manager.gd" id="2_ldkr4"]
-[ext_resource type="Script" uid="uid://bj471fsaood7v" path="res://scripts/ui/HUD_manager.gd" id="3_ldkr4"]
-[ext_resource type="Script" uid="uid://1wuvthmkj82j" path="res://scripts/ui/effect_manager.gd" id="4_6aqbo"]
+[ext_resource type="Script" uid="uid://xrwxdtdwn01q" path="res://scripts/audio/audio_manager.gd" id="2_77hjl"]
+[ext_resource type="Script" uid="uid://c61m8sol5tklx" path="res://scripts/Manager/ui_manager.gd" id="2_ldkr4"]
+[ext_resource type="Script" uid="uid://bu0xfm7ox3sut" path="res://scripts/Manager/input_manager.gd" id="2_ro0ie"]
+[ext_resource type="AudioStream" uid="uid://jfvkaqge3b2i" path="res://audio/ding.mp3" id="3_6aqbo"]
+[ext_resource type="Script" uid="uid://bj471fsaood7v" path="res://scripts/Manager/HUD_manager.gd" id="3_ldkr4"]
+[ext_resource type="Script" uid="uid://1wuvthmkj82j" path="res://scripts/Manager/effect_manager.gd" id="4_6aqbo"]
 [ext_resource type="Shader" uid="uid://fsv2qc31tla1" path="res://shader/my_shy_shader.gdshader" id="4_rurhu"]
 [ext_resource type="Script" uid="uid://idnc24of6yk8" path="res://scripts/ui/ui_float_effect.gd" id="5_ro0ie"]
 [ext_resource type="Script" uid="uid://cq16e0xs7dp58" path="res://scripts/ui/ui_rotation_effect.gd" id="6_103ce"]
+[ext_resource type="Script" uid="uid://chn6hyukrwgl2" path="res://scripts/Manager/hud_far_manager.gd" id="7_103ce"]
 [ext_resource type="PackedScene" uid="uid://bbphmbqcb4qr5" path="res://scenes/earth.tscn" id="7_kk2rg"]
 [ext_resource type="Script" uid="uid://dkaunpasnf272" path="res://scripts/ui/ui_boost_offset_effect.gd" id="7_pb36m"]
 [ext_resource type="Script" uid="uid://bif7ajwev85ag" path="res://scripts/ui/ui_boost_shake_effect.gd" id="8_85lt4"]
@@ -500,9 +504,22 @@ _surfaces = [{
 blend_shape_mode = 0
 shadow_mesh = SubResource("ArrayMesh_y4hbq")
 
-[node name="Main" type="Node" unique_id=1228066136 node_paths=PackedStringArray("hud_manager")]
+[node name="Main" type="Node" unique_id=1228066136 node_paths=PackedStringArray("hud_manager", "audio_manager", "input_manager")]
 script = ExtResource("9_1kk2r")
 hud_manager = NodePath("HUD_Manager")
+audio_manager = NodePath("Audio_Manager")
+input_manager = NodePath("Input_Manager")
+
+[node name="Input_Manager" type="Node" parent="." unique_id=880177001]
+script = ExtResource("2_ro0ie")
+
+[node name="Audio_Manager" type="Node" parent="." unique_id=1381531165 node_paths=PackedStringArray("audio_stream_player")]
+script = ExtResource("2_77hjl")
+audio_stream_player = NodePath("AudioStreamPlayer")
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="Audio_Manager" unique_id=409113201]
+stream = ExtResource("3_6aqbo")
+volume_db = -10.0
 
 [node name="UI_Manager" type="CanvasLayer" parent="." unique_id=858621350]
 layer = 3
@@ -523,24 +540,16 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 
-[node name="HUD_Manager" type="CanvasLayer" parent="." unique_id=1271957356 node_paths=PackedStringArray("hud_container", "hud_static", "hud_3", "hud_3_viewport", "flow_effect", "rotation_effect", "boost_offset_effect")]
+[node name="HUD_Manager" type="CanvasLayer" parent="." unique_id=1271957356 node_paths=PackedStringArray("hud_container", "hud_static", "hud_far", "flow_effect", "rotation_effect", "boost_offset_effect", "boost_shake_effect")]
 layer = 2
 script = ExtResource("3_ldkr4")
 hud_container = NodePath("hud_container")
 hud_static = NodePath("hud_static")
-hud_3 = NodePath("HUD_SubViewport/HUD_3")
-hud_3_viewport = NodePath("HUD_SubViewport")
+hud_far = NodePath("hud_far_manager")
 flow_effect = NodePath("EffectManager/UI_FloatEffect")
 rotation_effect = NodePath("EffectManager/UI_RotationEffect")
 boost_offset_effect = NodePath("EffectManager/UI_BoostOffsetEffect")
-
-[node name="HUD_SubViewport" type="SubViewport" parent="HUD_Manager" unique_id=1141590734]
-transparent_bg = true
-handle_input_locally = false
-size = Vector2i(1920, 1080)
-render_target_update_mode = 4
-
-[node name="HUD_3" type="Node" parent="HUD_Manager/HUD_SubViewport" unique_id=1706574373]
+boost_shake_effect = NodePath("EffectManager/UI_BoostShakeEffect")
 
 [node name="hud_container" type="Control" parent="HUD_Manager" unique_id=466224714]
 texture_filter = 2
@@ -552,6 +561,9 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 metadata/_edit_lock_ = true
+
+[node name="hud_far_manager" type="Node" parent="HUD_Manager" unique_id=491789435]
+script = ExtResource("7_103ce")
 
 [node name="hud_static" type="Node" parent="HUD_Manager" unique_id=155327225]
 

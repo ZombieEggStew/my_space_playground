@@ -1,0 +1,125 @@
+[gd_scene format=3 uid="uid://b5mnunoxq7tad"]
+
+[ext_resource type="Script" uid="uid://bsm8xp5d2fb1c" path="res://scripts/modules/module_booster.gd" id="1_hwryj"]
+[ext_resource type="Texture2D" uid="uid://35piuouavkat" path="res://textures/white_1x1px.png" id="2_d6521"]
+
+[sub_resource type="Curve" id="Curve_shtwy"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0.22826803), -1.8364791, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_cthcg"]
+curve = SubResource("Curve_shtwy")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_8hlu1"]
+particle_flag_align_y = true
+emission_shape = 3
+emission_box_extents = Vector3(0.5, 0.5, 0.1)
+angle_min = -29.99999
+angle_max = 30.000011
+direction = Vector3(0, 0, -1)
+spread = 30.0
+initial_velocity_min = 5.0
+initial_velocity_max = 6.0
+gravity = Vector3(0, 0, 0)
+linear_accel_min = -2.2351742e-06
+linear_accel_max = 14.999997
+tangential_accel_min = -2.2351742e-06
+tangential_accel_max = -2.2351742e-06
+scale_min = 0.5
+scale_max = 1.5
+scale_curve = SubResource("CurveTexture_cthcg")
+scale_over_velocity_max = 220.87
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_cthcg"]
+albedo_color = Color(0.80784315, 0.6745098, 0.38431373, 1)
+emission_enabled = true
+emission = Color(0.80840904, 0.67276347, 0.38261375, 1)
+emission_energy_multiplier = 2.07
+
+[sub_resource type="BoxMesh" id="BoxMesh_r8b41"]
+material = SubResource("StandardMaterial3D_cthcg")
+size = Vector3(0.2, 0.2, 0.2)
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_lue6l"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_lue6l"]
+content_margin_left = 5.0
+content_margin_top = 5.0
+content_margin_right = 5.0
+content_margin_bottom = 5.0
+bg_color = Color(1, 1, 1, 0)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(1, 1, 1, 1)
+
+[node name="module_boost" type="Node3D" unique_id=1679191940 node_paths=PackedStringArray("particle_speed_up", "boost_progress_bar", "energy_tick", "recover_delay_timer", "hud_container")]
+script = ExtResource("1_hwryj")
+particle_speed_up = NodePath("GPUParticles3D")
+boost_progress_bar = NodePath("boost/PanelContainer/VBoxContainer/PanelContainer/TextureProgressBar")
+energy_tick = NodePath("energy_tick")
+recover_delay_timer = NodePath("recover_timer")
+hud_container = NodePath("boost")
+
+[node name="energy_tick" type="Timer" parent="." unique_id=1556026378]
+wait_time = 0.1
+autostart = true
+
+[node name="recover_timer" type="Timer" parent="." unique_id=310018771]
+one_shot = true
+
+[node name="GPUParticles3D" type="GPUParticles3D" parent="." unique_id=859445080]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -2.756328)
+emitting = false
+amount = 32
+process_material = SubResource("ParticleProcessMaterial_8hlu1")
+draw_pass_1 = SubResource("BoxMesh_r8b41")
+
+[node name="boost" type="Control" parent="." unique_id=18457013]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+metadata/_edit_lock_ = true
+
+[node name="PanelContainer" type="PanelContainer" parent="boost" unique_id=1241581584]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -702.0
+offset_top = -267.0
+offset_right = -201.0
+offset_bottom = -222.0
+grow_horizontal = 0
+grow_vertical = 0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_lue6l")
+metadata/_edit_group_ = true
+
+[node name="VBoxContainer" type="HBoxContainer" parent="boost/PanelContainer" unique_id=2016688274]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="boost/PanelContainer/VBoxContainer" unique_id=1547460228]
+layout_mode = 2
+text = "energy:"
+
+[node name="PanelContainer" type="PanelContainer" parent="boost/PanelContainer/VBoxContainer" unique_id=1373325127]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_lue6l")
+
+[node name="TextureProgressBar" type="TextureProgressBar" parent="boost/PanelContainer/VBoxContainer/PanelContainer" unique_id=1995857684]
+layout_mode = 2
+size_flags_horizontal = 3
+step = -1.0
+value = 50.0
+nine_patch_stretch = true
+texture_progress = ExtResource("2_d6521")
+tint_progress = Color(0.80784315, 1, 1, 1)

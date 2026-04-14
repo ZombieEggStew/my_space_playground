@@ -20,8 +20,6 @@ border_width_bottom = 2
 border_color = Color(1, 1, 1, 1)
 corner_detail = 5
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_qbege"]
-
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qbege"]
 content_margin_left = 5.0
 content_margin_top = 5.0
@@ -175,35 +173,7 @@ layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 0
 
-[node name="PanelContainer" type="PanelContainer" parent="basic_info" unique_id=566318656]
-layout_mode = 1
-anchors_preset = 3
-anchor_left = 1.0
-anchor_top = 1.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = -553.0
-offset_top = -316.0
-offset_right = -65.0
-offset_bottom = -192.0
-grow_horizontal = 0
-grow_vertical = 0
-mouse_filter = 2
-theme_override_styles/panel = SubResource("StyleBoxEmpty_qbege")
-metadata/_edit_group_ = true
-
-[node name="VBoxContainer" type="VBoxContainer" parent="basic_info/PanelContainer" unique_id=2058611304]
-layout_mode = 2
-
-[node name="Label" type="Label" parent="basic_info/PanelContainer/VBoxContainer" unique_id=892318121]
-layout_mode = 2
-text = "energy:"
-
-[node name="TextureProgressBar" type="TextureProgressBar" parent="basic_info/PanelContainer/VBoxContainer" unique_id=425986796]
-layout_mode = 2
-nine_patch_stretch = true
-
-[node name="hp_bar_and_label" type="VBoxContainer" parent="basic_info" unique_id=5052555 node_paths=PackedStringArray("hp_bar", "hp_label", "health_down_effect", "health_up_effect", "hp_bar_catch")]
+[node name="hp_bar_and_label" type="VBoxContainer" parent="basic_info" unique_id=5052555 node_paths=PackedStringArray("hp_bar", "hp_label", "health_down_effect", "health_change_effect", "hp_bar_catch")]
 layout_mode = 1
 anchors_preset = 3
 anchor_left = 1.0
@@ -222,7 +192,7 @@ script = ExtResource("4_p4vrk")
 hp_bar = NodePath("hp_bar/hp_bar_true")
 hp_label = NodePath("HBoxContainer/hp_value")
 health_down_effect = NodePath("hp_bar/health_down_effect")
-health_up_effect = NodePath("hp_bar/health_up_effect")
+health_change_effect = NodePath("hp_bar/health_change_effect")
 hp_bar_catch = NodePath("hp_bar/hp_bar_under")
 metadata/_edit_group_ = true
 
@@ -267,7 +237,7 @@ texture = SubResource("AtlasTexture_w1gke")
 one_shot = true
 process_material = SubResource("ParticleProcessMaterial_ru8r4")
 
-[node name="health_up_effect" type="GPUParticles2D" parent="basic_info/hp_bar_and_label/hp_bar" unique_id=1746576306]
+[node name="health_change_effect" type="GPUParticles2D" parent="basic_info/hp_bar_and_label/hp_bar" unique_id=1746576306]
 position = Vector2(388.99988, 18.999878)
 emitting = false
 amount = 1

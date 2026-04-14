@@ -2,8 +2,9 @@ extends Node
 class_name Main
 
 @export var hud_manager :HUDManager
+@export var audio_manager :Node
 @onready var ui_manager :UIManager= $UI_Manager
-
+@export var input_manager: InputManager
 # Called when the node enters the scene tree for the first time.
 func _enter_tree() -> void:
 	GameManager.register_main_scene(self)
@@ -12,6 +13,8 @@ func _enter_tree() -> void:
 	GameManager.register_world()
 	GameManager.register_hud_manager(hud_manager)
 	GameManager.register_ui_manager(ui_manager)
+	GameManager.register_audio_manager(audio_manager)
+	GameManager.register_input_manager(input_manager)
 	GameManager.register_transition()
 	
 	# 也可以在这里执行初始加载逻辑

@@ -1,27 +1,5 @@
 extends Module
 
-@export var hit_count_label: Label
 
 
-var hit_count_ref: IntStat
 
-func _ready() -> void:
-	SignalBus.on_player_lock_target.connect(_on_lock_target)
-	GameManager.hud_manager.register_hud_group(hud_container)
-
-func _on_lock_target(target: AbleToBeLocked) -> void:
-	# 手动断开锁定 或者 空锁定
-	if target == null:
-		hit_count_label.text = "--"
-		if hit_count_ref and hit_count_ref.value_changed.is_connected(_update_hit_count_ui):
-			hit_count_ref.value_changed.disconnect(_update_hit_count_ui)
-		return
-
-
-	if target.target_node3d.name == "test_box":
-		hit_count_ref = target.target_node3d.get_hit_count()
-		hit_count_ref.value_changed.connect(_update_hit_count_ui)
-		_update_hit_count_ui(hit_count_ref.value)
-
-func _update_hit_count_ui(new_val: int) -> void:
-	hit_count_label.text = "%d" % new_val

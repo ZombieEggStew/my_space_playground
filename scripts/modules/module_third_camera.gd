@@ -1,4 +1,4 @@
-extends Module
+extends Module3D
 class_name ThirdCameraModule
 
 
@@ -7,9 +7,9 @@ class_name ThirdCameraModule
 @export var cam_main: Camera3D
 
 @export var boost_effect: GPUParticles3D
-var move_controller: MoveModule
+var move_controller: EngineModule
 
-
+var shaker: CameraShaker
 
 # 自动追踪参数
 
@@ -27,14 +27,14 @@ var look_around_sensitivity := 0.001 # 自由视角灵敏度
 
 
 func _ready() -> void:
-	for child in get_children():
-		child.rotation = root.rotation
-		child.reparent(root)
+	# for child in get_children():
+	# 	child.rotation = root.rotation
+	# 	child.reparent(root)
 
 	SignalBus.on_player_boost.connect(on_player_boost)
 	SignalBus.on_player_look_backward.connect(_handle_look_backward)
 	SignalBus.on_player_look_around.connect(_on_look_around_change)
-	InputManager.mouse_movtion.connect(_handle_mouse_move)
+	GameManager.input_manager.mouse_movtion.connect(_handle_mouse_move)
 	_base_cam_pivot_offset = cam_pivot.position
 	_base_cam_pivot_rotation = cam_pivot.rotation
 
@@ -43,6 +43,11 @@ func _ready() -> void:
 	if move_controller == null:
 		log_missing_component("move controller")
 		queue_free()
+
+	# 初始化抖动器
+	shaker = CameraShaker.new()
+	add_child(shaker)
+	shaker.setup(cam_main)
 
 func _on_look_around_change(enable: bool) -> void:
 	is_looking_around = enable
@@ -92,3 +97,6 @@ func _handle_look_backward(enable:bool) -> void:
 func on_player_boost(enable: bool) -> void:
 	cam_spring_arm.on_boosting(enable)
 	boost_effect.emitting = enable
+	if enable:
+		shaker.start_shake(1.0)
+

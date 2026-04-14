@@ -23,24 +23,31 @@
 #TO DO : 根据锁定目标的远近 修改子弹的留存时间
 #TO DO : 
 #TO DO :
+#TO DO :
+#TO DO :速度矢量球 (Flight Path Marker / FPM):用 camera.unproject_position(aircraft.global_position + velocity) 将空间向量投射到屏幕坐标。
+#TO DO :抖动 (Jitter)：在高速或大过载时，通过代码给 HUD 节点增加微小的随机位移。
+#TO DO :
+#TO DO :
 #TO DO : 地平线指示器？
 #TO DO :
 #TO DO : 拾取音效：清脆
 #TO DO :
 #TO DO : 锁定设计：锁定后出现预测射击指示器，屏幕边缘显示相对位置：1级：手动锁定；2级：自动锁定，最大锁定目标为1；3-级：自动锁定，最大锁定目标为多个
-#TO DO : 
+#TO DO : 小地图（雷达）（黄牌空战7）
 #TO DO : buff 重叠效果处理
 #TO DO : buff显示-hud
 #TO DO : 优化crosshair2的逻辑，移动逻辑放在自身脚本里
 #TO DO : 类无助之地描边效果
 #TO DO : 受击ui效果，转向ui效果,ui扫描码效果
 #TO DO : 敌人绿框下显示血条
-#TO DO : 能量条-冲刺：加速视角抖动：屏幕四周速度线
-#TO DO : laser_gun:添加过热机制，连续开火积累过热，过热后无法开火
+#TO DO : 冲刺：尾气
+#TO DO : laser_gun:添加过热机制，连续开火积累过热，过热后无法开火:热量越高，射速越快，伤害越高
+#TO DO : 道具:能在过热的时候进行特殊射击，特殊射击消耗热量值，但是普通射击dps降低
+
 #TO DO : laser_gun: hud显示，timer与过热值，准星左半圆
 #TO DO : 连续开火散布增大
 #TO DO : 武器跟踪鼠标：考虑炮管转速
-#TO DO : 发射导弹后坐力
+#TO DO : 发射导弹后坐力:在发射主动雷达制导导弹（如AIM-120）时，较高的初速可以赋予导弹更远的射程和更大的“不可逃逸区”（NEZ）。
 #TO DO :
 #TO DO : 异步联机设计，玩家死后或者通关过后可以”同意捐献“自己的载具，其他玩家可以回收或者收到捐献的载具，增加玩家之间的互动，凉宫春日：johnSmith我就在这里
 #TO DO : 没有意义就是最大的意义 朝圣
@@ -71,7 +78,7 @@ var cam_main: Camera3D
 var cam_main_pivot: Node3D
 var cam_pivot: Node3D
 
-@export var particle_speed_up: GPUParticles3D
+
 
 @export var model_node: Node3D	
 
@@ -84,14 +91,16 @@ var fov_smooth := 8.0         # FOV 平滑插值速度
 
 @export var modules_manager: ModulesManager
 
-@export var test_quad : MeshInstance3D
 
 func _ready() -> void:
-	GameManager.register_player(self)
+	
 	health.setup(100, 100)
 	health.on_death.connect(die)
-	modules_manager.install_module(Scenes.module_move_controller_scene)
-	modules_manager.install_module(Scenes.module_third_camera_scene)
+	var engine_module =  modules_manager.install_module_3d(Scenes.module_move_controller_scene) as EngineModule
+	engine_module.install_booster_module(Scenes.module_booster_scene)
+
+	
+	modules_manager.install_module_3d(Scenes.module_third_camera_scene)
 
 
 	# modules_manager.install_module(Scenes.module_screen_scene)
@@ -104,9 +113,8 @@ func _ready() -> void:
 	var laser := modules_manager.install_module(Scenes.module_laser_gun_scene)
 	var laser_predict := modules_manager.install_module(Scenes.module_predict_aim_scene)
 	laser_predict.init_module(laser)
-	print("1")
-	# test_quad.get_surface_override_material(0).albedo_texture.viewport_path = GameManager.hud_manager.get_hud_3_viewport().get_path()
 
+	GameManager.register_player(self)
 
 func get_gun_pivot_left() -> Node:
 	return gun_pivot_left
@@ -114,9 +122,6 @@ func get_gun_pivot_left() -> Node:
 
 func get_main_camera() -> Camera3D:
 	return modules_manager.get_camera_module().get_main_camera()
-
-func get_boost_particle() -> GPUParticles3D:
-	return particle_speed_up
 
 func get_model_node() -> Node3D:
 	return model_node

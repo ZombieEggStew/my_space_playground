@@ -14,7 +14,7 @@ func _ready() -> void:
 	
 	hp_bar.setup(hp_component)
 
-	GameManager.hud_manager.register_hud_group(hud_container).set_flow_effect().set_rotation_effect().set_boost_offset_effect()
+	GameManager.hud_manager.register_hud_group(hud_container).set_flow_effect(ControlGroup.Index.GROUP_1).set_rotation_effect().set_boost_offset_effect()
 	
 func _process(_delta):
 	_updata_speed_ui()	
