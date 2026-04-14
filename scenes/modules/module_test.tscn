@@ -15,13 +15,12 @@ border_width_bottom = 1
 border_color = Color(1, 1, 1, 1)
 corner_detail = 1
 
-[node name="module_test" type="Node" unique_id=176709362 node_paths=PackedStringArray("hit_count_label")]
+[node name="module_test" type="Node" unique_id=176709362 node_paths=PackedStringArray("hit_count_label", "hud_container")]
 script = ExtResource("1_dw2jr")
-hit_count_label = NodePath("CanvasLayer/panel_test_box/VBoxContainer/HBoxContainer/hit_count_value")
+hit_count_label = NodePath("panel_test_box/VBoxContainer/HBoxContainer/hit_count_value")
+hud_container = NodePath("panel_test_box")
 
-[node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=1112249356]
-
-[node name="panel_test_box" type="PanelContainer" parent="CanvasLayer" unique_id=1857419126]
+[node name="panel_test_box" type="PanelContainer" parent="." unique_id=1857419126]
 offset_left = 1151.0
 offset_top = 494.0
 offset_right = 1457.0
@@ -29,16 +28,16 @@ offset_bottom = 539.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_dw2jr")
 metadata/_edit_group_ = true
 
-[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/panel_test_box" unique_id=502471405]
+[node name="VBoxContainer" type="VBoxContainer" parent="panel_test_box" unique_id=502471405]
 layout_mode = 2
 
-[node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/panel_test_box/VBoxContainer" unique_id=876335686]
+[node name="HBoxContainer" type="HBoxContainer" parent="panel_test_box/VBoxContainer" unique_id=876335686]
 layout_mode = 2
 
-[node name="hit_conut_label" type="Label" parent="CanvasLayer/panel_test_box/VBoxContainer/HBoxContainer" unique_id=1642095974]
+[node name="hit_conut_label" type="Label" parent="panel_test_box/VBoxContainer/HBoxContainer" unique_id=1642095974]
 layout_mode = 2
 text = "hit count:"
 
-[node name="hit_count_value" type="Label" parent="CanvasLayer/panel_test_box/VBoxContainer/HBoxContainer" unique_id=1791781102]
+[node name="hit_count_value" type="Label" parent="panel_test_box/VBoxContainer/HBoxContainer" unique_id=1791781102]
 layout_mode = 2
 text = "--"

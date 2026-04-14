@@ -2,5 +2,10 @@
 
 [ext_resource type="Script" uid="uid://dqopwssmwnyig" path="res://scripts/hud/dead_zone_indicator.gd" id="1_2nn6b"]
 
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_2nn6b"]
+blend_mode = 4
+light_mode = 1
+
 [node name="dead_zone_indicator" type="Node2D" unique_id=1027265993]
+material = SubResource("CanvasItemMaterial_2nn6b")
 script = ExtResource("1_2nn6b")

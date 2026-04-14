@@ -37,11 +37,14 @@ var is_ship_rolling := true
 
 var model_node: Node3D
 
+var is_looking_around := false
 
 func _ready() -> void:
 	particle_speed_up = root.get_boost_particle()
 	SignalBus.on_track_mouse_change.connect(_on_track_mouse_change)
-
+	SignalBus.on_player_look_backward.connect(_on_look_backward_change)
+	SignalBus.on_player_boost.connect(_handle_boost_input)
+	SignalBus.on_player_look_around.connect(_on_look_around_change)
 	if particle_speed_up == null:
 		log_missing_component("boost particle")
 		queue_free()
@@ -56,22 +59,26 @@ func get_rotation_speed() -> Vector2:
 func _on_track_mouse_change(enable: bool) -> void:
 	auto_track_enabled = enable
 
+func _on_look_backward_change(enable: bool) -> void:
+	auto_track_enabled = not enable
+
+func _on_look_around_change(enable: bool) -> void:
+	SignalBus.on_track_mouse_change.emit(not enable)
+	is_looking_around = enable
+
+func _handle_boost_input(enable: bool) -> void:
+	if enable:
+		speed_up()
+	else:
+		stop_speed_up()
+
 func speed_up() -> void:
 	particle_speed_up.emitting = true
 	_is_boosting = true
-	SignalBus.on_player_boost.emit(true)
 
 func stop_speed_up() -> void:
 	particle_speed_up.emitting = false
 	_is_boosting = false
-	SignalBus.on_player_boost.emit(false)
-
-
-func handle_speed_change() -> void:
-	if Input.is_action_just_pressed("speed_up"):
-		speed_up()
-	if Input.is_action_just_released("speed_up"):
-		stop_speed_up()
 
 
 func handle_move(delta: float) -> void:
@@ -107,8 +114,11 @@ func handle_move(delta: float) -> void:
 
 
 func track_mouse(delta: float) -> void:
-	if Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
+	if Input.mouse_mode == Input.MOUSE_MODE_CAPTURED or is_looking_around:
+		target_pitch = 0.0
+		target_yaw = 0.0
 		return
+	
 	if auto_track_enabled:
 		var viewport_size = get_viewport().get_visible_rect().size
 		var center = viewport_size * 0.5
@@ -138,7 +148,6 @@ func track_mouse(delta: float) -> void:
 func _physics_process(delta: float) -> void:
 	track_mouse(delta)
 	handle_move(delta)
-	handle_speed_change()
 
 	var t := 1.0 - exp(-smooth_factor * delta)
 	_yaw_speed = lerp(_yaw_speed, target_yaw, t)
@@ -153,8 +162,3 @@ func _physics_process(delta: float) -> void:
 		model_node.rotation.x = _pitch_speed * 0.1
 
 	root.move_and_slide()
-
-func _input(_event: InputEvent) -> void:
-	if Input.is_action_just_pressed("toggle_track"):
-		
-		auto_track_enabled = not auto_track_enabled

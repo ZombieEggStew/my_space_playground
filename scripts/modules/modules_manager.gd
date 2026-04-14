@@ -28,6 +28,9 @@ func install_module(module_scene:PackedScene) -> Module:
 	add_child(module)
 	return module
 
+func get_camera_module() -> ThirdCameraModule:
+	return third_camera_module
+
 func get_aim_module() -> BasicAimModule:
 	return player_aim_module
 

@@ -2,6 +2,5 @@
 
 [ext_resource type="Script" uid="uid://da6jmvtr64hva" path="res://scripts/modules/module_player_aim.gd" id="1_gvq42"]
 
-[node name="module_player_aim" type="Node" unique_id=1372324135 node_paths=PackedStringArray("crosshair_container")]
+[node name="module_player_aim" type="Node" unique_id=1372324135]
 script = ExtResource("1_gvq42")
-crosshair_container = NodePath("")

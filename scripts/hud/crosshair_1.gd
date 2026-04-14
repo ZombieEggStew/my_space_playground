@@ -13,24 +13,32 @@ var _size_factor := 1.0
 
 var target: AbleToBeLocked
 
+var player: PlayerShip
 var cam: Camera3D
 
-func setup(_target: AbleToBeLocked, _cam: Camera3D):
+func setup(_target: AbleToBeLocked, _player:PlayerShip, _cam:Camera3D) -> void:
 	self.target = _target
+	self.player = _player
 	self.cam = _cam
+	target.screen_entered.connect(_on_enter_screen)
+	target.screen_exited.connect(_on_exit_screen)
 
 func _ready() -> void:
 	reset()
 
+func _on_enter_screen():
+	set_process(true)
+func _on_exit_screen():
+	set_process(false)
+	set_active(false)
+
+
 func _process(_delta):
-	if not is_instance_valid(target) or not target.is_visible:
-		set_active(false)
-		return
-	var screen_pos = cam.unproject_position(target.world_pos)
-	update_visuals(screen_pos, target.distance_to_player)
+	update_visuals(cam.unproject_position(target.global_position), target.global_position.distance_to(player.global_position))
 
 
 func reset() -> void:
+	set_process(false)
 	rect.visible = false
 	rect.size = base_size
 	_size_factor = 1.0

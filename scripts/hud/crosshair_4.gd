@@ -6,15 +6,8 @@ extends Node2D
 
 
 func _ready() -> void:
-	_update_center_position()
 	visible = false
 	queue_redraw()
-
-
-func _notification(what: int) -> void:
-	if what == NOTIFICATION_WM_SIZE_CHANGED:
-		_update_center_position()
-		queue_redraw()
 
 
 func _draw() -> void:
@@ -29,8 +22,5 @@ func set_target_pos(target_pos: Vector2) -> void:
 
 func reset() -> void:
 	visible = false
-	_update_center_position()
 
 
-func _update_center_position() -> void:
-	position = get_viewport().get_visible_rect().size * 0.5

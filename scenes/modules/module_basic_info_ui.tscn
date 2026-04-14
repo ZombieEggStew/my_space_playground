@@ -2,18 +2,38 @@
 
 [ext_resource type="Script" uid="uid://cdb3cchx3xuve" path="res://scripts/modules/module_basic_info_ui.gd" id="1_chcyh"]
 [ext_resource type="LabelSettings" uid="uid://rvf70tp83o1k" path="res://font_style/font_size_32.tres" id="2_tdvs8"]
+[ext_resource type="Material" uid="uid://k4ms5r7ptj5g" path="res://material/canvasItem/new_canvas_item_material.tres" id="4_eq387"]
 [ext_resource type="Script" uid="uid://gptjye17aeil" path="res://scripts/ui/hp_bar.gd" id="4_p4vrk"]
-[ext_resource type="StyleBox" uid="uid://chm4boyviwuw4" path="res://style/hp_bar_container.tres" id="5_eq387"]
 [ext_resource type="Texture2D" uid="uid://35piuouavkat" path="res://textures/white_1x1px.png" id="5_qbege"]
 [ext_resource type="Texture2D" uid="uid://c8bhpxdqfp07i" path="res://textures/white_100x100px.png" id="5_w1gke"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ru8r4"]
-bg_color = Color(0.6, 0.6, 0.6, 0)
-border_width_left = 3
-border_width_top = 3
-border_width_right = 3
-border_width_bottom = 3
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_eq387"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+bg_color = Color(0.101960786, 0.101960786, 0.101960786, 0)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
 border_color = Color(1, 1, 1, 1)
+corner_detail = 5
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_qbege"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qbege"]
+content_margin_left = 5.0
+content_margin_top = 5.0
+content_margin_right = 5.0
+content_margin_bottom = 5.0
+bg_color = Color(0.101960786, 0.101960786, 0.101960786, 0)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(1, 1, 1, 1)
+corner_detail = 1
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_w1gke"]
 atlas = ExtResource("5_w1gke")
@@ -52,8 +72,6 @@ direction = Vector3(0, 0, 0)
 gravity = Vector3(0, 0, 0)
 alpha_curve = SubResource("CurveTexture_1fqis")
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_eq387"]
-
 [node name="module_basic_info_ui" type="Node" unique_id=2111012816 node_paths=PackedStringArray("hp_bar", "speed_label", "hud_container")]
 script = ExtResource("1_chcyh")
 hp_bar = NodePath("basic_info/hp_bar_and_label")
@@ -67,9 +85,9 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 2
 
 [node name="panel_speed" type="PanelContainer" parent="basic_info" unique_id=866523806]
-texture_filter = 2
 layout_mode = 1
 anchors_preset = 3
 anchor_left = 1.0
@@ -82,7 +100,8 @@ offset_right = -154.0
 offset_bottom = -586.0
 grow_horizontal = 0
 grow_vertical = 0
-theme_override_styles/panel = SubResource("StyleBoxFlat_ru8r4")
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_eq387")
 metadata/_edit_group_ = true
 
 [node name="VBoxContainer" type="VBoxContainer" parent="basic_info/panel_speed" unique_id=865570120]
@@ -107,76 +126,6 @@ label_settings = ExtResource("2_tdvs8")
 layout_mode = 2
 text = "--"
 label_settings = ExtResource("2_tdvs8")
-
-[node name="hp_bar_and_label" type="VBoxContainer" parent="basic_info" unique_id=5052555 node_paths=PackedStringArray("hp_bar", "hp_label", "health_down_effect", "health_up_effect", "hp_bar_catch")]
-layout_mode = 1
-anchors_preset = 3
-anchor_left = 1.0
-anchor_top = 1.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = -559.0
-offset_top = -191.0
-offset_right = -59.0
-offset_bottom = -107.0
-grow_horizontal = 0
-grow_vertical = 0
-size_flags_vertical = 3
-script = ExtResource("4_p4vrk")
-hp_bar = NodePath("hp_bar/hp_bar_true")
-hp_label = NodePath("HBoxContainer/hp_value")
-health_down_effect = NodePath("hp_bar/health_down_effect")
-health_up_effect = NodePath("hp_bar/health_up_effect")
-hp_bar_catch = NodePath("hp_bar/hp_bar_under")
-metadata/_edit_group_ = true
-
-[node name="HBoxContainer" type="HBoxContainer" parent="basic_info/hp_bar_and_label" unique_id=1244936140]
-layout_mode = 2
-
-[node name="HP_label" type="Label" parent="basic_info/hp_bar_and_label/HBoxContainer" unique_id=1056189793]
-layout_mode = 2
-text = "HP : "
-label_settings = ExtResource("2_tdvs8")
-
-[node name="hp_value" type="Label" parent="basic_info/hp_bar_and_label/HBoxContainer" unique_id=204169307]
-layout_mode = 2
-text = "--/--(--%)"
-label_settings = ExtResource("2_tdvs8")
-
-[node name="hp_bar" type="PanelContainer" parent="basic_info/hp_bar_and_label" unique_id=1888318659]
-layout_mode = 2
-size_flags_vertical = 2
-theme_override_styles/panel = ExtResource("5_eq387")
-
-[node name="hp_bar_true" type="TextureProgressBar" parent="basic_info/hp_bar_and_label/hp_bar" unique_id=1819935985]
-custom_minimum_size = Vector2(0, 25)
-layout_mode = 2
-value = 50.0
-rounded = true
-nine_patch_stretch = true
-texture_progress = ExtResource("5_qbege")
-
-[node name="hp_bar_under" type="TextureProgressBar" parent="basic_info/hp_bar_and_label/hp_bar" unique_id=914898527]
-modulate = Color(1, 1, 1, 0.45490196)
-layout_mode = 2
-value = 75.0
-nine_patch_stretch = true
-texture_progress = ExtResource("5_qbege")
-
-[node name="health_down_effect" type="GPUParticles2D" parent="basic_info/hp_bar_and_label/hp_bar" unique_id=250556252]
-emitting = false
-amount = 1
-texture = SubResource("AtlasTexture_w1gke")
-one_shot = true
-process_material = SubResource("ParticleProcessMaterial_ru8r4")
-
-[node name="health_up_effect" type="GPUParticles2D" parent="basic_info/hp_bar_and_label/hp_bar" unique_id=1746576306]
-position = Vector2(388.99988, 18.999878)
-emitting = false
-amount = 1
-texture = SubResource("AtlasTexture_eq387")
-one_shot = true
-process_material = SubResource("ParticleProcessMaterial_eq387")
 
 [node name="VBoxContainer" type="HFlowContainer" parent="basic_info" unique_id=640689833]
 layout_mode = 1
@@ -239,7 +188,8 @@ offset_right = -65.0
 offset_bottom = -192.0
 grow_horizontal = 0
 grow_vertical = 0
-theme_override_styles/panel = SubResource("StyleBoxEmpty_eq387")
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_qbege")
 metadata/_edit_group_ = true
 
 [node name="VBoxContainer" type="VBoxContainer" parent="basic_info/PanelContainer" unique_id=2058611304]
@@ -252,3 +202,75 @@ text = "energy:"
 [node name="TextureProgressBar" type="TextureProgressBar" parent="basic_info/PanelContainer/VBoxContainer" unique_id=425986796]
 layout_mode = 2
 nine_patch_stretch = true
+
+[node name="hp_bar_and_label" type="VBoxContainer" parent="basic_info" unique_id=5052555 node_paths=PackedStringArray("hp_bar", "hp_label", "health_down_effect", "health_up_effect", "hp_bar_catch")]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -559.0
+offset_top = -191.0
+offset_right = -59.0
+offset_bottom = -107.0
+grow_horizontal = 0
+grow_vertical = 0
+size_flags_vertical = 3
+mouse_filter = 2
+script = ExtResource("4_p4vrk")
+hp_bar = NodePath("hp_bar/hp_bar_true")
+hp_label = NodePath("HBoxContainer/hp_value")
+health_down_effect = NodePath("hp_bar/health_down_effect")
+health_up_effect = NodePath("hp_bar/health_up_effect")
+hp_bar_catch = NodePath("hp_bar/hp_bar_under")
+metadata/_edit_group_ = true
+
+[node name="HBoxContainer" type="HBoxContainer" parent="basic_info/hp_bar_and_label" unique_id=1244936140]
+layout_mode = 2
+
+[node name="HP_label" type="Label" parent="basic_info/hp_bar_and_label/HBoxContainer" unique_id=1056189793]
+layout_mode = 2
+text = "HP : "
+label_settings = ExtResource("2_tdvs8")
+
+[node name="hp_value" type="Label" parent="basic_info/hp_bar_and_label/HBoxContainer" unique_id=204169307]
+layout_mode = 2
+text = "--/--(--%)"
+label_settings = ExtResource("2_tdvs8")
+
+[node name="hp_bar" type="PanelContainer" parent="basic_info/hp_bar_and_label" unique_id=1888318659]
+material = ExtResource("4_eq387")
+layout_mode = 2
+size_flags_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_qbege")
+
+[node name="hp_bar_true" type="TextureProgressBar" parent="basic_info/hp_bar_and_label/hp_bar" unique_id=1819935985]
+custom_minimum_size = Vector2(0, 25)
+layout_mode = 2
+value = 50.0
+rounded = true
+nine_patch_stretch = true
+texture_progress = ExtResource("5_qbege")
+
+[node name="hp_bar_under" type="TextureProgressBar" parent="basic_info/hp_bar_and_label/hp_bar" unique_id=914898527]
+modulate = Color(1, 1, 1, 0.45490196)
+layout_mode = 2
+value = 75.0
+nine_patch_stretch = true
+texture_progress = ExtResource("5_qbege")
+
+[node name="health_down_effect" type="GPUParticles2D" parent="basic_info/hp_bar_and_label/hp_bar" unique_id=250556252]
+emitting = false
+amount = 1
+texture = SubResource("AtlasTexture_w1gke")
+one_shot = true
+process_material = SubResource("ParticleProcessMaterial_ru8r4")
+
+[node name="health_up_effect" type="GPUParticles2D" parent="basic_info/hp_bar_and_label/hp_bar" unique_id=1746576306]
+position = Vector2(388.99988, 18.999878)
+emitting = false
+amount = 1
+texture = SubResource("AtlasTexture_eq387")
+one_shot = true
+process_material = SubResource("ParticleProcessMaterial_eq387")

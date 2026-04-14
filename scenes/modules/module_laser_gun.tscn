@@ -3,7 +3,16 @@
 [ext_resource type="Script" uid="uid://kxpd0572v8e2" path="res://scripts/modules/module_laser_gun.gd" id="1_ckd3c"]
 [ext_resource type="PackedScene" uid="uid://cuxcy0osx6biu" path="res://scenes/bullet_1.tscn" id="2_a2p8t"]
 [ext_resource type="AudioStream" uid="uid://hiopqv2kqb0d" path="res://audio/laser.mp3" id="3_5q5cc"]
-[ext_resource type="Script" uid="uid://buhdvs7dw32k3" path="res://scripts/hud/laser_gun_aim_system.gd" id="4_pcc1v"]
+[ext_resource type="Script" uid="uid://buhdvs7dw32k3" path="res://scripts/hud/laser_gun_hud_system.gd" id="4_pcc1v"]
+[ext_resource type="Texture2D" uid="uid://c8bhpxdqfp07i" path="res://textures/white_100x100px.png" id="5_67tsh"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_67tsh"]
+bg_color = Color(1, 1, 1, 0)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(1, 1, 1, 1)
 
 [node name="laser_gun" type="Node" unique_id=2104397238 node_paths=PackedStringArray("shoot_timer", "bullets_parent", "left_laser_audio", "right_laser_audio", "aim_system")]
 script = ExtResource("1_ckd3c")
@@ -12,11 +21,13 @@ bullet_scene = ExtResource("2_a2p8t")
 bullets_parent = NodePath("bullets")
 left_laser_audio = NodePath("left_laser")
 right_laser_audio = NodePath("right_laser")
-aim_system = NodePath("laser_gun_aim_system")
+aim_system = NodePath("laser_gun_hud_system")
+
+[node name="laser_gun_hud_system" type="Node" parent="." unique_id=2143537013]
+script = ExtResource("4_pcc1v")
 
 [node name="timer_shoot" type="Timer" parent="." unique_id=1919365830]
-wait_time = 0.05
-one_shot = true
+wait_time = 0.1
 
 [node name="bullets" type="Node" parent="." unique_id=299725284]
 
@@ -28,5 +39,35 @@ volume_db = -20.0
 stream = ExtResource("3_5q5cc")
 volume_db = -20.0
 
-[node name="laser_gun_aim_system" type="Node" parent="." unique_id=2143537013]
-script = ExtResource("4_pcc1v")
+[node name="laser_gun" type="Control" parent="." unique_id=1683426097]
+visible = false
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="PanelContainer" type="PanelContainer" parent="laser_gun" unique_id=916836786]
+layout_mode = 0
+offset_left = 817.0
+offset_top = 641.0
+offset_right = 1083.0
+offset_bottom = 670.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_67tsh")
+metadata/_edit_group_ = true
+
+[node name="MarginContainer" type="MarginContainer" parent="laser_gun/PanelContainer" unique_id=1346887343]
+layout_mode = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="TextureProgressBar" type="TextureProgressBar" parent="laser_gun/PanelContainer/MarginContainer" unique_id=1040230738]
+layout_mode = 2
+value = 45.0
+fill_mode = 6
+nine_patch_stretch = true
+texture_progress = ExtResource("5_67tsh")

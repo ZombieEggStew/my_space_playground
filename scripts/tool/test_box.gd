@@ -14,6 +14,7 @@ var _orbit_angle := 0.0
 var orbit_radius := 200.0
 var orbit_angular_speed := .1
 @export var radius_correction_gain := 3.0
+@export var visible_on_screen_notifier: VisibleOnScreenNotifier3D
 
 @onready var health :HealthComponent = $HealthComponent
 
@@ -64,6 +65,7 @@ func _physics_process(_delta: float) -> void:
 
 func reset() -> void:
 	hit_count.value = 0
+	health.reset()
 	_randomize_spawn_and_orbit()
 
 func get_hit_count() -> IntStat:
@@ -80,3 +82,6 @@ func get_team_id() -> int:
 
 func die() -> void:
 	reset()
+
+func get_visible_on_screen_notifier() -> VisibleOnScreenNotifier3D:
+	return visible_on_screen_notifier

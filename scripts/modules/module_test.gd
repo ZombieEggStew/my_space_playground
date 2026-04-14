@@ -7,10 +7,7 @@ var hit_count_ref: IntStat
 
 func _ready() -> void:
 	SignalBus.on_player_lock_target.connect(_on_lock_target)
-
-	# hit_count_ref = test_box_node.get_hit_count()
-	# hit_count_ref.changed.connect(_update_hit_count_ui)
-	# _update_hit_count_ui(hit_count_ref.value)
+	GameManager.hud_manager.register_hud_group(hud_container)
 
 func _on_lock_target(target: AbleToBeLocked) -> void:
 	# 手动断开锁定 或者 空锁定

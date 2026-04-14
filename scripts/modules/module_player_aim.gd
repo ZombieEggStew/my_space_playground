@@ -10,8 +10,6 @@ var use_occlusion_check := true
 var hovered_target: AbleToBeLocked 
 var locked_target: AbleToBeLocked
 
-@export var crosshair_container : Node
-
 var crosshair_2: Node #绿色 二级锁定
 
 
@@ -19,18 +17,15 @@ var indicator_margin := 32.0
 
 var rader_module: RadarModule
 
-var targets_found : Array[AbleToBeLocked] = []
 
 
 
 var aim_ray_length := 5000.0 #非锁定时使用，预测射击点
 
 
-var crosshair_2_detect_radius := 128.0
-
 func _ready() -> void:
 	init_crosshair_2()
-
+	SignalBus.on_player_try_lock.connect(_handle_lock_action)
 	cam_main = root.get_main_camera()
 
 	if cam_main == null:
@@ -44,21 +39,20 @@ func _ready() -> void:
 		queue_free()
 	
 	rader_module.on_target_found.connect(_spawn_ui_for_target)
-	targets_found = rader_module.get_targets_found()
 
 func init_crosshair_2() -> void:
 	crosshair_2 = GameManager.hud_manager.register_hud_static(Scenes.crosshair_2)
 
 func _process(_delta: float) -> void:
-	handle_targets()
+	# handle_targets()
 	handle_cross_hair_2()
 
-func _input(event: InputEvent) -> void:
-	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_RIGHT:
-		if hovered_target != null:
-			set_locked_target(hovered_target)
-		else:
-			set_locked_target(null)
+func _handle_lock_action():
+	if hovered_target != null:
+		set_locked_target(hovered_target)
+		print("Locked target: %s" % hovered_target.name)
+	else:
+		set_locked_target(null)
 
 func _on_mouse_enter_target(target: AbleToBeLocked) -> void:
 	hovered_target = target
@@ -75,7 +69,7 @@ func _spawn_ui_for_target(target:AbleToBeLocked) -> void:
 	ui_inst.mouse_entered.connect(_on_mouse_enter_target)
 	ui_inst.mouse_exited.connect(_on_mouse_exit_target)
 
-	ui_inst.setup(target, cam_main) # 完成绑定
+	ui_inst.setup(target, root , cam_main) # 完成绑定
 
 func _is_enemy_visible_from_camera(target: Node3D) -> bool:
 	if cam_main == null:
@@ -109,19 +103,20 @@ func _is_enemy_visible_from_camera(target: Node3D) -> bool:
 		return false
 	return collider == target or target.is_ancestor_of(collider)
 
-func handle_targets():
-	for target in targets_found:
-		var target_node := target.target_node3d
-		target.world_pos = target_node.global_transform.origin + target.get_pivot_offset() as Vector3
-		target.distance_to_player = root.global_position.distance_to(target.world_pos)
-		var is_visible := _is_enemy_visible_from_camera(target_node)
-		target.is_visible = is_visible
+# func handle_targets():
+# 	for target in targets_found:
+# 		var target_node := target.target_node3d
+# 		target.world_pos = target_node.global_transform.origin + target.get_pivot_offset() as Vector3
+# 		target.distance_to_player = root.global_position.distance_to(target.world_pos)
+# 		var is_visible := _is_enemy_visible_from_camera(target_node)
+# 		target.is_visible = is_visible
+
 
 func handle_locked_target():
 	if locked_target == null:
 		return
 
-	var world_pos := locked_target.world_pos
+	var world_pos := locked_target.global_position
 
 	var viewport_size := get_viewport().get_visible_rect().size
 	var center := viewport_size * 0.5
@@ -146,13 +141,13 @@ func handle_cross_hair_2():
 	if locked_target:
 		handle_locked_target()
 	elif hovered_target:
-		crosshair_2.set_target_pos(cam_main.unproject_position(hovered_target.world_pos))
+		crosshair_2.set_target_pos(cam_main.unproject_position(hovered_target.global_position))
 	else:
 		crosshair_2.reset()
 	
 func get_aim_direction_from_crosshair(aim_screen_pos:Vector2) -> Vector3:
 	if locked_target:
-		aim_ray_length = locked_target.distance_to_player
+		aim_ray_length = locked_target.global_position.distance_to(root.global_position) 
 
 	var ray_origin := cam_main.project_ray_origin(aim_screen_pos)
 	var ray_dir := cam_main.project_ray_normal(aim_screen_pos).normalized()

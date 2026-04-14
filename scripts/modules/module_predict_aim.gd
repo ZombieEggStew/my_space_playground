@@ -7,13 +7,13 @@ var cam_main: Camera3D
 @export var lead_time_label: Label
 @export var distance_label: Label
 
-@export var crosshair_4: Node2D #绿色 预判指示
+
+var crosshair_4: Node2D #绿色 预判指示
 
 var bullet_speed := 0.0
 
 var _locked_enemy_target : AbleToBeLocked
 var is_auto_aiming := false
-
 
 var is_aim_assist_enabled := true
 
@@ -24,16 +24,18 @@ func init_module(module:WeaponModule) -> void:
 	module.on_bullet_speed_change.connect(_on_bullet_speed_change)
 	
 func _ready() -> void:
+	_init_crosshair_4()
 	SignalBus.on_player_lock_target.connect(_on_player_lock_target)
 	cam_main = root.get_main_camera()
-
+	GameManager.hud_manager.register_hud_group(hud_container).set_flow_effect().set_rotation_effect().set_boost_offset_effect()
 	if cam_main == null:
 		log_missing_component("main camera")
 		queue_free()
-
+	
+func _init_crosshair_4() -> void:
+	crosshair_4 = GameManager.hud_manager.register_hud_static(Scenes.crosshair_4)
 
 func _process(_delta: float) -> void:
-	pass
 	if _locked_enemy_target == null:
 		crosshair_4.call("reset")
 		lead_time_label.text = "--"
@@ -44,7 +46,7 @@ func _process(_delta: float) -> void:
 	lead_time_label.text = "%.2f s" % aim_data.get("time", 0.0)
 	distance_label.text = "Distance: %.2f m" % (root.global_transform.origin.distance_to(aim_data.get("world_pos", Vector3.ZERO)))
 
-	if _locked_enemy_target.is_visible:
+	if _locked_enemy_target.is_on_screen():
 		if bullet_speed == 0.0:
 			print("cannot get bullet speed")
 
@@ -56,8 +58,10 @@ func _process(_delta: float) -> void:
 func _on_bullet_speed_change(new_speed: float) -> void:
 	bullet_speed = new_speed
 
+
 func _on_player_lock_target(target: AbleToBeLocked) -> void:
 	_locked_enemy_target = target
+
 
 static func solve_intercept_time(relative_pos: Vector3, target_vel: Vector3, proj_speed: float) -> float:
 	var s := max(proj_speed, 0.001) as float
@@ -103,12 +107,12 @@ func get_predicted_aim_data(_bullet_speed :float) -> Dictionary:
 	if not is_instance_valid(_locked_enemy_target):
 		return out
 
-	var target_world_pos := _locked_enemy_target.target_node3d.global_transform.origin
-	if _locked_enemy_target.has_method("get_pivot_offset"):
-		target_world_pos += _locked_enemy_target.call("get_pivot_offset") as Vector3
+	var target_world_pos := _locked_enemy_target.target_node3d.global_position
+	# if _locked_enemy_target.has_method("get_pivot_offset"):
+	# 	target_world_pos += _locked_enemy_target.call("get_pivot_offset") as Vector3
 	var target_vel := _get_target_velocity(_locked_enemy_target.target_node3d)
 
-	var shooter_pos := root.global_transform.origin
+	var shooter_pos := root.global_position
 	var relative_pos := target_world_pos - shooter_pos
 	var intercept_t := solve_intercept_time(relative_pos, target_vel, _bullet_speed) as float
 	intercept_t = max(intercept_t, 0.0)

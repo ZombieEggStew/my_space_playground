@@ -7,7 +7,6 @@ extends UIModule
 
 var screen_module: ScreenModule
 
-@export var hud_container: Node
 
 func _ready() -> void:
 

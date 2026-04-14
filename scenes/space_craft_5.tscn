@@ -3,8 +3,8 @@
 [ext_resource type="Script" uid="uid://nvatpo7axdb8" path="res://scripts/space_craft_5.gd" id="1_oihk3"]
 [ext_resource type="Material" uid="uid://b2ypfyebn18tb" path="res://material/color/white.tres" id="1_vfsme"]
 [ext_resource type="Material" uid="uid://c77gikh5654xq" path="res://material/color/red.tres" id="2_oihk3"]
-[ext_resource type="Script" uid="uid://chtyunbjhs7vs" path="res://scripts/able_to_be_locked.gd" id="4_aujeq"]
 [ext_resource type="Script" uid="uid://dbjgkv3ndhbm6" path="res://scripts/component/base/health_component.gd" id="5_1grbo"]
+[ext_resource type="PackedScene" uid="uid://c2vpnamuf2w8x" path="res://scenes/component/able_to_be_locked.tscn" id="5_f8h0h"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_eha02"]
 
@@ -116,10 +116,6 @@ script = ExtResource("1_oihk3")
 script = ExtResource("5_1grbo")
 metadata/_custom_type_script = "uid://dbjgkv3ndhbm6"
 
-[node name="AbleToBeLocked" type="Node" parent="." unique_id=730235150]
-script = ExtResource("4_aujeq")
-metadata/_custom_type_script = "uid://chtyunbjhs7vs"
-
 [node name="球体_002" type="MeshInstance3D" parent="." unique_id=1146429533]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1.3992597)
 mesh = SubResource("ArrayMesh_w5cie")
@@ -137,3 +133,6 @@ surface_material_override/0 = ExtResource("2_oihk3")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1744172207]
 shape = SubResource("BoxShape3D_oihk3")
+
+[node name="AbleToBeLocked" parent="." unique_id=250198415 instance=ExtResource("5_f8h0h")]
+aabb = AABB(-2.735, -1.465, -5.355, 5.495, 2.995, 10.695)

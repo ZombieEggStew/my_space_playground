@@ -51,6 +51,23 @@ func set_target_pos(target_pos: Vector2) -> void:
 	visible = true
 
 
+func update_from_center(center: Vector2, mouse_pos: Vector2, is_center_on_screen: bool = true) -> void:
+	if not is_center_on_screen:
+		visible = false
+		return
+	
+	visible = true
+	var to_mouse := mouse_pos - center
+	var radius := max(aim_dead_zone_px, 0.0) as float
+
+	if to_mouse.length() <= radius:
+		set_target_pos(mouse_pos)
+		return
+
+	var dir := to_mouse.normalized()
+	var clamped_pos := center + dir * radius
+	set_target_pos(clamped_pos)
+
 func update_from_mouse(mouse_pos: Vector2) -> void:
 	var viewport_size := get_viewport().get_visible_rect().size
 	var center := viewport_size * 0.5
@@ -59,7 +76,7 @@ func update_from_mouse(mouse_pos: Vector2) -> void:
 
 	if to_mouse.length() <= radius:
 		set_target_pos(mouse_pos)
-
+		return
 
 	var dir := to_mouse.normalized()
 	var clamped_pos := center + dir * radius

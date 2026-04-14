@@ -4,7 +4,7 @@
 [ext_resource type="Material" uid="uid://cf87xo7bbrrd3" path="res://material/color/black.tres" id="1_xiqaf"]
 [ext_resource type="Material" uid="uid://c77gikh5654xq" path="res://material/color/red.tres" id="2_1rt8a"]
 [ext_resource type="Material" uid="uid://b2ypfyebn18tb" path="res://material/color/white.tres" id="2_ru2aj"]
-[ext_resource type="Script" uid="uid://chtyunbjhs7vs" path="res://scripts/able_to_be_locked.gd" id="4_ru2aj"]
+[ext_resource type="PackedScene" uid="uid://c2vpnamuf2w8x" path="res://scenes/component/able_to_be_locked.tscn" id="3_76b8x"]
 [ext_resource type="Script" uid="uid://dbjgkv3ndhbm6" path="res://scripts/component/base/health_component.gd" id="6_76b8x"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_ru2aj"]
@@ -117,13 +117,11 @@ shadow_mesh = SubResource("ArrayMesh_2y661")
 [node name="space_craft_6" type="CharacterBody3D" unique_id=937799966]
 script = ExtResource("1_2b7a6")
 
-[node name="AbleToBeLocked" type="Node" parent="." unique_id=1049027040]
-script = ExtResource("4_ru2aj")
-metadata/_custom_type_script = "uid://chtyunbjhs7vs"
-
 [node name="HealthComponent" type="Node" parent="." unique_id=915451204]
 script = ExtResource("6_76b8x")
 metadata/_custom_type_script = "uid://dbjgkv3ndhbm6"
+
+[node name="AbleToBeLocked2" parent="." unique_id=250198415 instance=ExtResource("3_76b8x")]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1877944253]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -2.294084)

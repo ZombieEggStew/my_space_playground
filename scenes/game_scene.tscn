@@ -14,16 +14,10 @@
 [ext_resource type="Script" uid="uid://rc8mf3fvqios" path="res://scripts/tool/test_box.gd" id="8_utbpp"]
 [ext_resource type="Script" uid="uid://bxurlpyhbiqd7" path="res://scripts/Main.gd" id="9_1kk2r"]
 [ext_resource type="Material" uid="uid://djeunexyuwbdk" path="res://material/test_material.tres" id="10_mw25s"]
-[ext_resource type="Script" uid="uid://chtyunbjhs7vs" path="res://scripts/able_to_be_locked.gd" id="11_rvs2r"]
 [ext_resource type="PackedScene" uid="uid://csvjfmieyjaub" path="res://scenes/space_craft_6.tscn" id="11_tcjrq"]
 [ext_resource type="PackedScene" uid="uid://dvopp258cqkyy" path="res://scenes/space_craft_5.tscn" id="12_rvs2r"]
 [ext_resource type="Script" uid="uid://dbjgkv3ndhbm6" path="res://scripts/component/base/health_component.gd" id="12_tqxxy"]
-[ext_resource type="Shader" uid="uid://d0pkywdsk3dvl" path="res://shader/module_screen.gdshader" id="13_5ay1a"]
-[ext_resource type="Script" uid="uid://bch7kemny3wpp" path="res://scripts/ui/color_rect.gd" id="14_ldkr4"]
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_liy57"]
-shader = ExtResource("13_5ay1a")
-shader_parameter/bend_amount = 0.15
+[ext_resource type="PackedScene" uid="uid://c2vpnamuf2w8x" path="res://scenes/component/able_to_be_locked.tscn" id="18_103ce"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_kk2rg"]
 shader = ExtResource("4_rurhu")
@@ -511,6 +505,7 @@ script = ExtResource("9_1kk2r")
 hud_manager = NodePath("HUD_Manager")
 
 [node name="UI_Manager" type="CanvasLayer" parent="." unique_id=858621350]
+layer = 3
 script = ExtResource("2_ldkr4")
 
 [node name="Main_Menu" type="Control" parent="UI_Manager" unique_id=1455508483]
@@ -528,62 +523,52 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 
-[node name="HUD_Manager" type="CanvasLayer" parent="." unique_id=1271957356 node_paths=PackedStringArray("hud_container", "hud_static", "flow_effect", "rotation_effect", "boost_offset_effect")]
-layer = 10
+[node name="HUD_Manager" type="CanvasLayer" parent="." unique_id=1271957356 node_paths=PackedStringArray("hud_container", "hud_static", "hud_3", "hud_3_viewport", "flow_effect", "rotation_effect", "boost_offset_effect")]
+layer = 2
 script = ExtResource("3_ldkr4")
-hud_container = NodePath("HUD_SubViewportContainer/HUD_SubViewport/hud_container")
+hud_container = NodePath("hud_container")
 hud_static = NodePath("hud_static")
-flow_effect = NodePath("HUD_SubViewportContainer/HUD_SubViewport/EffectManager/UI_FloatEffect")
-rotation_effect = NodePath("HUD_SubViewportContainer/HUD_SubViewport/EffectManager/UI_RotationEffect")
-boost_offset_effect = NodePath("HUD_SubViewportContainer/HUD_SubViewport/EffectManager/UI_BoostOffsetEffect")
+hud_3 = NodePath("HUD_SubViewport/HUD_3")
+hud_3_viewport = NodePath("HUD_SubViewport")
+flow_effect = NodePath("EffectManager/UI_FloatEffect")
+rotation_effect = NodePath("EffectManager/UI_RotationEffect")
+boost_offset_effect = NodePath("EffectManager/UI_BoostOffsetEffect")
 
-[node name="HUD_SubViewportContainer" type="SubViewportContainer" parent="HUD_Manager" unique_id=889639703]
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 0
-stretch = true
-
-[node name="HUD_SubViewport" type="SubViewport" parent="HUD_Manager/HUD_SubViewportContainer" unique_id=1141590734]
-disable_3d = true
+[node name="HUD_SubViewport" type="SubViewport" parent="HUD_Manager" unique_id=1141590734]
 transparent_bg = true
 handle_input_locally = false
-msaa_2d = 2
 size = Vector2i(1920, 1080)
 render_target_update_mode = 4
 
-[node name="hud_container" type="Node" parent="HUD_Manager/HUD_SubViewportContainer/HUD_SubViewport" unique_id=413283149]
+[node name="HUD_3" type="Node" parent="HUD_Manager/HUD_SubViewport" unique_id=1706574373]
 
-[node name="EffectManager" type="Node" parent="HUD_Manager/HUD_SubViewportContainer/HUD_SubViewport" unique_id=2110931767]
-script = ExtResource("4_6aqbo")
-
-[node name="UI_FloatEffect" type="Node" parent="HUD_Manager/HUD_SubViewportContainer/HUD_SubViewport/EffectManager" unique_id=1062517989]
-script = ExtResource("5_ro0ie")
-
-[node name="UI_RotationEffect" type="Node" parent="HUD_Manager/HUD_SubViewportContainer/HUD_SubViewport/EffectManager" unique_id=2080976993]
-script = ExtResource("6_103ce")
-
-[node name="UI_BoostOffsetEffect" type="Node" parent="HUD_Manager/HUD_SubViewportContainer/HUD_SubViewport/EffectManager" unique_id=1825103867]
-script = ExtResource("7_pb36m")
-
-[node name="UI_BoostShakeEffect" type="Node" parent="HUD_Manager/HUD_SubViewportContainer/HUD_SubViewport/EffectManager" unique_id=973526376]
-script = ExtResource("8_85lt4")
-
-[node name="hud_static" type="Node" parent="HUD_Manager" unique_id=1919498439]
-
-[node name="ScreenShaderEffect" type="ColorRect" parent="." unique_id=2053631606 node_paths=PackedStringArray("viewport")]
-visible = false
-material = SubResource("ShaderMaterial_liy57")
+[node name="hud_container" type="Control" parent="HUD_Manager" unique_id=466224714]
+texture_filter = 2
+layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-script = ExtResource("14_ldkr4")
-viewport = NodePath("../HUD_Manager/HUD_SubViewportContainer/HUD_SubViewport")
+metadata/_edit_lock_ = true
+
+[node name="hud_static" type="Node" parent="HUD_Manager" unique_id=155327225]
+
+[node name="EffectManager" type="Node" parent="HUD_Manager" unique_id=2110931767]
+script = ExtResource("4_6aqbo")
+
+[node name="UI_FloatEffect" type="Node" parent="HUD_Manager/EffectManager" unique_id=1062517989]
+script = ExtResource("5_ro0ie")
+
+[node name="UI_RotationEffect" type="Node" parent="HUD_Manager/EffectManager" unique_id=2080976993]
+script = ExtResource("6_103ce")
+
+[node name="UI_BoostOffsetEffect" type="Node" parent="HUD_Manager/EffectManager" unique_id=1825103867]
+script = ExtResource("7_pb36m")
+
+[node name="UI_BoostShakeEffect" type="Node" parent="HUD_Manager/EffectManager" unique_id=973526376]
+script = ExtResource("8_85lt4")
 
 [node name="3D_ViewportDistortion" type="SubViewportContainer" parent="." unique_id=734301556]
 anchors_preset = 15
@@ -596,7 +581,6 @@ metadata/_edit_lock_ = true
 
 [node name="MainSubViewport" type="SubViewport" parent="3D_ViewportDistortion" unique_id=1795853704]
 handle_input_locally = false
-msaa_2d = 2
 msaa_3d = 1
 screen_space_aa = 1
 size = Vector2i(1920, 1080)
@@ -608,10 +592,10 @@ render_target_update_mode = 4
 environment = SubResource("Environment_utbpp")
 
 [node name="CharacterBody3D" parent="3D_ViewportDistortion/MainSubViewport/World_Container" unique_id=150363559 instance=ExtResource("1_w5aja")]
-transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, 0, 0)
+transform = Transform3D(-1, 0, -1.509958e-07, 0, 1, 0, 1.509958e-07, 0, -1, 0, 0, 0)
 
 [node name="MeshInstance3D2" type="MeshInstance3D" parent="3D_ViewportDistortion/MainSubViewport/World_Container" unique_id=1413072732]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.5143378, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.5143378, 0.69013166)
 mesh = SubResource("PlaneMesh_onqr8")
 
 [node name="StaticBody3D" type="StaticBody3D" parent="3D_ViewportDistortion/MainSubViewport/World_Container/MeshInstance3D2" unique_id=1770170644]
@@ -649,13 +633,12 @@ surface_material_override/0 = SubResource("StandardMaterial3D_b5spy")
 [node name="CollisionShape3D" type="CollisionShape3D" parent="3D_ViewportDistortion/MainSubViewport/World_Container/enemies/test_box" unique_id=1875133654]
 shape = SubResource("BoxShape3D_b5spy")
 
-[node name="AbleToBeLocked" type="Node" parent="3D_ViewportDistortion/MainSubViewport/World_Container/enemies/test_box" unique_id=1533443231]
-script = ExtResource("11_rvs2r")
-metadata/_custom_type_script = "uid://chtyunbjhs7vs"
-
 [node name="HealthComponent" type="Node" parent="3D_ViewportDistortion/MainSubViewport/World_Container/enemies/test_box" unique_id=256359715]
 script = ExtResource("12_tqxxy")
 metadata/_custom_type_script = "uid://dbjgkv3ndhbm6"
+
+[node name="AbleToBeLocked" parent="3D_ViewportDistortion/MainSubViewport/World_Container/enemies/test_box" unique_id=250198415 instance=ExtResource("18_103ce")]
+aabb = AABB(-3.15, -3.18, -3.14, 6.315, 6.355, 6.38)
 
 [node name="space_craft_5" parent="3D_ViewportDistortion/MainSubViewport/World_Container/enemies" unique_id=72913326 instance=ExtResource("12_rvs2r")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 31.93112, -0.443339, -0.76441383)

@@ -7,6 +7,7 @@ var ui_manager: UIManager
 
 func register_player(node: PlayerShip):
     player_instance = node
+    SignalBus.on_player_registered.emit(node)
 
 func register_world():
     pass
@@ -23,3 +24,6 @@ func init_main_menu():
 
 func register_main_scene(node: Main):
     main_scene = node
+
+func get_current_player() -> PlayerShip:
+    return player_instance

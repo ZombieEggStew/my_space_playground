@@ -21,7 +21,7 @@
 #TO DO : 瞄准 线性43（能自定义）
 #TO DO : 关卡设计 极简主义 镜之边缘
 #TO DO : 根据锁定目标的远近 修改子弹的留存时间
-#TO DO : 加速视角抖动
+#TO DO : 
 #TO DO :
 #TO DO : 地平线指示器？
 #TO DO :
@@ -30,12 +30,14 @@
 #TO DO : 锁定设计：锁定后出现预测射击指示器，屏幕边缘显示相对位置：1级：手动锁定；2级：自动锁定，最大锁定目标为1；3-级：自动锁定，最大锁定目标为多个
 #TO DO : 
 #TO DO : buff 重叠效果处理
-#TO DO : 血条动画
-#TO DO :
-#TO DO : 
+#TO DO : buff显示-hud
+#TO DO : 优化crosshair2的逻辑，移动逻辑放在自身脚本里
+#TO DO : 类无助之地描边效果
 #TO DO : 受击ui效果，转向ui效果,ui扫描码效果
-#TO DO : 绿框下显示血条
-#TO DO :
+#TO DO : 敌人绿框下显示血条
+#TO DO : 能量条-冲刺：加速视角抖动：屏幕四周速度线
+#TO DO : laser_gun:添加过热机制，连续开火积累过热，过热后无法开火
+#TO DO : laser_gun: hud显示，timer与过热值，准星左半圆
 #TO DO : 连续开火散布增大
 #TO DO : 武器跟踪鼠标：考虑炮管转速
 #TO DO : 发射导弹后坐力
@@ -49,8 +51,8 @@
 
 #FIX ME : 不同分辨率下各个准心大小问题
 #FIX ME : 处理镜头穿模
-#FIX ME :
-#FIX ME :
+#FIX ME : springarm逻辑
+#FIX ME : 预测射击近距离失效
 #FIX ME :
 #FIX ME :
 #FIX ME :
@@ -65,40 +67,36 @@ class_name PlayerShip
 var team_id := TeamID.TEAM_PLAYER
 
 # --- Component references ---
-@export var cam_main: Camera3D
-@export var cam_main_pivot: Node3D
-
+var cam_main: Camera3D
+var cam_main_pivot: Node3D
+var cam_pivot: Node3D
 
 @export var particle_speed_up: GPUParticles3D
 
-
-@export var cam_spring_arm: SpringArm3D 
-@export var cam_pivot: Node3D
 @export var model_node: Node3D	
 
 @onready var health : HealthComponent = $HealthComponent
-
 
 var fov_smooth := 8.0         # FOV 平滑插值速度
 
 
 @export var gun_pivot_left : Node3D
 
-
-
 @export var modules_manager: ModulesManager
+
+@export var test_quad : MeshInstance3D
 
 func _ready() -> void:
 	GameManager.register_player(self)
 	health.setup(100, 100)
 	health.on_death.connect(die)
-	cam_main.current = true
 	modules_manager.install_module(Scenes.module_move_controller_scene)
 	modules_manager.install_module(Scenes.module_third_camera_scene)
-	modules_manager.install_module(Scenes.module_screen_scene)
+
+
+	# modules_manager.install_module(Scenes.module_screen_scene)
 
 	modules_manager.install_module(Scenes.module_radar_scene)
-
 	modules_manager.install_module(Scenes.module_basic_info_ui_scene)
 	modules_manager.install_module(Scenes.module_player_aim_scene)
 	modules_manager.install_module(Scenes.test_module_scene)
@@ -106,18 +104,16 @@ func _ready() -> void:
 	var laser := modules_manager.install_module(Scenes.module_laser_gun_scene)
 	var laser_predict := modules_manager.install_module(Scenes.module_predict_aim_scene)
 	laser_predict.init_module(laser)
+	print("1")
+	# test_quad.get_surface_override_material(0).albedo_texture.viewport_path = GameManager.hud_manager.get_hud_3_viewport().get_path()
+
 
 func get_gun_pivot_left() -> Node:
 	return gun_pivot_left
 
-func get_cam_pivot() -> Node3D:
-	return cam_pivot
-
-func get_cam_spring_arm() -> SpringArm3D:
-	return cam_spring_arm
 
 func get_main_camera() -> Camera3D:
-	return cam_main
+	return modules_manager.get_camera_module().get_main_camera()
 
 func get_boost_particle() -> GPUParticles3D:
 	return particle_speed_up

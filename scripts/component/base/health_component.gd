@@ -41,7 +41,11 @@ func set_max_health(new_max_health: int) -> void:
 		changed.emit(health , max_health , -change_amount)
 	else :
 		changed.emit(health , max_health , 0)
-
+		
+func reset() -> void:
+	health = max_health
+	# health_changed.emit(health , 0)
+	changed.emit(health , max_health , 0)
 	
 
 func heal(amount: int) -> void:

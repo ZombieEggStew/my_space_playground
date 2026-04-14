@@ -1,0 +1,12 @@
+[gd_resource type="StandardMaterial3D" format=3 uid="uid://di6iucw4ucfwt"]
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_77hjl"]
+viewport_path = NodePath("HUD_Manager/HUD_SubViewport")
+
+[resource]
+resource_local_to_scene = true
+transparency = 1
+no_depth_test = true
+shading_mode = 0
+albedo_texture = SubResource("ViewportTexture_77hjl")
+fixed_size = true

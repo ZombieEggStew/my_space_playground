@@ -4,5 +4,3 @@
 
 [node name="ModuleScreen" type="Node" unique_id=1053321223]
 script = ExtResource("1_uvdkp")
-
-[node name="UI_Layer" type="CanvasLayer" parent="." unique_id=353123102]
