@@ -10,9 +10,3 @@ func _enter_tree() -> void:
     modules_manager = get_parent()
     root = modules_manager.get_parent()
 
-
-func log_error(message: String) -> void:
-    print("[ERROE] ", self.name, ": ", message)
-
-func log_missing_component(module : String) -> void:
-    log_error("Missing component: %s" % module)

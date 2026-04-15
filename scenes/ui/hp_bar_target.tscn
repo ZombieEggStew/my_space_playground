@@ -30,6 +30,7 @@ offset_right = 100.0
 offset_bottom = 76.0
 size_flags_horizontal = 4
 size_flags_vertical = 4
+mouse_filter = 2
 metadata/_edit_group_ = true
 
 [node name="hp_bar" type="PanelContainer" parent="hp_bar_mask" unique_id=624053324]

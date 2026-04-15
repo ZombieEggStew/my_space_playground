@@ -29,3 +29,4 @@ signal on_lockable_target_died(target: AbleToBeLocked)
 
 
 
+signal on_damage_dealt(amount: int, pos: Vector2)

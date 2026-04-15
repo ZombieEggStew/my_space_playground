@@ -21,8 +21,6 @@ func _draw() -> void:
 
 	# 绘制机头指示器
 	if hud.is_on_screen:
-		var draw_pos = hud.nose_pos_2d - position
-		var indicator_color = Color.CYAN
-		indicator_color.a = 0.7
+		var draw_pos = hud.nose_pos_2d
 
 		draw_arc(draw_pos, aim_dead_zone_px, 0, TAU, 64, Color.WHITE, width, true)

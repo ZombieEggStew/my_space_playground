@@ -41,7 +41,7 @@ func _ready() -> void:
 	move_controller = modules_manager.get_move_module()
 
 	if move_controller == null:
-		log_missing_component("move controller")
+		Log.log_missing_component(self,"move controller")
 		queue_free()
 
 	# 初始化抖动器

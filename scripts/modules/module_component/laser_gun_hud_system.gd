@@ -1,4 +1,4 @@
-extends Node
+extends ModuleComponent
 class_name LaserGunHudSystem
 
 

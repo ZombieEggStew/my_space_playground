@@ -50,6 +50,9 @@ func set_active(t:bool) -> void:
 
 
 func update_visuals() -> void:
+	if not target : 
+		queue_free()
+		return
 	set_active(true)
 	var safe_distance := max(target.global_position.distance_to(player.global_position), 0.001) as float
 	_size_factor = max(size_scale_numerator / safe_distance, min_size_factor)

@@ -29,7 +29,7 @@ func _ready() -> void:
 	cam_main = root.get_main_camera()
 	GameManager.hud_manager.register_hud_group(hud_container).set_flow_effect(ControlGroup.Index.GROUP_1).set_rotation_effect().set_boost_offset_effect()
 	if cam_main == null:
-		log_missing_component("main camera")
+		Log.log_missing_component(self,"main camera")
 		queue_free()
 	
 func _init_crosshair_4() -> void:

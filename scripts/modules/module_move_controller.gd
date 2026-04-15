@@ -36,17 +36,15 @@ var model_node: Node3D
 var is_looking_around := false
 
 func _ready() -> void:
-	# particle_speed_up = root.get_boost_particle()
+
 	SignalBus.on_track_mouse_change.connect(_on_track_mouse_change)
 	SignalBus.on_player_look_backward.connect(_on_look_backward_change)
-	# SignalBus.on_player_boost.connect(_handle_boost_input)
+
 	SignalBus.on_player_look_around.connect(_on_look_around_change)
-	# if particle_speed_up == null:
-	# 	log_missing_component("boost particle")
-	# 	queue_free()
+
 	model_node = root.get_model_node()
 	if model_node == null:
-		log_missing_component("model node")
+		Log.log_missing_component(self , "model node")
 		queue_free()
 
 

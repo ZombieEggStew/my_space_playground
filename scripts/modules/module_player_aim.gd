@@ -30,13 +30,13 @@ func _ready() -> void:
 	cam_main = root.get_main_camera()
 
 	if cam_main == null:
-		log_missing_component("main camera")
+		Log.log_missing_component(self,"main camera")
 		queue_free()
 
 	rader_module = modules_manager.get_radar_module()
 
 	if rader_module == null:
-		log_missing_component("RadarModule")
+		Log.log_missing_component(self,"RadarModule")
 		queue_free()
 	
 	rader_module.on_target_found.connect(_spawn_ui_for_target)

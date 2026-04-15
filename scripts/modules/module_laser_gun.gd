@@ -9,22 +9,10 @@ var cam_main: Camera3D
 @export var left_laser_audio : AudioStreamPlayer
 @export var right_laser_audio : AudioStreamPlayer
 @export var aim_system: LaserGunHudSystem
-
-@export var cool_down_timer:Timer
-
-@export var heat_bar : TextureProgressBar
-
-# 过热系统变量
-@export var max_heat: float = 100.0
-@export var heat_per_shot: float = 1.0
-
-@export var heat_recovery_rate: float = 20.0  # 每秒降低的热量
-
-var current_heat: float = 0.0
-var is_overheated: bool = false
+@export var heat_manager: HeatManager
 
 # 存储机炮发射角度
-var forward: Vector3
+var forward: Vector3 = Vector3.FORWARD
 var damage := 10.0
 
 var gun_pivot_left : Node3D
@@ -53,17 +41,21 @@ func _ready() -> void:
 	gun_pivot_left = root.get_gun_pivot_left()
 
 	if cam_main == null or gun_pivot_left == null:
-		log_error("Main camera or gun pivot not found in CharacterBody3D.")
+		Log.log_error(self,"Main camera or gun pivot not found in CharacterBody3D.")
 		queue_free()
 	aim_modrule = modules_manager.get_aim_module()
 	if aim_modrule == null:
-		log_error("Aim module not found in ModulesManager.")
+		Log.log_error(self,"Aim module not found in ModulesManager.")
 		queue_free()
 	
-	if heat_bar:
-		heat_bar.max_value = max_heat
-		heat_bar.value = current_heat
+	if heat_manager:
+		heat_manager.overheated.connect(_on_overheated)
 
+	
+
+func _on_overheated(overheated_status: bool) -> void:
+	if overheated_status:
+		shoot_timer.stop()
 
 func _get_crosshair3_screen_pos() -> Vector2:
 	if crosshair_3 :
@@ -88,6 +80,7 @@ func _get_next_muzzle_pos() -> Vector3:
 	_fire_from_left = not _fire_from_left
 	return muzzle_pos
 
+
 func spawn_bullet( pos: Vector3, dir: Vector3, team_id: int, shooter: Node = null) -> void:
 	if bullet_scene == null:
 		return
@@ -99,11 +92,13 @@ func spawn_bullet( pos: Vector3, dir: Vector3, team_id: int, shooter: Node = nul
 	bullets_parent.add_child(bullet)
 
 	if bullet.has_method("setup"):
-		bullet.call("setup", round(damage * (1 + (current_heat / max_heat))) ,pos, dir, team_id, shooter)
+		var heat_ratio = heat_manager.get_heat_ratio() if heat_manager else 0.0
+		bullet.call("setup", round(damage * (1 + heat_ratio)) ,pos, dir, team_id, shooter)
+
 
 func handle_shooting(enable: bool) -> void:
 	if enable:
-		if is_overheated:
+		if heat_manager and heat_manager.is_overheated:
 			return
 		shoot()
 		shoot_timer.start()       # 开始循环计时
@@ -113,52 +108,24 @@ func handle_shooting(enable: bool) -> void:
 
 
 func _on_shoot_timer_timeout() -> void:
-	if is_overheated:
+	if heat_manager and heat_manager.is_overheated:
 		shoot_timer.stop()
 		return
 	shoot()
 
 
-func _process(delta: float) -> void:
-	# 只要计时器没在运行，就降低热量
-	if cool_down_timer and cool_down_timer.is_stopped():
-		if current_heat > 0:
-			current_heat = max(0, current_heat - heat_recovery_rate * delta)
-			# 如果处于过热状态且热量降低到0，则解除过热
-			if is_overheated and current_heat <= 0:
-				is_overheated = false
-	
-	if heat_bar:
-		heat_bar.value = current_heat
-
-func enter_overheat() -> void:
-	is_overheated = true
-	shoot_timer.stop()
-	# 过热时启动冷却延迟计时，确保停止射击后延迟开始降热
-	if cool_down_timer:
-		cool_down_timer.start()
+func _process(_delta: float) -> void:
+	pass
 
 func shoot() -> void:
-	if is_overheated:
-		return
-
-	# 增加热量
-	current_heat += heat_per_shot
-	
-	# 每次射击重置/启动计时器，实现 heat_cooldown_delay 的延迟效果
-	if cool_down_timer and not is_overheated:
-		cool_down_timer.start()
-	
-	if current_heat >= max_heat:
-		current_heat = max_heat
-		enter_overheat()
+	if heat_manager:
+		if not heat_manager.add_heat():
+			return
 
 	var aim_screen_pos = aim_system.get_aim_point_screen_pos()
-
-
+	
 	if aim_screen_pos != Vector2.INF:
 		forward = aim_modrule.get_aim_direction_from_crosshair(aim_screen_pos)
-		
 	
 	var right := cam_main.global_transform.basis.x.normalized() if cam_main else root.global_transform.basis.x.normalized()
 	var up := cam_main.global_transform.basis.y.normalized() if cam_main else root.global_transform.basis.y.normalized()
@@ -168,3 +135,5 @@ func shoot() -> void:
 	var shot_dir := (forward + right * offset_x + up * offset_y).normalized() as Vector3
 	var muzzle_pos := _get_next_muzzle_pos()
 	spawn_bullet(muzzle_pos, shot_dir, TeamID.TEAM_PLAYER)
+
+

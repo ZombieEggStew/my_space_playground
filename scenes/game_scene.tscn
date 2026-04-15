@@ -16,7 +16,9 @@
 [ext_resource type="Script" uid="uid://bif7ajwev85ag" path="res://scripts/ui/ui_boost_shake_effect.gd" id="8_85lt4"]
 [ext_resource type="PackedScene" uid="uid://du22jo3gvxf3g" path="res://scenes/space_craft_1.tscn" id="8_b5spy"]
 [ext_resource type="Script" uid="uid://rc8mf3fvqios" path="res://scripts/tool/test_box.gd" id="8_utbpp"]
+[ext_resource type="Script" uid="uid://cgk5amjjx7sxy" path="res://scripts/Manager/damage_number_pool.gd" id="8_xgstd"]
 [ext_resource type="Script" uid="uid://bxurlpyhbiqd7" path="res://scripts/Main.gd" id="9_1kk2r"]
+[ext_resource type="PackedScene" uid="uid://m5sahpw4t3jh" path="res://scenes/ui/damage_number.tscn" id="9_ttvoq"]
 [ext_resource type="Material" uid="uid://djeunexyuwbdk" path="res://material/test_material.tres" id="10_mw25s"]
 [ext_resource type="PackedScene" uid="uid://csvjfmieyjaub" path="res://scenes/space_craft_6.tscn" id="11_tcjrq"]
 [ext_resource type="PackedScene" uid="uid://dvopp258cqkyy" path="res://scenes/space_craft_5.tscn" id="12_rvs2r"]
@@ -551,7 +553,7 @@ rotation_effect = NodePath("EffectManager/UI_RotationEffect")
 boost_offset_effect = NodePath("EffectManager/UI_BoostOffsetEffect")
 boost_shake_effect = NodePath("EffectManager/UI_BoostShakeEffect")
 
-[node name="hud_container" type="Control" parent="HUD_Manager" unique_id=466224714]
+[node name="hud_container" type="Control" parent="HUD_Manager" unique_id=435618338]
 texture_filter = 2
 layout_mode = 3
 anchors_preset = 15
@@ -559,13 +561,16 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-mouse_filter = 2
 metadata/_edit_lock_ = true
 
 [node name="hud_far_manager" type="Node" parent="HUD_Manager" unique_id=491789435]
 script = ExtResource("7_103ce")
 
 [node name="hud_static" type="Node" parent="HUD_Manager" unique_id=155327225]
+
+[node name="damage_number_pool" type="Node" parent="HUD_Manager/hud_static" unique_id=759892552]
+script = ExtResource("8_xgstd")
+damage_number_scene = ExtResource("9_ttvoq")
 
 [node name="EffectManager" type="Node" parent="HUD_Manager" unique_id=2110931767]
 script = ExtResource("4_6aqbo")

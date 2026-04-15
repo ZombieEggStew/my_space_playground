@@ -9,4 +9,4 @@ func install_booster_module(module_scene: PackedScene) -> void:
 		booster_module = module
 		add_child(module)
 	else:
-		log_error("Installed module is not a BoosterModule: %s" % module_scene)
+		Log.log_error(self,"Installed module is not a BoosterModule: %s" % module_scene)

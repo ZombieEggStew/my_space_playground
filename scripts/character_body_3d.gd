@@ -26,8 +26,8 @@
 #TO DO :
 #TO DO :速度矢量球 (Flight Path Marker / FPM):用 camera.unproject_position(aircraft.global_position + velocity) 将空间向量投射到屏幕坐标。
 #TO DO :抖动 (Jitter)：在高速或大过载时，通过代码给 HUD 节点增加微小的随机位移。
-#TO DO :
-#TO DO :
+#TO DO :伤害数字 根据伤害类型（如暴击、治疗、扣血）在 _show_damage_number 中设置不同的 font_color。
+#TO DO :注册到hud_far的组件更加清晰，弄清楚为什么
 #TO DO : 地平线指示器？
 #TO DO :
 #TO DO : 拾取音效：清脆

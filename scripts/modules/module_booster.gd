@@ -28,7 +28,7 @@ func _ready() -> void:
 		energy_tick.timeout.connect(_on_energy_tick)
 
 	else:
-		log_missing_component("energy_tick Timer")
+		Log.log_missing_component(self,"energy_tick Timer")
 
 
 	if boost_progress_bar:
