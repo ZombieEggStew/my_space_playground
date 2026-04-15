@@ -17,25 +17,36 @@ point_count = 1
 [sub_resource type="CurveTexture" id="CurveTexture_jae7w"]
 curve = SubResource("Curve_s0s52")
 
-[node name="hp_bar_mask" type="ColorRect" unique_id=2144446811 node_paths=PackedStringArray("hp_bar")]
+[node name="hp_bar_target" type="Node" unique_id=1858926615 node_paths=PackedStringArray("hp_bar", "hp_catch", "mask")]
+script = ExtResource("1_6ubop")
+hp_bar = NodePath("hp_bar_mask/hp_bar/hp_progress_bar")
+hp_catch = NodePath("hp_bar_mask/hp_bar/hp_progress_catch")
+mask = NodePath("hp_bar_mask")
+
+[node name="hp_bar_mask" type="ColorRect" parent="." unique_id=2144446811]
 clip_children = 1
-offset_top = 69.0
+offset_top = 64.0
 offset_right = 100.0
-offset_bottom = 81.0
+offset_bottom = 76.0
 size_flags_horizontal = 4
 size_flags_vertical = 4
-script = ExtResource("1_6ubop")
-hp_bar = NodePath("hp_bar/TextureProgressBar")
 metadata/_edit_group_ = true
 
-[node name="hp_bar" type="PanelContainer" parent="." unique_id=624053324]
+[node name="hp_bar" type="PanelContainer" parent="hp_bar_mask" unique_id=624053324]
 layout_mode = 0
 offset_right = 100.0
 offset_bottom = 12.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_s0s52")
 
-[node name="TextureProgressBar" type="TextureProgressBar" parent="hp_bar" unique_id=1142868685]
+[node name="hp_progress_bar" type="TextureProgressBar" parent="hp_bar_mask/hp_bar" unique_id=1142868685]
 layout_mode = 2
 value = 50.0
 nine_patch_stretch = true
 texture_progress = SubResource("CurveTexture_jae7w")
+
+[node name="hp_progress_catch" type="TextureProgressBar" parent="hp_bar_mask/hp_bar" unique_id=1982712629]
+layout_mode = 2
+value = 75.0
+nine_patch_stretch = true
+texture_progress = SubResource("CurveTexture_jae7w")
+tint_progress = Color(1, 1, 1, 0.4627451)

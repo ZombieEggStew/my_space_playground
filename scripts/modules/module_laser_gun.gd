@@ -25,7 +25,7 @@ var is_overheated: bool = false
 
 # 存储机炮发射角度
 var forward: Vector3
-
+var damage := 10.0
 
 var gun_pivot_left : Node3D
 
@@ -88,7 +88,7 @@ func _get_next_muzzle_pos() -> Vector3:
 	_fire_from_left = not _fire_from_left
 	return muzzle_pos
 
-func spawn_bullet(pos: Vector3, dir: Vector3, team_id: int, shooter: Node = null) -> void:
+func spawn_bullet( pos: Vector3, dir: Vector3, team_id: int, shooter: Node = null) -> void:
 	if bullet_scene == null:
 		return
 
@@ -99,7 +99,7 @@ func spawn_bullet(pos: Vector3, dir: Vector3, team_id: int, shooter: Node = null
 	bullets_parent.add_child(bullet)
 
 	if bullet.has_method("setup"):
-		bullet.call("setup", pos, dir, team_id, shooter)
+		bullet.call("setup", round(damage * (1 + (current_heat / max_heat))) ,pos, dir, team_id, shooter)
 
 func handle_shooting(enable: bool) -> void:
 	if enable:

@@ -15,6 +15,8 @@ var module_predict_aim_scene: PackedScene = preload("res://scenes/modules/module
 
 var crosshair_1: PackedScene = preload("res://scenes/ui/crosshair_1.tscn")
 var crosshair_2: PackedScene = preload("res://scenes/ui/crosshair_2.tscn")
+var hp_bar_target_scene: PackedScene = preload("res://scenes/ui/hp_bar_target.tscn")
+
 var crosshair_3: PackedScene = preload("res://scenes/ui/crosshair_3.tscn")
 var crosshair_4: PackedScene = preload("res://scenes/ui/crosshair_4.tscn")
 var dead_zone_indicator_scene: PackedScene = preload("res://scenes/ui/dead_zone_indicator.tscn")

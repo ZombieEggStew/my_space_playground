@@ -19,7 +19,7 @@ var orbit_angular_speed := .1
 @onready var health :HealthComponent = $HealthComponent
 
 func _ready() -> void:
-	health.setup(10, 10)
+	health.setup(100, 100)
 	health.on_death.connect(die)
 	_randomize_spawn_and_orbit()
 
@@ -71,8 +71,9 @@ func reset() -> void:
 func get_hit_count() -> IntStat:
 	return hit_count
 
-func hit(_damage: float) -> void:
-	health.take_damage(1)
+func hit(_damage: int) -> void:
+	print("Enemy hit! Damage: ", _damage)
+	health.take_damage(_damage)
 
 func get_pivot_offset() -> Vector3:
 	return Vector3.ZERO

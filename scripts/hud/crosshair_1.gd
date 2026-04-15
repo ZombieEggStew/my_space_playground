@@ -28,13 +28,14 @@ func _ready() -> void:
 
 func _on_enter_screen():
 	set_process(true)
+	
 func _on_exit_screen():
 	set_process(false)
 	set_active(false)
 
 
 func _process(_delta):
-	update_visuals(cam.unproject_position(target.global_position), target.global_position.distance_to(player.global_position))
+	update_visuals()
 
 
 func reset() -> void:
@@ -48,12 +49,12 @@ func set_active(t:bool) -> void:
 	rect.visible = t
 
 
-func update_visuals(screen_pos: Vector2, distance: float) -> void:
+func update_visuals() -> void:
 	set_active(true)
-	var safe_distance := max(distance, 0.001) as float
+	var safe_distance := max(target.global_position.distance_to(player.global_position), 0.001) as float
 	_size_factor = max(size_scale_numerator / safe_distance, min_size_factor)
 	rect.size = base_size * _size_factor
-	rect.position = screen_pos - rect.size / 2.0
+	rect.position = cam.unproject_position(target.global_position) - rect.size / 2.0
 
 
 func get_size_factor() -> float:

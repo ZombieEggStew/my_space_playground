@@ -25,6 +25,7 @@ var aim_ray_length := 5000.0 #非锁定时使用，预测射击点
 
 func _ready() -> void:
 	init_crosshair_2()
+
 	SignalBus.on_player_try_lock.connect(_handle_lock_action)
 	cam_main = root.get_main_camera()
 
@@ -43,9 +44,28 @@ func _ready() -> void:
 func init_crosshair_2() -> void:
 	crosshair_2 = GameManager.hud_manager.register_hud_static(Scenes.crosshair_2)
 
+func _spawn_ui_for_target(target:AbleToBeLocked) -> void:
+	init_crosshair_1_for_target(target)
+
+	init_locked_target_hp_bar(target)
+
+
+func init_crosshair_1_for_target(target:AbleToBeLocked) -> void:
+	var crosshair_1 = GameManager.hud_manager.register_hud_static(Scenes.crosshair_1)
+	crosshair_1.mouse_entered.connect(_on_mouse_enter_target)
+	crosshair_1.mouse_exited.connect(_on_mouse_exit_target)
+
+	crosshair_1.setup(target, root , cam_main) # 完成绑定
+
+func init_locked_target_hp_bar(target:AbleToBeLocked) -> void:
+	var hp_bar_target = GameManager.hud_manager.register_hud_static(Scenes.hp_bar_target_scene)
+	hp_bar_target.setup(target , cam_main)
+	
+
 func _process(_delta: float) -> void:
 	# handle_targets()
 	handle_cross_hair_2()
+
 
 func _handle_lock_action():
 	if hovered_target != null:
@@ -61,15 +81,14 @@ func _on_mouse_exit_target() -> void:
 	hovered_target = null
 
 func set_locked_target(target: AbleToBeLocked) -> void:
+	if target:
+		target.set_locked(true)
+	else:
+		if locked_target:
+			locked_target.set_locked(false)
+
 	locked_target = target
 	SignalBus.on_player_lock_target.emit(target)
-
-func _spawn_ui_for_target(target:AbleToBeLocked) -> void:
-	var ui_inst = GameManager.hud_manager.register_hud_static(Scenes.crosshair_1)
-	ui_inst.mouse_entered.connect(_on_mouse_enter_target)
-	ui_inst.mouse_exited.connect(_on_mouse_exit_target)
-
-	ui_inst.setup(target, root , cam_main) # 完成绑定
 
 func _is_enemy_visible_from_camera(target: Node3D) -> bool:
 	if cam_main == null:
@@ -144,7 +163,8 @@ func handle_cross_hair_2():
 		crosshair_2.set_target_pos(cam_main.unproject_position(hovered_target.global_position))
 	else:
 		crosshair_2.reset()
-	
+
+
 func get_aim_direction_from_crosshair(aim_screen_pos:Vector2) -> Vector3:
 	if locked_target:
 		aim_ray_length = locked_target.global_position.distance_to(root.global_position) 

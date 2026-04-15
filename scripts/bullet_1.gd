@@ -15,6 +15,7 @@ var move_dir: Vector3 = Vector3.ZERO
 var _alive_time := 0.0
 var _shooter: Node = null
 
+var damage := 10
 
 func _ready() -> void:
 	body_entered.connect(_on_body_entered)
@@ -24,7 +25,8 @@ func get_team_id() -> int:
 	return team_id
 
 
-func setup(pos: Vector3, dir: Vector3, p_team_id: int = Team.NEUTRAL, shooter: Node = null) -> void:
+func setup(_damage:int,pos: Vector3, dir: Vector3, p_team_id: int = Team.NEUTRAL, shooter: Node = null) -> void:
+	damage = _damage
 	global_position = pos
 	move_dir = dir.normalized()
 	team_id = p_team_id
@@ -98,6 +100,5 @@ func _print_hit_message(collider_team: int, collider: Node) -> void:
 		print("Enemy hit player: ", collider.name)
 		collider.call("hit", 10.0) # 直接调用接口造成伤害，后续可以改成发信号或者其他方式解耦
 	elif team_id == Team.PLAYER and collider_team == Team.ENEMY:
-		print("Player hit enemy: ", collider.name)
-		collider.call("hit", 10.0) # 直接调用接口造成伤害，后续可以改成发信号或者其他方式解耦
+		collider.call("hit", damage) # 直接调用接口造成伤害，后续可以改成发信号或者其他方式解耦
 		GameManager.audio_manager.play_hit_sound()

@@ -1,5 +1,5 @@
 #TO DO : 玩家未锁定射击扩散逐渐变大，加入过热机制
-#TO DO : 玩家鼠标跟踪目标一定时间后锁定目标，获取目标信息（血量，速度），并且可以根据目标速度预判射击
+#TO DO : 
 #TO DO : 加入新种类敌人：参考无人深空空战
 
 #TO DO : 向右移动，中心参考圆UI，中心，向右移动,且固定
@@ -22,7 +22,7 @@
 #TO DO : 关卡设计 极简主义 镜之边缘
 #TO DO : 根据锁定目标的远近 修改子弹的留存时间
 #TO DO : 
-#TO DO :
+#TO DO :取消设计：BV1fUDQBMEgp
 #TO DO :
 #TO DO :速度矢量球 (Flight Path Marker / FPM):用 camera.unproject_position(aircraft.global_position + velocity) 将空间向量投射到屏幕坐标。
 #TO DO :抖动 (Jitter)：在高速或大过载时，通过代码给 HUD 节点增加微小的随机位移。
@@ -41,7 +41,7 @@
 #TO DO : 受击ui效果，转向ui效果,ui扫描码效果
 #TO DO : 敌人绿框下显示血条
 #TO DO : 冲刺：尾气
-#TO DO : laser_gun:添加过热机制，连续开火积累过热，过热后无法开火:热量越高，射速越快，伤害越高
+#TO DO : 
 #TO DO : 道具:能在过热的时候进行特殊射击，特殊射击消耗热量值，但是普通射击dps降低
 
 #TO DO : laser_gun: hud显示，timer与过热值，准星左半圆
