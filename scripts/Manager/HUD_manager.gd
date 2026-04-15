@@ -32,7 +32,7 @@ func register_hud_far(scene: PackedScene) -> Node:
 	hud_far.add_child(item)
 	return item
 
-func register_hud_far_2(container: Control) -> Node:
-	print("HUDManager: Registering HUD far element: " + container.name)
-	container.reparent(hud_far)
-	return container
+func register_hud_far_node(node: Node2D) -> Node:
+	print("HUDManager: Registering HUD far element: " + node.name)
+	node.reparent(hud_far)
+	return node

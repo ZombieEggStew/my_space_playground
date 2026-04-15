@@ -1,4 +1,4 @@
-extends Node
+extends Node2D
 class_name HUDFarManager
 
 var player:PlayerShip
@@ -29,3 +29,5 @@ func _process(_delta):
 		
 		# 3. 投影到屏幕 2D 坐标
 		nose_pos_2d = cam.unproject_position(forward_point_3d)
+
+	position = nose_pos_2d

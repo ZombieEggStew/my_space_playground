@@ -563,7 +563,7 @@ grow_horizontal = 2
 grow_vertical = 2
 metadata/_edit_lock_ = true
 
-[node name="hud_far_manager" type="Node" parent="HUD_Manager" unique_id=491789435]
+[node name="hud_far_manager" type="Node2D" parent="HUD_Manager" unique_id=127537362]
 script = ExtResource("7_103ce")
 
 [node name="hud_static" type="Node" parent="HUD_Manager" unique_id=155327225]

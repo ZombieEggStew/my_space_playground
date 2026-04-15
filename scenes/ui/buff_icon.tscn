@@ -1,0 +1,15 @@
+[gd_scene format=3 uid="uid://bfl0lgvhor0ha"]
+
+[ext_resource type="Script" uid="uid://rjyg5sebxrig" path="res://scripts/ui/buff_icon.gd" id="1_kelhc"]
+
+[node name="buff_icon" type="PanelContainer" unique_id=2056554197 node_paths=PackedStringArray("icon_rect")]
+custom_minimum_size = Vector2(64, 64)
+size_flags_horizontal = 0
+size_flags_vertical = 0
+script = ExtResource("1_kelhc")
+icon_rect = NodePath("TextureRect")
+
+[node name="TextureRect" type="TextureRect" parent="." unique_id=67811282]
+texture_filter = 1
+layout_mode = 2
+expand_mode = 1

@@ -1,11 +1,5 @@
 [gd_scene format=3 uid="uid://d8jxxx1p10es"]
 
-[node name="Buff" type="Node" unique_id=967536127]
+[node name="Buff" type="Node3D" unique_id=475077797]
 
 [node name="Timer" type="Timer" parent="." unique_id=1137027917]
-
-[node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=114058622]
-
-[node name="PanelContainer" type="PanelContainer" parent="CanvasLayer" unique_id=1875380028]
-offset_right = 40.0
-offset_bottom = 40.0

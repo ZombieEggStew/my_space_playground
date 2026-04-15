@@ -6,7 +6,6 @@
 [ext_resource type="Script" uid="uid://drvrjrppgqs3a" path="res://scripts/modules/module_component/heat_manager.gd" id="4_660ev"]
 [ext_resource type="Script" uid="uid://buhdvs7dw32k3" path="res://scripts/modules/module_component/laser_gun_hud_system.gd" id="4_pcc1v"]
 [ext_resource type="Texture2D" uid="uid://c8bhpxdqfp07i" path="res://textures/white_100x100px.png" id="5_67tsh"]
-[ext_resource type="Script" uid="uid://d3mc500k4ykto" path="res://scripts/tool/control_hud_far.gd" id="5_rg41u"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_67tsh"]
 content_margin_left = 3.0
@@ -29,7 +28,7 @@ left_laser_audio = NodePath("left_laser")
 right_laser_audio = NodePath("right_laser")
 aim_system = NodePath("laser_gun_hud_system")
 heat_manager = NodePath("heat_manager")
-hud_container = NodePath("heat_manager/laser_gun")
+hud_container = NodePath("")
 
 [node name="timer_shoot" type="Timer" parent="." unique_id=1919365830]
 wait_time = 0.1
@@ -37,34 +36,26 @@ wait_time = 0.1
 [node name="laser_gun_hud_system" type="Node" parent="." unique_id=2143537013]
 script = ExtResource("4_pcc1v")
 
-[node name="heat_manager" type="Node" parent="." unique_id=1017704668 node_paths=PackedStringArray("cool_down_timer", "heat_bar")]
+[node name="heat_manager" type="Node" parent="." unique_id=1017704668 node_paths=PackedStringArray("cool_down_timer", "heat_bar", "hud_container")]
 script = ExtResource("4_660ev")
 cool_down_timer = NodePath("timer_cool_down")
-heat_bar = NodePath("laser_gun/PanelContainer/TextureProgressBar")
+heat_bar = NodePath("laser_gun_heat/PanelContainer/TextureProgressBar")
+hud_container = NodePath("laser_gun_heat")
 
 [node name="timer_cool_down" type="Timer" parent="heat_manager" unique_id=1202269650]
 one_shot = true
 
-[node name="laser_gun" type="Control" parent="heat_manager" unique_id=1683426097]
-layout_mode = 3
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
-script = ExtResource("5_rg41u")
+[node name="laser_gun_heat" type="Node2D" parent="heat_manager" unique_id=167179851]
 
-[node name="PanelContainer" type="PanelContainer" parent="heat_manager/laser_gun" unique_id=916836786]
-layout_mode = 0
-offset_left = 820.0
-offset_top = 490.0
-offset_right = 836.0
-offset_bottom = 590.0
+[node name="PanelContainer" type="PanelContainer" parent="heat_manager/laser_gun_heat" unique_id=1009708249]
+offset_left = -109.0
+offset_top = -50.0
+offset_right = -93.0
+offset_bottom = 50.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_67tsh")
 metadata/_edit_group_ = true
 
-[node name="TextureProgressBar" type="TextureProgressBar" parent="heat_manager/laser_gun/PanelContainer" unique_id=1040230738]
+[node name="TextureProgressBar" type="TextureProgressBar" parent="heat_manager/laser_gun_heat/PanelContainer" unique_id=1464394290]
 layout_mode = 2
 value = 75.0
 fill_mode = 3

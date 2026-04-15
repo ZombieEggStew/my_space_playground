@@ -7,7 +7,5 @@ var modules_manager : ModulesManager
 
 
 func _enter_tree() -> void:
-    modules_manager = get_parent()
-    root = modules_manager.get_parent()
-
-
+	modules_manager = get_parent()
+	root = modules_manager.get_parent()

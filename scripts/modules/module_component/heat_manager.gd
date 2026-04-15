@@ -20,6 +20,7 @@ func _ready() -> void:
 	if heat_bar:
 		heat_bar.max_value = max_heat
 		heat_bar.value = current_heat
+	GameManager.hud_manager.register_hud_far_node(hud_container)
 
 func add_heat() -> bool:
 	if is_overheated:

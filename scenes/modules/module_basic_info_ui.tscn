@@ -1,9 +1,12 @@
 [gd_scene format=3 uid="uid://dldi60ppqknmu"]
 
 [ext_resource type="Script" uid="uid://cdb3cchx3xuve" path="res://scripts/modules/module_basic_info_ui.gd" id="1_chcyh"]
+[ext_resource type="Script" uid="uid://swxqhrgdya3" path="res://scripts/ui/panel_speed.gd" id="2_eq387"]
 [ext_resource type="LabelSettings" uid="uid://rvf70tp83o1k" path="res://font_style/font_size_32.tres" id="2_tdvs8"]
+[ext_resource type="Script" uid="uid://ufpvxnbggi0m" path="res://scripts/ui/buff_container.gd" id="4_1fqis"]
 [ext_resource type="Material" uid="uid://k4ms5r7ptj5g" path="res://material/canvasItem/new_canvas_item_material.tres" id="4_eq387"]
 [ext_resource type="Script" uid="uid://gptjye17aeil" path="res://scripts/ui/hp_bar.gd" id="4_p4vrk"]
+[ext_resource type="PackedScene" uid="uid://bfl0lgvhor0ha" path="res://scenes/ui/buff_icon.tscn" id="5_evxb0"]
 [ext_resource type="Texture2D" uid="uid://35piuouavkat" path="res://textures/white_1x1px.png" id="5_qbege"]
 [ext_resource type="Texture2D" uid="uid://c8bhpxdqfp07i" path="res://textures/white_100x100px.png" id="5_w1gke"]
 
@@ -70,10 +73,11 @@ direction = Vector3(0, 0, 0)
 gravity = Vector3(0, 0, 0)
 alpha_curve = SubResource("CurveTexture_1fqis")
 
-[node name="module_basic_info_ui" type="Node" unique_id=2111012816 node_paths=PackedStringArray("hp_bar", "speed_label", "hud_container")]
+[node name="module_basic_info_ui" type="Node" unique_id=2111012816 node_paths=PackedStringArray("hp_bar", "speed_panel", "buff_container", "hud_container")]
 script = ExtResource("1_chcyh")
 hp_bar = NodePath("basic_info/hp_bar_and_label")
-speed_label = NodePath("basic_info/panel_speed/VBoxContainer/MarginContainer/HBoxContainer/speed_value")
+speed_panel = NodePath("basic_info/panel_speed")
+buff_container = NodePath("basic_info/buff_container")
 hud_container = NodePath("basic_info")
 
 [node name="basic_info" type="Control" parent="." unique_id=1064155853]
@@ -85,7 +89,7 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 
-[node name="panel_speed" type="PanelContainer" parent="basic_info" unique_id=866523806]
+[node name="panel_speed" type="PanelContainer" parent="basic_info" unique_id=866523806 node_paths=PackedStringArray("speed_label")]
 layout_mode = 1
 anchors_preset = 3
 anchor_left = 1.0
@@ -100,6 +104,8 @@ grow_horizontal = 0
 grow_vertical = 0
 mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_eq387")
+script = ExtResource("2_eq387")
+speed_label = NodePath("VBoxContainer/MarginContainer/HBoxContainer/speed_value")
 metadata/_edit_group_ = true
 
 [node name="VBoxContainer" type="VBoxContainer" parent="basic_info/panel_speed" unique_id=865570120]
@@ -125,53 +131,18 @@ layout_mode = 2
 text = "--"
 label_settings = ExtResource("2_tdvs8")
 
-[node name="VBoxContainer" type="HFlowContainer" parent="basic_info" unique_id=640689833]
+[node name="buff_container" type="HFlowContainer" parent="basic_info" unique_id=640689833]
 layout_mode = 1
 anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
 offset_left = -484.0
 offset_top = 80.0
-offset_right = -232.0
+offset_right = -207.0
 offset_bottom = 346.0
 grow_horizontal = 0
-metadata/_edit_group_ = true
-
-[node name="PanelContainer" type="PanelContainer" parent="basic_info/VBoxContainer" unique_id=1296766194]
-custom_minimum_size = Vector2(50, 50)
-layout_mode = 2
-size_flags_horizontal = 0
-size_flags_vertical = 0
-
-[node name="PanelContainer2" type="PanelContainer" parent="basic_info/VBoxContainer" unique_id=803212248]
-custom_minimum_size = Vector2(50, 50)
-layout_mode = 2
-size_flags_horizontal = 0
-size_flags_vertical = 0
-
-[node name="PanelContainer3" type="PanelContainer" parent="basic_info/VBoxContainer" unique_id=692438688]
-custom_minimum_size = Vector2(50, 50)
-layout_mode = 2
-size_flags_horizontal = 0
-size_flags_vertical = 0
-
-[node name="PanelContainer4" type="PanelContainer" parent="basic_info/VBoxContainer" unique_id=584984001]
-custom_minimum_size = Vector2(50, 50)
-layout_mode = 2
-size_flags_horizontal = 0
-size_flags_vertical = 0
-
-[node name="PanelContainer5" type="PanelContainer" parent="basic_info/VBoxContainer" unique_id=50531563]
-custom_minimum_size = Vector2(50, 50)
-layout_mode = 2
-size_flags_horizontal = 0
-size_flags_vertical = 0
-
-[node name="PanelContainer6" type="PanelContainer" parent="basic_info/VBoxContainer" unique_id=1268781635]
-custom_minimum_size = Vector2(50, 50)
-layout_mode = 2
-size_flags_horizontal = 0
-size_flags_vertical = 0
+script = ExtResource("4_1fqis")
+buff_icon_scene = ExtResource("5_evxb0")
 
 [node name="hp_bar_and_label" type="VBoxContainer" parent="basic_info" unique_id=5052555 node_paths=PackedStringArray("hp_bar", "hp_label", "health_down_effect", "health_change_effect", "hp_bar_catch")]
 layout_mode = 1

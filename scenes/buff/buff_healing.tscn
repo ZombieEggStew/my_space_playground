@@ -2,6 +2,57 @@
 
 [ext_resource type="PackedScene" uid="uid://d8jxxx1p10es" path="res://scenes/buff/base/buff.tscn" id="1_cvc6h"]
 [ext_resource type="Script" uid="uid://pv62xqm7f4hr" path="res://scripts/buff/buff_healing.gd" id="2_k03xh"]
+[ext_resource type="Texture2D" uid="uid://c8hgkt1jt3iam" path="res://textures/icon_buff_healing.png" id="3_jj7bv"]
 
-[node name="Buff" unique_id=967536127 instance=ExtResource("1_cvc6h")]
+[sub_resource type="Curve" id="Curve_k03xh"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(0.28412947, 0.2655806), -0.13341498, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_jj7bv"]
+curve = SubResource("Curve_k03xh")
+
+[sub_resource type="Curve" id="Curve_jj7bv"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(0.9941449, 0), -2.4755707, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_mmfv8"]
+curve = SubResource("Curve_jj7bv")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_k03xh"]
+lifetime_randomness = 0.5
+particle_flag_rotate_y = true
+emission_shape = 3
+emission_box_extents = Vector3(1, 1, 1)
+angle_min = -179.99998
+angle_max = 180.00002
+direction = Vector3(0, 1, 0)
+spread = 30.0
+initial_velocity_min = 0.25
+initial_velocity_max = 1.75
+angular_velocity_min = -180.00002
+angular_velocity_max = 179.99998
+gravity = Vector3(0, 0, 0)
+scale_curve = SubResource("CurveTexture_mmfv8")
+alpha_curve = SubResource("CurveTexture_jj7bv")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_k03xh"]
+transparency = 1
+shading_mode = 0
+vertex_color_use_as_albedo = true
+albedo_color = Color(0.34117648, 1, 0.21568628, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_jj7bv"]
+material = SubResource("StandardMaterial3D_k03xh")
+size = Vector3(0.1, 0.1, 0.1)
+
+[node name="Buff" unique_id=967536127 node_paths=PackedStringArray("particle") instance=ExtResource("1_cvc6h")]
 script = ExtResource("2_k03xh")
+particle = NodePath("GPUParticles3D")
+icon = ExtResource("3_jj7bv")
+
+[node name="GPUParticles3D" type="GPUParticles3D" parent="." index="1" unique_id=766919091]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.6395833, 0)
+amount = 100
+lifetime = 5.0
+process_material = SubResource("ParticleProcessMaterial_k03xh")
+draw_pass_1 = SubResource("BoxMesh_jj7bv")

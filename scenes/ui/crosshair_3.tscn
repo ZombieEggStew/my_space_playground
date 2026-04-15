@@ -3,4 +3,5 @@
 [ext_resource type="Script" uid="uid://42lbnj8v4kyx" path="res://scripts/hud/crosshair_3.gd" id="1_27pta"]
 
 [node name="crosshair_3" type="Node2D" unique_id=1668287668]
+top_level = true
 script = ExtResource("1_27pta")

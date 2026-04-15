@@ -39,7 +39,7 @@
 #TO DO : 优化crosshair2的逻辑，移动逻辑放在自身脚本里
 #TO DO : 类无助之地描边效果
 #TO DO : 受击ui效果，转向ui效果,ui扫描码效果
-#TO DO : 敌人绿框下显示血条
+#TO DO : 
 #TO DO : 冲刺：尾气
 #TO DO : 
 #TO DO : 道具:能在过热的时候进行特殊射击，特殊射击消耗热量值，但是普通射击dps降低
@@ -91,6 +91,7 @@ var fov_smooth := 8.0         # FOV 平滑插值速度
 
 @export var modules_manager: ModulesManager
 
+@export var buff_manager: PlayerBuffManager
 
 func _ready() -> void:
 	
@@ -144,6 +145,8 @@ func get_team_id() -> int:
 func die() -> void:
 	pass
 
+func get_player_buff_manager() -> PlayerBuffManager:
+	return buff_manager
 
 func _input(event: InputEvent) -> void:
 	if event is InputEventKey and event.pressed and event.keycode == Key.KEY_Q:
