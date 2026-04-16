@@ -3,10 +3,9 @@
 [ext_resource type="Script" uid="uid://cdb3cchx3xuve" path="res://scripts/modules/module_basic_info_ui.gd" id="1_chcyh"]
 [ext_resource type="Script" uid="uid://swxqhrgdya3" path="res://scripts/ui/panel_speed.gd" id="2_eq387"]
 [ext_resource type="LabelSettings" uid="uid://rvf70tp83o1k" path="res://font_style/font_size_32.tres" id="2_tdvs8"]
-[ext_resource type="Script" uid="uid://ufpvxnbggi0m" path="res://scripts/ui/buff_container.gd" id="4_1fqis"]
+[ext_resource type="Script" uid="uid://d2273mfy65uh3" path="res://scripts/ui/buff_layout.gd" id="4_1fqis"]
 [ext_resource type="Material" uid="uid://k4ms5r7ptj5g" path="res://material/canvasItem/new_canvas_item_material.tres" id="4_eq387"]
 [ext_resource type="Script" uid="uid://gptjye17aeil" path="res://scripts/ui/hp_bar.gd" id="4_p4vrk"]
-[ext_resource type="PackedScene" uid="uid://bfl0lgvhor0ha" path="res://scenes/ui/buff_icon.tscn" id="5_evxb0"]
 [ext_resource type="Texture2D" uid="uid://35piuouavkat" path="res://textures/white_1x1px.png" id="5_qbege"]
 [ext_resource type="Texture2D" uid="uid://c8bhpxdqfp07i" path="res://textures/white_100x100px.png" id="5_w1gke"]
 
@@ -73,11 +72,10 @@ direction = Vector3(0, 0, 0)
 gravity = Vector3(0, 0, 0)
 alpha_curve = SubResource("CurveTexture_1fqis")
 
-[node name="module_basic_info_ui" type="Node" unique_id=2111012816 node_paths=PackedStringArray("hp_bar", "speed_panel", "buff_container", "hud_container")]
+[node name="module_basic_info_ui" type="Node" unique_id=2111012816 node_paths=PackedStringArray("hp_bar", "speed_panel", "hud_container")]
 script = ExtResource("1_chcyh")
 hp_bar = NodePath("basic_info/hp_bar_and_label")
 speed_panel = NodePath("basic_info/panel_speed")
-buff_container = NodePath("basic_info/buff_container")
 hud_container = NodePath("basic_info")
 
 [node name="basic_info" type="Control" parent="." unique_id=1064155853]
@@ -136,13 +134,12 @@ layout_mode = 1
 anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
-offset_left = -484.0
+offset_left = -599.0
 offset_top = 80.0
 offset_right = -207.0
 offset_bottom = 346.0
 grow_horizontal = 0
 script = ExtResource("4_1fqis")
-buff_icon_scene = ExtResource("5_evxb0")
 
 [node name="hp_bar_and_label" type="VBoxContainer" parent="basic_info" unique_id=5052555 node_paths=PackedStringArray("hp_bar", "hp_label", "health_down_effect", "health_change_effect", "hp_bar_catch")]
 layout_mode = 1

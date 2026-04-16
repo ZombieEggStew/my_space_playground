@@ -50,7 +50,8 @@ func _process(_delta: float) -> void:
 		if bullet_speed == 0.0:
 			print("cannot get bullet speed")
 
-		crosshair_4.call("set_target_pos", aim_data.get("screen_pos", Vector2.ZERO))
+		crosshair_4.call("set_target_pos", aim_data)
+		
 	else:
 		crosshair_4.call("reset")
 
@@ -108,8 +109,6 @@ func get_predicted_aim_data(_bullet_speed :float) -> Dictionary:
 		return out
 
 	var target_world_pos := _locked_enemy_target.target_node3d.global_position
-	# if _locked_enemy_target.has_method("get_pivot_offset"):
-	# 	target_world_pos += _locked_enemy_target.call("get_pivot_offset") as Vector3
 	var target_vel := _get_target_velocity(_locked_enemy_target.target_node3d)
 
 	var shooter_pos := root.global_position
@@ -124,4 +123,5 @@ func get_predicted_aim_data(_bullet_speed :float) -> Dictionary:
 	out["screen_pos"] = predicted_screen_pos
 	out["world_pos"] = predicted_world_pos
 	out["time"] = intercept_t
+	out["distance"] = shooter_pos.distance_to(predicted_world_pos)
 	return out

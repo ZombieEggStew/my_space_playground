@@ -99,4 +99,3 @@ func on_player_boost(enable: bool) -> void:
 	boost_effect.emitting = enable
 	if enable:
 		shaker.start_shake(1.0)
-

@@ -1,15 +1,49 @@
 [gd_scene format=3 uid="uid://bfl0lgvhor0ha"]
 
 [ext_resource type="Script" uid="uid://rjyg5sebxrig" path="res://scripts/ui/buff_icon.gd" id="1_kelhc"]
+[ext_resource type="Texture2D" uid="uid://35piuouavkat" path="res://textures/white_1x1px.png" id="2_yjt3e"]
 
-[node name="buff_icon" type="PanelContainer" unique_id=2056554197 node_paths=PackedStringArray("icon_rect")]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_yjt3e"]
+bg_color = Color(1, 1, 1, 0.24705882)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(1, 1, 1, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_yjt3e"]
+font_size = 24
+outline_size = 4
+outline_color = Color(0, 0, 0, 1)
+
+[node name="buff_icon" type="PanelContainer" unique_id=2056554197 node_paths=PackedStringArray("icon_rect", "progress_bar", "stack_label")]
 custom_minimum_size = Vector2(64, 64)
 size_flags_horizontal = 0
 size_flags_vertical = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_yjt3e")
 script = ExtResource("1_kelhc")
 icon_rect = NodePath("TextureRect")
+progress_bar = NodePath("TextureProgressBar")
+stack_label = NodePath("Label")
 
 [node name="TextureRect" type="TextureRect" parent="." unique_id=67811282]
 texture_filter = 1
 layout_mode = 2
 expand_mode = 1
+
+[node name="TextureProgressBar" type="TextureProgressBar" parent="." unique_id=1769355005]
+layout_mode = 2
+step = -1.0
+fill_mode = 4
+nine_patch_stretch = true
+texture_progress = ExtResource("2_yjt3e")
+tint_progress = Color(0, 0, 0, 0.6)
+
+[node name="Label" type="Label" parent="." unique_id=1776187191]
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 8
+text = "2"
+label_settings = SubResource("LabelSettings_yjt3e")
+horizontal_alignment = 2
+vertical_alignment = 2

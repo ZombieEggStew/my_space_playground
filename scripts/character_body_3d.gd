@@ -12,8 +12,8 @@
 #TO DO : 集群算法设计集群敌人 BV1XgM1zQEF5
 #TO DO : godot字体动态效果 BV1ruqUBwEA6
 #TO DO : 预警机 自动扫描 锁定敌人
-#TO DO : 解决摄像机中心与弹道不一致问题
-#TO DO : 锁定敌人UI显示，锁定前？？？ 锁定后绿色方框大小随距离变化，并且显示敌人基本信息
+#TO DO : 
+#TO DO : 
 #TO DO : 玩家转向减速，掉头速度归零
 #TO DO : 添加雷达扫描机制，扫描过后获取附近敌人位置，一级锁定
 #TO DO : 叶绿弹：使用奇特的绿色矿石制成的子弹，具有跟踪效果
@@ -31,10 +31,10 @@
 #TO DO : 地平线指示器？
 #TO DO :
 #TO DO : 拾取音效：清脆
-#TO DO :
+#TO DO : 锁定的目标添加高亮描边
 #TO DO : 锁定设计：锁定后出现预测射击指示器，屏幕边缘显示相对位置：1级：手动锁定；2级：自动锁定，最大锁定目标为1；3-级：自动锁定，最大锁定目标为多个
-#TO DO : 小地图（雷达）（黄牌空战7）
-#TO DO : buff 重叠效果处理
+#TO DO : 小地图（雷达）（黄牌空战7）,将可锁定敌人的3d坐标投射到玩家X-Z平面上，显示在小地图上
+#TO DO : 
 #TO DO : buff显示-hud
 #TO DO : 优化crosshair2的逻辑，移动逻辑放在自身脚本里
 #TO DO : 类无助之地描边效果
@@ -45,9 +45,9 @@
 #TO DO : 道具:能在过热的时候进行特殊射击，特殊射击消耗热量值，但是普通射击dps降低
 
 #TO DO : laser_gun: hud显示，timer与过热值，准星左半圆
-#TO DO : 连续开火散布增大
+#TO DO : 
 #TO DO : 武器跟踪鼠标：考虑炮管转速
-#TO DO : 发射导弹后坐力:在发射主动雷达制导导弹（如AIM-120）时，较高的初速可以赋予导弹更远的射程和更大的“不可逃逸区”（NEZ）。
+#TO DO : 发射导弹:在发射主动雷达制导导弹（如AIM-120）时，较高的初速可以赋予导弹更远的射程和更大的“不可逃逸区”（NEZ）。
 #TO DO :
 #TO DO : 异步联机设计，玩家死后或者通关过后可以”同意捐献“自己的载具，其他玩家可以回收或者收到捐献的载具，增加玩家之间的互动，凉宫春日：johnSmith我就在这里
 #TO DO : 没有意义就是最大的意义 朝圣
@@ -90,8 +90,6 @@ var fov_smooth := 8.0         # FOV 平滑插值速度
 @export var gun_pivot_left : Node3D
 
 @export var modules_manager: ModulesManager
-
-@export var buff_manager: PlayerBuffManager
 
 func _ready() -> void:
 	
@@ -145,9 +143,6 @@ func get_team_id() -> int:
 func die() -> void:
 	pass
 
-func get_player_buff_manager() -> PlayerBuffManager:
-	return buff_manager
-
 func _input(event: InputEvent) -> void:
 	if event is InputEventKey and event.pressed and event.keycode == Key.KEY_Q:
 		health.take_damage(10)
@@ -156,7 +151,7 @@ func _input(event: InputEvent) -> void:
 	if event is InputEventKey and event.pressed and event.keycode == Key.KEY_E:
 		health.heal(10)
 	if event is InputEventKey and event.pressed and event.keycode == Key.KEY_R:
-		BuffManager.apply_buff(self, self,BuffManager.BUFFS.healing , 1)
+		BuffManager.apply_buff_by_name(self, self, "healing_1")
 
 
 

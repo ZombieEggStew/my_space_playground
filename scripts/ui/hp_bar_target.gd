@@ -19,7 +19,10 @@ var _cam: Camera3D
 var _is_locked : bool = false 
 var _is_on_screen := false
 
+var _orginal_mask_width := 100.0
+
 func _ready() -> void:
+	_orginal_mask_width = mask.size.x
 	mask.size.x = 0
 	mask.modulate.a = 1.0 # 确保不被之前的 fade 脚本影响
 	set_process(false)
@@ -96,7 +99,7 @@ func _update_active_state() -> void:
 		tween_fade.kill()
 	
 	tween_fade = create_tween()
-	var target_width = hp_bar.size.x if _is_active else 0.0
+	var target_width = _orginal_mask_width if _is_active else 0.0
 	
 	tween_fade.set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
 	tween_fade.tween_property(mask, "size:x", target_width, 0.4)

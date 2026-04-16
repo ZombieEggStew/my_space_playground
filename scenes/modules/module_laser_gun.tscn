@@ -6,10 +6,11 @@
 [ext_resource type="Script" uid="uid://drvrjrppgqs3a" path="res://scripts/modules/module_component/heat_manager.gd" id="4_660ev"]
 [ext_resource type="Script" uid="uid://buhdvs7dw32k3" path="res://scripts/modules/module_component/laser_gun_hud_system.gd" id="4_pcc1v"]
 [ext_resource type="Texture2D" uid="uid://c8bhpxdqfp07i" path="res://textures/white_100x100px.png" id="5_67tsh"]
+[ext_resource type="AudioStream" uid="uid://d68riyvl2b67" path="res://audio/power_down.wav" id="6_rg41u"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_67tsh"]
 content_margin_left = 3.0
-content_margin_top = 3.0
+content_margin_top = 0.0
 content_margin_right = 3.0
 content_margin_bottom = 3.0
 bg_color = Color(1, 1, 1, 0)
@@ -19,7 +20,7 @@ border_width_right = 1
 border_width_bottom = 1
 border_color = Color(1, 1, 1, 1)
 
-[node name="laser_gun" type="Node" unique_id=2104397238 node_paths=PackedStringArray("shoot_timer", "bullets_parent", "left_laser_audio", "right_laser_audio", "aim_system", "heat_manager", "hud_container")]
+[node name="laser_gun" type="Node" unique_id=2104397238 node_paths=PackedStringArray("shoot_timer", "bullets_parent", "left_laser_audio", "right_laser_audio", "aim_system", "heat_manager")]
 script = ExtResource("1_ckd3c")
 shoot_timer = NodePath("timer_shoot")
 bullet_scene = ExtResource("2_a2p8t")
@@ -28,7 +29,6 @@ left_laser_audio = NodePath("left_laser")
 right_laser_audio = NodePath("right_laser")
 aim_system = NodePath("laser_gun_hud_system")
 heat_manager = NodePath("heat_manager")
-hud_container = NodePath("")
 
 [node name="timer_shoot" type="Timer" parent="." unique_id=1919365830]
 wait_time = 0.1
@@ -36,10 +36,12 @@ wait_time = 0.1
 [node name="laser_gun_hud_system" type="Node" parent="." unique_id=2143537013]
 script = ExtResource("4_pcc1v")
 
-[node name="heat_manager" type="Node" parent="." unique_id=1017704668 node_paths=PackedStringArray("cool_down_timer", "heat_bar", "hud_container")]
+[node name="heat_manager" type="Node" parent="." unique_id=1017704668 node_paths=PackedStringArray("cool_down_timer", "heat_bar", "heat_bar_container", "overheat_audio", "hud_container")]
 script = ExtResource("4_660ev")
 cool_down_timer = NodePath("timer_cool_down")
 heat_bar = NodePath("laser_gun_heat/PanelContainer/TextureProgressBar")
+heat_bar_container = NodePath("laser_gun_heat/PanelContainer")
+overheat_audio = NodePath("overheat_audio")
 hud_container = NodePath("laser_gun_heat")
 
 [node name="timer_cool_down" type="Timer" parent="heat_manager" unique_id=1202269650]
@@ -57,10 +59,14 @@ metadata/_edit_group_ = true
 
 [node name="TextureProgressBar" type="TextureProgressBar" parent="heat_manager/laser_gun_heat/PanelContainer" unique_id=1464394290]
 layout_mode = 2
-value = 75.0
+value = 100.0
 fill_mode = 3
 nine_patch_stretch = true
 texture_progress = ExtResource("5_67tsh")
+
+[node name="overheat_audio" type="AudioStreamPlayer" parent="heat_manager" unique_id=588755439]
+stream = ExtResource("6_rg41u")
+volume_db = -10.0
 
 [node name="bullets" type="Node" parent="." unique_id=299725284]
 

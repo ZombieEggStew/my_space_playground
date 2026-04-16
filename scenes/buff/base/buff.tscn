@@ -1,5 +1,0 @@
-[gd_scene format=3 uid="uid://d8jxxx1p10es"]
-
-[node name="Buff" type="Node3D" unique_id=475077797]
-
-[node name="Timer" type="Timer" parent="." unique_id=1137027917]

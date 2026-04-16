@@ -14,7 +14,6 @@
 [ext_resource type="PackedScene" uid="uid://bbphmbqcb4qr5" path="res://scenes/earth.tscn" id="7_kk2rg"]
 [ext_resource type="Script" uid="uid://dkaunpasnf272" path="res://scripts/ui/ui_boost_offset_effect.gd" id="7_pb36m"]
 [ext_resource type="Script" uid="uid://bif7ajwev85ag" path="res://scripts/ui/ui_boost_shake_effect.gd" id="8_85lt4"]
-[ext_resource type="PackedScene" uid="uid://du22jo3gvxf3g" path="res://scenes/space_craft_1.tscn" id="8_b5spy"]
 [ext_resource type="Script" uid="uid://rc8mf3fvqios" path="res://scripts/tool/test_box.gd" id="8_utbpp"]
 [ext_resource type="Script" uid="uid://cgk5amjjx7sxy" path="res://scripts/Manager/damage_number_pool.gd" id="8_xgstd"]
 [ext_resource type="Script" uid="uid://bxurlpyhbiqd7" path="res://scripts/Main.gd" id="9_1kk2r"]
@@ -634,9 +633,6 @@ light_energy = 0.3
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 90.18649, 3.3889003, -15.976728)
 
 [node name="enemies" type="Node" parent="3D_ViewportDistortion/MainSubViewport/World_Container" unique_id=1110780252]
-
-[node name="space_craft_1" parent="3D_ViewportDistortion/MainSubViewport/World_Container/enemies" unique_id=128611974 instance=ExtResource("8_b5spy")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5644574, 0.37865818, 182.72061)
 
 [node name="test_box" type="CharacterBody3D" parent="3D_ViewportDistortion/MainSubViewport/World_Container/enemies" unique_id=38799420 node_paths=PackedStringArray("player_ship")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.1851115, -438.4939)

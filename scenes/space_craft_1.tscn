@@ -5,15 +5,9 @@
 [ext_resource type="Material" uid="uid://cjqbk0daw1gpm" path="res://material/space_craft_1_mat_1.tres" id="3_rqrai"]
 [ext_resource type="Material" uid="uid://buv27vka7xpdg" path="res://material/Material.001.tres" id="7_krppn"]
 [ext_resource type="Material" uid="uid://rax66kg0jxqn" path="res://material/material_sc_3_matal_2.tres" id="8_2ovmb"]
-[ext_resource type="Script" uid="uid://egm4846o20wv" path="res://scripts/move_sm.gd" id="8_smf3s"]
-[ext_resource type="Script" uid="uid://di0v8tyii0fim" path="res://scripts/state_patrol.gd" id="9_oim2p"]
-[ext_resource type="Script" uid="uid://dkuvlghax0ceh" path="res://scripts/combat_sm.gd" id="10_oim2p"]
-[ext_resource type="Script" uid="uid://cxn2cx1vw68w7" path="res://scripts/state_chase.gd" id="10_smf3s"]
 [ext_resource type="Texture2D" uid="uid://dawehoudb267" path="res://blender_export/space_craft_1_texture_pbr_20250901.png" id="10_wsyb6"]
 [ext_resource type="Texture2D" uid="uid://8i64m38q1qej" path="res://blender_export/space_craft_1_texture_pbr_20250901_metallic.png-texture_pbr_20250901_roughness.png" id="11_insvc"]
-[ext_resource type="Script" uid="uid://8abuasi5ipd1" path="res://scripts/state_attack.gd" id="11_wsyb6"]
 [ext_resource type="Texture2D" uid="uid://csw6tevekl14h" path="res://blender_export/space_craft_1_texture_pbr_20250901_normal.png" id="12_krppn"]
-[ext_resource type="Script" uid="uid://cqamn7wp5tiki" path="res://scripts/state_idle.gd" id="12_wsyb6"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_awwoi"]
 size = Vector3(5.973877, 7.301758, 5.94458)
@@ -181,8 +175,8 @@ albedo_color = Color(1, 1, 1, 0.050980393)
 
 [node name="space_craft_1" type="CharacterBody3D" unique_id=1675855347 node_paths=PackedStringArray("move_sm", "combat_sm", "collision_shape")]
 script = ExtResource("1_b0vmt")
-move_sm = NodePath("StateMachine/MoveSM")
-combat_sm = NodePath("StateMachine/CombatSM")
+move_sm = NodePath("")
+combat_sm = NodePath("")
 collision_shape = NodePath("CollisionShape3D")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=933805636]
@@ -206,32 +200,6 @@ surface_material_override/0 = ExtResource("7_krppn")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -2.2000408, 1.3541083)
 mesh = SubResource("ArrayMesh_clr10")
 surface_material_override/0 = ExtResource("8_2ovmb")
-
-[node name="StateMachine" type="Node" parent="." unique_id=1010781470]
-
-[node name="MoveSM" type="Node" parent="StateMachine" unique_id=800773353]
-script = ExtResource("8_smf3s")
-
-[node name="state_patrol" type="Node" parent="StateMachine/MoveSM" unique_id=1864288853]
-script = ExtResource("9_oim2p")
-
-[node name="state_chase" type="Node" parent="StateMachine/MoveSM" unique_id=1534768830]
-script = ExtResource("10_smf3s")
-
-[node name="state_strafe" type="Node" parent="StateMachine/MoveSM" unique_id=349022463]
-
-[node name="state_evade" type="Node" parent="StateMachine/MoveSM" unique_id=879556321]
-
-[node name="CombatSM" type="Node" parent="StateMachine" unique_id=367695622]
-script = ExtResource("10_oim2p")
-
-[node name="state_aim" type="Node" parent="StateMachine/CombatSM" unique_id=960440047]
-
-[node name="state_attack" type="Node" parent="StateMachine/CombatSM" unique_id=1376179582]
-script = ExtResource("11_wsyb6")
-
-[node name="state_idle" type="Node" parent="StateMachine/CombatSM" unique_id=1453635775]
-script = ExtResource("12_wsyb6")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=726195778]
 mesh = SubResource("SphereMesh_smf3s")
