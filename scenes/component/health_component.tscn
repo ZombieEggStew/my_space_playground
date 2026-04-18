@@ -1,9 +1,0 @@
-[gd_scene format=3 uid="uid://clbmhved44n61"]
-
-[sub_resource type="GDScript" id="GDScript_l0fri"]
-script/source = "extends HealthComponent
-
-"
-
-[node name="health_component" type="Node" unique_id=1349232865]
-script = SubResource("GDScript_l0fri")

@@ -29,7 +29,7 @@
 #TO DO :伤害数字 根据伤害类型（如暴击、治疗、扣血）在 _show_damage_number 中设置不同的 font_color。
 #TO DO :注册到hud_far的组件更加清晰，弄清楚为什么
 #TO DO : 地平线指示器？
-#TO DO :
+#TO DO : “以太阻力”与速度上限 (Etheric Drag / Speed Cap):虚构一种空间背景能量（如“以太”或“零点场”），飞船引擎必须消耗能量来对抗这种阻力。速度越快，阻力指数级增加。引入“超载冲刺（Overdrive）”。玩家或 AI 可以短时间突破速度上限，但代价是散热系统瘫痪或护盾暂时关闭。这创造了一个“高风险高收益”的切入机会。
 #TO DO : 拾取音效：清脆
 #TO DO : 锁定的目标添加高亮描边
 #TO DO : 锁定设计：锁定后出现预测射击指示器，屏幕边缘显示相对位置：1级：手动锁定；2级：自动锁定，最大锁定目标为1；3-级：自动锁定，最大锁定目标为多个
@@ -39,16 +39,23 @@
 #TO DO : 优化crosshair2的逻辑，移动逻辑放在自身脚本里
 #TO DO : 类无助之地描边效果
 #TO DO : 受击ui效果，转向ui效果,ui扫描码效果
-#TO DO : 
+#TO DO : UI参考天国拯救，死亡空间 ， 全境封锁BV1MddhBrEqq
 #TO DO : 冲刺：尾气
-#TO DO : 
+#TO DO :  “重力井”利用 (Gravity Slingshot):利用大型天体的引力进行“引力弹弓”加速，在不消耗燃料的情况下瞬间改变航向。
 #TO DO : 道具:能在过热的时候进行特殊射击，特殊射击消耗热量值，但是普通射击dps降低
-
+#TO DO :
+#TO DO :“惯性弹道”。可以将飞船加速到极快，然后关闭引擎，此时飞船本身就是一个巨大的动能抛射体。
+#TO DO :
+#TO DO :
+#TO DO :
+#TO DO :
+#TO DO :
+#TO DO :
 #TO DO : laser_gun: hud显示，timer与过热值，准星左半圆
-#TO DO : 
+#TO DO : 音乐风格：蒸汽波 ，迈阿密， 机核
 #TO DO : 武器跟踪鼠标：考虑炮管转速
 #TO DO : 发射导弹:在发射主动雷达制导导弹（如AIM-120）时，较高的初速可以赋予导弹更远的射程和更大的“不可逃逸区”（NEZ）。
-#TO DO :
+#TO DO : 护盾被只有被击中的地方才显示
 #TO DO : 异步联机设计，玩家死后或者通关过后可以”同意捐献“自己的载具，其他玩家可以回收或者收到捐献的载具，增加玩家之间的互动，凉宫春日：johnSmith我就在这里
 #TO DO : 没有意义就是最大的意义 朝圣
 #TO DO : 对大他者的反抗，但是越是反抗，就越是证明了大他者的存在
@@ -60,7 +67,7 @@
 #FIX ME : 处理镜头穿模
 #FIX ME : springarm逻辑
 #FIX ME : 预测射击近距离失效
-#FIX ME :
+#FIX ME : player的rotation换成basis
 #FIX ME :
 #FIX ME :
 #FIX ME :
@@ -83,6 +90,8 @@ var cam_pivot: Node3D
 @export var model_node: Node3D	
 
 @onready var health : HealthComponent = $HealthComponent
+
+@onready var move_component : MoveComponent = $MoveComponent
 
 var fov_smooth := 8.0         # FOV 平滑插值速度
 
@@ -114,6 +123,7 @@ func _ready() -> void:
 	laser_predict.init_module(laser)
 
 	GameManager.register_player(self)
+
 
 func get_gun_pivot_left() -> Node:
 	return gun_pivot_left

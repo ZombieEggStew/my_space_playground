@@ -6,13 +6,14 @@ var cam_main: Camera3D
 
 @export var lead_time_label: Label
 @export var distance_label: Label
-
+@export var velocity_desire_label : Label
 
 var crosshair_4: Node2D #绿色 预判指示
 
 var bullet_speed := 0.0
 
 var _locked_enemy_target : AbleToBeLocked
+var _locked_enemy_target_node : Node3D
 var is_auto_aiming := false
 
 var is_aim_assist_enabled := true
@@ -37,14 +38,12 @@ func _init_crosshair_4() -> void:
 
 func _process(_delta: float) -> void:
 	if _locked_enemy_target == null:
-		crosshair_4.call("reset")
-		lead_time_label.text = "--"
-		distance_label.text = "--"
+		_reset_label()
 		return
 
 	var aim_data := get_predicted_aim_data(bullet_speed)
-	lead_time_label.text = "%.2f s" % aim_data.get("time", 0.0)
-	distance_label.text = "%.1f m" % (root.global_transform.origin.distance_to(aim_data.get("world_pos", Vector3.ZERO)))
+
+
 
 	if _locked_enemy_target.is_on_screen():
 		if bullet_speed == 0.0:
@@ -56,13 +55,38 @@ func _process(_delta: float) -> void:
 		crosshair_4.call("reset")
 
 
+	_update_lead_time_label(aim_data)
+	_update_distance_label(aim_data)
+	if _locked_enemy_target_node is CharacterBody3D and _locked_enemy_target_node.has_node("AI_Brain"):
+		var target : CharacterBody3D = _locked_enemy_target_node as CharacterBody3D
+		_update_desire_velocity_label(target)
+
+func _reset_label() -> void:
+	crosshair_4.call("reset")
+	lead_time_label.text = "--"
+	distance_label.text = "--"
+
+
+func _update_lead_time_label(aim_data: Dictionary) -> void:
+	lead_time_label.text = "%.2f s" % aim_data.get("time", 0.0)
+
+func _update_distance_label(aim_data: Dictionary) -> void:
+	distance_label.text = "%.1f m" % (root.global_transform.origin.distance_to(aim_data.get("world_pos", Vector3.ZERO)))
+
+func _update_desire_velocity_label(target:CharacterBody3D) -> void:
+	var target_move_sm :MoveSM = target.ai.move_sm
+	velocity_desire_label.text = "%.1f/%.1f" % [ target.velocity.length(),target_move_sm.target_speed ]
+
+
+
 func _on_bullet_speed_change(new_speed: float) -> void:
 	bullet_speed = new_speed
 
 
 func _on_player_lock_target(target: AbleToBeLocked) -> void:
 	_locked_enemy_target = target
-
+	if target :
+		_locked_enemy_target_node = target.target_node3d
 
 static func solve_intercept_time(relative_pos: Vector3, target_vel: Vector3, proj_speed: float) -> float:
 	var s := max(proj_speed, 0.001) as float

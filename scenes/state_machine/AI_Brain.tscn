@@ -1,0 +1,38 @@
+[gd_scene format=3 uid="uid://cbbd3t6dtcpoc"]
+
+[ext_resource type="Script" uid="uid://3j4gqqdfummj" path="res://scripts/ai/state_machine/AI_brain.gd" id="1_y06ub"]
+[ext_resource type="Script" uid="uid://bqdegylg2m46p" path="res://scripts/ai/state_machine/combat_state_machine.gd" id="2_1vuip"]
+[ext_resource type="Script" uid="uid://bw3257huc8eju" path="res://scripts/ai/combat_stata/state_idle.gd" id="3_kcr71"]
+[ext_resource type="Script" uid="uid://bdg70yda2xldj" path="res://scripts/ai/combat_stata/state_attack.gd" id="4_ybhbh"]
+[ext_resource type="Script" uid="uid://be5lu8sf1islk" path="res://scripts/ai/state_machine/move_state_machine.gd" id="5_172vi"]
+[ext_resource type="Script" uid="uid://md8ob3xkji0y" path="res://scripts/ai/move_state/state_chase.gd" id="6_1knvn"]
+[ext_resource type="Script" uid="uid://ddkgywloc4e3j" path="res://scripts/ai/move_state/state_intercept.gd" id="7_qa38r"]
+[ext_resource type="Script" uid="uid://dd5yvcsnua35r" path="res://scripts/ai/move_state/state_evade.gd" id="8_ajf54"]
+[ext_resource type="Script" uid="uid://dfdtbhu1pgw5c" path="res://scripts/ai/move_state/state_orbit.gd" id="9_kl865"]
+
+[node name="AI_Brain" type="Node" unique_id=2066935084]
+script = ExtResource("1_y06ub")
+
+[node name="CombatStateMachine" type="Node" parent="." unique_id=959497004]
+script = ExtResource("2_1vuip")
+
+[node name="idle" type="Node" parent="CombatStateMachine" unique_id=1088097007]
+script = ExtResource("3_kcr71")
+
+[node name="attack" type="Node" parent="CombatStateMachine" unique_id=137001897]
+script = ExtResource("4_ybhbh")
+
+[node name="MoveStateMachine" type="Node" parent="." unique_id=590793580]
+script = ExtResource("5_172vi")
+
+[node name="orbit" type="Node" parent="MoveStateMachine" unique_id=1195330650]
+script = ExtResource("9_kl865")
+
+[node name="chase" type="Node" parent="MoveStateMachine" unique_id=1012346221]
+script = ExtResource("6_1knvn")
+
+[node name="intercept" type="Node" parent="MoveStateMachine" unique_id=1821871890]
+script = ExtResource("7_qa38r")
+
+[node name="evade" type="Node" parent="MoveStateMachine" unique_id=944024995]
+script = ExtResource("8_ajf54")

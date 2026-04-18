@@ -3,40 +3,42 @@
 [ext_resource type="Script" uid="uid://bsm8xp5d2fb1c" path="res://scripts/modules/module_booster.gd" id="1_hwryj"]
 [ext_resource type="Texture2D" uid="uid://35piuouavkat" path="res://textures/white_1x1px.png" id="2_d6521"]
 
-[sub_resource type="Curve" id="Curve_shtwy"]
+[sub_resource type="Gradient" id="Gradient_ffmcp"]
+colors = PackedColorArray(0.34901962, 1, 1, 1, 1, 1, 1, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_lcyjr"]
+gradient = SubResource("Gradient_ffmcp")
+
+[sub_resource type="Curve" id="Curve_ffmcp"]
 _data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0.22826803), -1.8364791, 0.0, 0, 0]
 point_count = 2
 
 [sub_resource type="CurveTexture" id="CurveTexture_cthcg"]
-curve = SubResource("Curve_shtwy")
+curve = SubResource("Curve_ffmcp")
 
-[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_8hlu1"]
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_lcyjr"]
 particle_flag_align_y = true
-emission_shape = 3
-emission_box_extents = Vector3(0.5, 0.5, 0.1)
 angle_min = -29.99999
 angle_max = 30.000011
-direction = Vector3(0, 0, -1)
+direction = Vector3(0, 0, 1)
 spread = 30.0
 initial_velocity_min = 5.0
 initial_velocity_max = 6.0
 gravity = Vector3(0, 0, 0)
 linear_accel_min = -2.2351742e-06
 linear_accel_max = 14.999997
-tangential_accel_min = -2.2351742e-06
-tangential_accel_max = -2.2351742e-06
 scale_min = 0.5
 scale_max = 1.5
 scale_curve = SubResource("CurveTexture_cthcg")
 scale_over_velocity_max = 220.87
+color_ramp = SubResource("GradientTexture1D_lcyjr")
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_cthcg"]
-albedo_color = Color(0.80784315, 0.6745098, 0.38431373, 1)
-emission_enabled = true
-emission = Color(0.80840904, 0.67276347, 0.38261375, 1)
-emission_energy_multiplier = 2.07
+transparency = 1
+shading_mode = 0
+vertex_color_use_as_albedo = true
 
-[sub_resource type="BoxMesh" id="BoxMesh_r8b41"]
+[sub_resource type="BoxMesh" id="BoxMesh_5i4pe"]
 material = SubResource("StandardMaterial3D_cthcg")
 size = Vector3(0.2, 0.2, 0.2)
 
@@ -54,10 +56,10 @@ border_width_right = 2
 border_width_bottom = 2
 border_color = Color(1, 1, 1, 1)
 
-[node name="module_boost" type="Node3D" unique_id=1679191940 node_paths=PackedStringArray("particle_speed_up", "boost_progress_bar", "energy_tick", "recover_delay_timer", "hud_container")]
+[node name="module_boost" type="Node3D" unique_id=1679191940 node_paths=PackedStringArray("boost_progress_bar", "boost_particle", "energy_tick", "recover_delay_timer", "hud_container")]
 script = ExtResource("1_hwryj")
-particle_speed_up = NodePath("GPUParticles3D")
 boost_progress_bar = NodePath("boost/PanelContainer/VBoxContainer/PanelContainer/TextureProgressBar")
+boost_particle = NodePath("GPUParticles3D")
 energy_tick = NodePath("energy_tick")
 recover_delay_timer = NodePath("recover_timer")
 hud_container = NodePath("boost")
@@ -69,12 +71,11 @@ autostart = true
 [node name="recover_timer" type="Timer" parent="." unique_id=310018771]
 one_shot = true
 
-[node name="GPUParticles3D" type="GPUParticles3D" parent="." unique_id=859445080]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -2.756328)
-emitting = false
-amount = 32
-process_material = SubResource("ParticleProcessMaterial_8hlu1")
-draw_pass_1 = SubResource("BoxMesh_r8b41")
+[node name="GPUParticles3D" type="GPUParticles3D" parent="." unique_id=625170751]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1.2682004)
+amount = 64
+process_material = SubResource("ParticleProcessMaterial_lcyjr")
+draw_pass_1 = SubResource("BoxMesh_5i4pe")
 
 [node name="boost" type="Control" parent="." unique_id=18457013]
 layout_mode = 3

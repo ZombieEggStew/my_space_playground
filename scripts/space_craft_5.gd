@@ -2,6 +2,7 @@ extends CharacterBody3D
 
 var team_id := TeamID.TEAM_ENEMY
 @onready var health : HealthComponent = $HealthComponent
+@onready var ai : AIBrain = $AI_Brain
 
 func _ready() -> void:
 	health.on_death.connect(die)

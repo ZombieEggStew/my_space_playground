@@ -33,9 +33,9 @@ func _ready() -> void:
 	add_to_group("enemies")
 
 	if move_sm == null:
-		push_error("Move StateBase machine node is not assigned!")
+		push_error("Move State machine node is not assigned!")
 	if combat_sm == null:
-		push_error("Combat StateBase machine node is not assigned!")
+		push_error("Combat State machine node is not assigned!")
 	setup_sms()
 	
 

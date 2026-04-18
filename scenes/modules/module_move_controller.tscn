@@ -2,5 +2,51 @@
 
 [ext_resource type="Script" uid="uid://twyon1v3vlvv" path="res://scripts/modules/module_move_controller.gd" id="1_kws0a"]
 
-[node name="module_move_controller" type="Node3D" unique_id=413472576]
+[sub_resource type="Gradient" id="Gradient_ygpba"]
+colors = PackedColorArray(1, 1, 0.2, 1, 1, 1, 1, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_lue6l"]
+gradient = SubResource("Gradient_ygpba")
+
+[sub_resource type="Curve" id="Curve_ygpba"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0.22826803), -1.8364791, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_ygpba"]
+curve = SubResource("Curve_ygpba")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_lue6l"]
+particle_flag_align_y = true
+angle_min = -29.99999
+angle_max = 30.000011
+direction = Vector3(0, 0, 1)
+spread = 30.0
+initial_velocity_min = 5.0
+initial_velocity_max = 6.0
+gravity = Vector3(0, 0, 0)
+linear_accel_min = -2.2351742e-06
+linear_accel_max = 14.999997
+scale_min = 0.5
+scale_max = 1.5
+scale_curve = SubResource("CurveTexture_ygpba")
+scale_over_velocity_max = 220.87
+color_ramp = SubResource("GradientTexture1D_lue6l")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_lue6l"]
+transparency = 1
+shading_mode = 0
+vertex_color_use_as_albedo = true
+
+[sub_resource type="BoxMesh" id="BoxMesh_shtwy"]
+material = SubResource("StandardMaterial3D_lue6l")
+size = Vector3(0.2, 0.2, 0.2)
+
+[node name="module_move_controller" type="Node3D" unique_id=413472576 node_paths=PackedStringArray("particle_speed")]
 script = ExtResource("1_kws0a")
+particle_speed = NodePath("GPUParticles3D")
+
+[node name="GPUParticles3D" type="GPUParticles3D" parent="." unique_id=742572135]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1.2682004)
+amount = 64
+process_material = SubResource("ParticleProcessMaterial_lue6l")
+draw_pass_1 = SubResource("BoxMesh_shtwy")

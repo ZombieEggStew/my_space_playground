@@ -2,7 +2,7 @@ extends Node2D
 
 @export var circle_diameter := 16.0
 @export var line_width := 2.0
-@export var circle_color := Color(0.2, 1.0, 0.2, 1.0)
+@export var circle_color := Color(0.2, 1.0, 0.2, .5)
 
 var distance_to_target := 0.0
 

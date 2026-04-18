@@ -21,7 +21,7 @@
 [ext_resource type="Material" uid="uid://djeunexyuwbdk" path="res://material/test_material.tres" id="10_mw25s"]
 [ext_resource type="PackedScene" uid="uid://csvjfmieyjaub" path="res://scenes/space_craft_6.tscn" id="11_tcjrq"]
 [ext_resource type="PackedScene" uid="uid://dvopp258cqkyy" path="res://scenes/space_craft_5.tscn" id="12_rvs2r"]
-[ext_resource type="Script" uid="uid://dbjgkv3ndhbm6" path="res://scripts/component/base/health_component.gd" id="12_tqxxy"]
+[ext_resource type="Script" uid="uid://dbjgkv3ndhbm6" path="res://scripts/component/health_component.gd" id="12_tqxxy"]
 [ext_resource type="PackedScene" uid="uid://c2vpnamuf2w8x" path="res://scenes/component/able_to_be_locked.tscn" id="18_103ce"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_kk2rg"]
@@ -608,10 +608,9 @@ render_target_update_mode = 4
 environment = SubResource("Environment_utbpp")
 
 [node name="CharacterBody3D" parent="3D_ViewportDistortion/MainSubViewport/World_Container" unique_id=150363559 instance=ExtResource("1_w5aja")]
-transform = Transform3D(-1, 0, -1.509958e-07, 0, 1, 0, 1.509958e-07, 0, -1, 0, 0, 0)
 
 [node name="MeshInstance3D2" type="MeshInstance3D" parent="3D_ViewportDistortion/MainSubViewport/World_Container" unique_id=1413072732]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.5143378, 0.69013166)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -12.446699, 0.69013166)
 mesh = SubResource("PlaneMesh_onqr8")
 
 [node name="StaticBody3D" type="StaticBody3D" parent="3D_ViewportDistortion/MainSubViewport/World_Container/MeshInstance3D2" unique_id=1770170644]

@@ -1,32 +1,34 @@
 extends Node
-class_name StateBase
+class_name State
 
-var parent_sm: CombatStateMachine = null
-var ship: CharacterBody3D = null
-var player: CharacterBody3D = null
+var parent_sm: StateMachine = null
+
 var is_active := false
 
+var player: PlayerShip = null
+
+var ship: CharacterBody3D = null
+
 func _ready() -> void:
-	parent_sm = get_parent() as CombatStateMachine
-	if parent_sm:
-		parent_sm.register_state(self)
-	cache_refs()
+	parent_sm = get_parent() as StateMachine
 
-func enter(_prev_state_name: StringName = &"") -> void:
+func setup(_player : PlayerShip , _ship : CharacterBody3D) -> void:
+	player = _player
+	ship = _ship
+
+
+func enter(_prev_state: int = 0) -> void:
 	is_active = true
-	cache_refs()
+	print("Entering state: " + str(self))
 
-func exit(_next_state_name: StringName = &"") -> void:
+func exit(_next_state: int = 0) -> void:
 	is_active = false
 
 func physics_update(_delta: float) -> void:
 	if not is_active:
 		return
-	cache_refs()
 
-func cache_refs() -> void:
-	if ship == null and parent_sm:
-		ship = parent_sm.controlled_ship
-	if player == null:
-		player = GameManager.player_instance
+
+
+
 

@@ -20,7 +20,7 @@ func _process(_delta):
 	# 1. 计算机头正前方的 3D 点
 	# 如果你的模型初始旋转了 180 度，说明模型的 Z 正方向才是真正的机头方向。
 	# 我们使用 global_transform.basis.z 产生的点（不带负号）
-	var forward_point_3d = player.global_position + player.global_transform.basis.z * 1000.0
+	var forward_point_3d = player.global_position - player.global_transform.basis.z * 1000.0
 	
 	# 2. 检查是否在相机后方
 	is_on_screen = not cam.is_position_behind(forward_point_3d)

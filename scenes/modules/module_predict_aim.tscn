@@ -15,10 +15,11 @@ border_width_bottom = 3
 border_color = Color(1, 1, 1, 1)
 corner_detail = 1
 
-[node name="module_predict_aim" type="Node" unique_id=161722950 node_paths=PackedStringArray("lead_time_label", "distance_label", "hud_container")]
+[node name="module_predict_aim" type="Node" unique_id=161722950 node_paths=PackedStringArray("lead_time_label", "distance_label", "velocity_desire_label", "hud_container")]
 script = ExtResource("1_805g5")
-lead_time_label = NodePath("predict_aim/panel_predict_aim_info/MarginContainer/VBoxContainer/HBoxContainer/lead_time_value")
-distance_label = NodePath("predict_aim/panel_predict_aim_info/MarginContainer/VBoxContainer/HBoxContainer2/distance_value")
+lead_time_label = NodePath("predict_aim/panel_predict_aim_info/MarginContainer/VBoxContainer/lead_time/lead_time_value")
+distance_label = NodePath("predict_aim/panel_predict_aim_info/MarginContainer/VBoxContainer/distance/distance_value")
+velocity_desire_label = NodePath("predict_aim/panel_predict_aim_info/MarginContainer/VBoxContainer/desire_velocity/velocity_desire_value")
 hud_container = NodePath("predict_aim")
 
 [node name="predict_aim" type="Control" parent="." unique_id=1264557673]
@@ -58,24 +59,35 @@ theme_override_constants/margin_bottom = 10
 [node name="VBoxContainer" type="VBoxContainer" parent="predict_aim/panel_predict_aim_info/MarginContainer" unique_id=10211891]
 layout_mode = 2
 
-[node name="HBoxContainer" type="HBoxContainer" parent="predict_aim/panel_predict_aim_info/MarginContainer/VBoxContainer" unique_id=663903664]
+[node name="lead_time" type="HBoxContainer" parent="predict_aim/panel_predict_aim_info/MarginContainer/VBoxContainer" unique_id=663903664]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="predict_aim/panel_predict_aim_info/MarginContainer/VBoxContainer/HBoxContainer" unique_id=1181109822]
+[node name="Label" type="Label" parent="predict_aim/panel_predict_aim_info/MarginContainer/VBoxContainer/lead_time" unique_id=1181109822]
 layout_mode = 2
 text = "lead time : "
 
-[node name="lead_time_value" type="Label" parent="predict_aim/panel_predict_aim_info/MarginContainer/VBoxContainer/HBoxContainer" unique_id=1514764252]
+[node name="lead_time_value" type="Label" parent="predict_aim/panel_predict_aim_info/MarginContainer/VBoxContainer/lead_time" unique_id=1514764252]
 layout_mode = 2
 text = "--"
 
-[node name="HBoxContainer2" type="HBoxContainer" parent="predict_aim/panel_predict_aim_info/MarginContainer/VBoxContainer" unique_id=1709129260]
+[node name="distance" type="HBoxContainer" parent="predict_aim/panel_predict_aim_info/MarginContainer/VBoxContainer" unique_id=1709129260]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="predict_aim/panel_predict_aim_info/MarginContainer/VBoxContainer/HBoxContainer2" unique_id=174501212]
+[node name="Label" type="Label" parent="predict_aim/panel_predict_aim_info/MarginContainer/VBoxContainer/distance" unique_id=174501212]
 layout_mode = 2
 text = "distance : "
 
-[node name="distance_value" type="Label" parent="predict_aim/panel_predict_aim_info/MarginContainer/VBoxContainer/HBoxContainer2" unique_id=1599389947]
+[node name="distance_value" type="Label" parent="predict_aim/panel_predict_aim_info/MarginContainer/VBoxContainer/distance" unique_id=1599389947]
+layout_mode = 2
+text = "--"
+
+[node name="desire_velocity" type="HBoxContainer" parent="predict_aim/panel_predict_aim_info/MarginContainer/VBoxContainer" unique_id=295383978]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="predict_aim/panel_predict_aim_info/MarginContainer/VBoxContainer/desire_velocity" unique_id=405303656]
+layout_mode = 2
+text = "speed/desire : "
+
+[node name="velocity_desire_value" type="Label" parent="predict_aim/panel_predict_aim_info/MarginContainer/VBoxContainer/desire_velocity" unique_id=553837944]
 layout_mode = 2
 text = "--"

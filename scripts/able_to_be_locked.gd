@@ -16,7 +16,6 @@ func set_locked(locked: bool) -> void:
 	on_locked.emit(is_locked)
 
 func _ready() -> void:
-	
 	if target_node3d.has_method("get_team_id"):
 		team_id = target_node3d.get_team_id()
 

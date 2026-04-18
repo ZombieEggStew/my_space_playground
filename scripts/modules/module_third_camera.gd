@@ -27,9 +27,6 @@ var look_around_sensitivity := 0.001 # 自由视角灵敏度
 
 
 func _ready() -> void:
-	# for child in get_children():
-	# 	child.rotation = root.rotation
-	# 	child.reparent(root)
 
 	SignalBus.on_player_boost.connect(on_player_boost)
 	SignalBus.on_player_look_backward.connect(_handle_look_backward)
@@ -50,27 +47,28 @@ func _ready() -> void:
 	shaker.setup(cam_main)
 
 func _on_look_around_change(enable: bool) -> void:
-	is_looking_around = enable
-	if enable:
-		Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
-	else:
-		Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
-	if not enable:
-		# 重置相机旋转
-		var tween = create_tween()
-		tween.tween_property(cam_pivot, "rotation", Vector3.ZERO, 0.2).set_trans(Tween.TRANS_SINE)
+	return
+	# is_looking_around = enable
+	# if enable:
+	# 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
+	# else:
+	# 	Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
+	# if not enable:
+	# 	# 重置相机旋转
+	# 	var tween = create_tween()
+	# 	tween.tween_property(cam_pivot, "rotation", Vector3.ZERO, 0.2).set_trans(Tween.TRANS_SINE)
 		
 func get_main_camera() -> Camera3D:
 	return cam_main
 
 func _handle_mouse_move(event: InputEventMouseMotion) -> void:
-	if is_looking_around:
-		# 在自由视角模式下，直接旋转 cam_pivot
-		cam_pivot.rotate_y(-event.relative.x * look_around_sensitivity)
-		cam_pivot.rotate_object_local(Vector3.RIGHT, event.relative.y * look_around_sensitivity)
-		# 限制上下仰角，防止翻转
-		cam_pivot.rotation.x = clamp(cam_pivot.rotation.x, deg_to_rad(-80), deg_to_rad(80))
-		return
+	# if is_looking_around:
+	# 	# 在自由视角模式下，直接旋转 cam_pivot
+	# 	cam_pivot.rotate_y(-event.relative.x * look_around_sensitivity)
+	# 	cam_pivot.rotate_object_local(Vector3.RIGHT, -event.relative.y * look_around_sensitivity)
+	# 	# 限制上下仰角，防止翻转
+	# 	cam_pivot.rotation.x = clamp(cam_pivot.rotation.x, deg_to_rad(-80), deg_to_rad(80))
+	# 	return
 
 	handle_mouse_move(event)
 
@@ -86,8 +84,8 @@ func _physics_process(_delta: float) -> void:
 	var rotation_speed = move_controller.get_rotation_speed()
 
 	if is_cam_move:
-		cam_pivot.position.x = rotation_speed.x * 2
-		cam_pivot.position.z = rotation_speed.y * 1
+		cam_pivot.position.x = -rotation_speed.x * 2
+		cam_pivot.position.z = -rotation_speed.y * 1
 
 
 	

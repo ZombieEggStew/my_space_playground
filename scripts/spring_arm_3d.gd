@@ -65,8 +65,8 @@ func _update_target_pose() -> void:
 
 	var z_offset := 0.0
 	if _is_boosting:
-		z_offset += spring_arm_boost_z
+		z_offset -= spring_arm_boost_z
 	if _is_looking_backward:
-		z_offset += spring_arm_backward_z
+		z_offset -= spring_arm_backward_z
 
 	_target_spring_arm_z = _base_spring_arm_z + z_offset

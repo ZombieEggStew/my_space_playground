@@ -1,29 +1,34 @@
-class_name CombatStateMachine
 extends StateMachine
+class_name MoveSM
 
-# 共享变量，供各个状态访问
-var target: CharacterBody3D = null
+enum {
+    ORBIT,
+    CHASE,
+    INTERCEPT,
+    EVADE,
+}
+
+
 var turn_speed: float = 2.0
-var max_speed: float = 30.0
+var target_speed: float = 80.0
+var max_speed: float = 100.0
 var acceleration: float = 15.0
+var speed_lerp_factor: float = 2.0 # 控制速度调整的平滑度
 
 func _ready() -> void:
-    # 确保在初始化时有玩家引用
-    if GameManager.player_instance:
-        target = GameManager.player_instance
-    
-    # 初始化状态列表（假设子节点已在编辑器中添加或在此动态添加）
-    # 设置初始状态为追逐
-    initial_state = &"chase"
-    super._ready()
+    initial_state = MoveSM.ORBIT
+    transition_to(initial_state)
 
-func _physics_process(delta: float) -> void:
-    if target == null:
-        target = GameManager.player_instance
-        return
+func physics_process(delta: float) -> void:
+    super.physics_process(delta)
+
     
-    if current_state and current_state.has_method("physics_update"):
-        current_state.physics_update(delta)
+    move_forward(target_speed, delta)
+
+# 辅助方法：由状态调用来设置期望速度
+func set_target_speed(speed: float) -> void:
+    target_speed = speed
+
 
 # 辅助方法：处理基础飞行转向
 func rotate_towards(target_pos: Vector3, delta: float, speed_mult: float = 1.0) -> void:

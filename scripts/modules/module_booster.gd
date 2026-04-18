@@ -1,9 +1,8 @@
 extends BoosterModule
 class_name Booster_1
 
-@export var particle_speed_up: GPUParticles3D
 @export var boost_progress_bar: TextureProgressBar
-
+@export var boost_particle: GPUParticles3D
 # boost
 var _is_boosting := false
 var boost_speed := 100.0
@@ -20,7 +19,14 @@ var recover_rate := 5.0        # 每 0.1s 恢复
 
 @export var smooth_speed := 10.0
 
+var engine_module: EngineModule
+
+func setup(_engine) -> void:
+	engine_module = _engine
+
 func _ready() -> void:
+	if boost_particle:
+		boost_particle.emitting = false
 	SignalBus.on_player_boost_input.connect(_handle_boost_input)
 	GameManager.hud_manager.register_hud_group(hud_container).set_flow_effect(ControlGroup.Index.GROUP_2).set_rotation_effect().set_boost_offset_effect().set_boost_shake_effect()
 	
@@ -56,8 +62,10 @@ func _handle_boost_input(enable: bool) -> void:
 		
 
 func speed_up() -> void:
-	if particle_speed_up:
-		particle_speed_up.emitting = true
+	if not engine_module.is_engine_on:
+		return
+	if boost_particle:
+		boost_particle.emitting = true
 	_is_boosting = true
 	if recover_delay_timer:
 		recover_delay_timer.stop()
@@ -65,8 +73,10 @@ func speed_up() -> void:
 
 
 func stop_speed_up() -> void:
-	if particle_speed_up:
-		particle_speed_up.emitting = false
+	if not engine_module.is_engine_on:
+		return
+	if boost_particle:
+		boost_particle.emitting = false	
 	_is_boosting = false
 	if recover_delay_timer:
 		recover_delay_timer.start()

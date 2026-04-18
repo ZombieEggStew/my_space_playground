@@ -1,0 +1,96 @@
+[gd_scene format=4 uid="uid://chhhgjiibr6o4"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ue4bq"]
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_xsmo0"]
+_surfaces = [{
+"aabb": AABB(-0.12571818, -0.1257182, -1.0302533, 0.25143635, 0.2514364, 2.0747418),
+"format": 34359742465,
+"index_count": 90,
+"index_data": PackedByteArray("CQAEAAUACQAKAAQACgADAAQAAwAFAAQACQABAAoACwAJAAUACwABAAkACwAFAAcABQAGAAcAAwAGAAUADAALAAcADAAHAAYADAABAAsADQAMAAYADQABAAwADQAGAAgACgABAA4ACgAOAAMADwABAA0ADwANAAgABgACAAgADwAIAAIABgADAAIAEAABAA8ADgABABAAEAAPAAIADgAAAAMADgAQAAAAAgADAAAAEAACAAAA"),
+"lods": [0.15819691, PackedByteArray("AAABAAIAAgADAAAAAwABAAAABAABAAMAAwAFAAQABQABAAQAAwAGAAUABgADAAIABwABAAUABQAGAAcABgABAAcACAABAAYAAQAIAAIABgACAAgA")],
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 17,
+"vertex_data": PackedByteArray("Mg+2PTcPtr3MsYU/AAAAAAAAHDNX34O/AAAAAEa8AL7MsYU/RLwAPqfAELPMsYU/Mg+2PS0Ptj3MsYU/AAAAAEK8AD7MsYU/RLwAvqfAELPMsYU/Mg+2vS0Ptj3MsYU/Mg+2vTcPtr3MsYU/AAAAAEa8AD7rwf6+Mg+2PTcPtj3rwf6+Mg+2vTcPtj3rwf6+RLwAvqfAEDPrwf6+Mg+2vS0Ptr3rwf6+RLwAPqfAEDPrwf6+AAAAAEK8AL7rwf6+Mg+2PS0Ptr3rwf6+")
+}]
+blend_shape_mode = 0
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_oiyum"]
+resource_name = "missile_柱体"
+_surfaces = [{
+"aabb": AABB(-0.12571818, -0.1257182, -1.0302533, 0.25143635, 0.2514364, 2.0747418),
+"attribute_data": PackedByteArray("AAAgPwAAAAAAACA/AAAAPwAAAD8AAAAAAAAAPwAAAD8AAMA+AAAAAAAAAD8AAAAASOH6PgAAQD8AAIA+XI8CP6jj1j4sjhQ/ENcjPAAAQD9icaQ9LI4UPwAAgD6kcH0/qOPWPtRxaz9icaQ91HFrPwAAgD4AAAAAAACAPgAAAD8AAAA+AAAAAAAAYD8AAAAAAABgPwAAAD8AAEA/AAAAAAAAAD4AAAAAAAAAPgAAAD8AAAAAAAAAAAAAgD8AAAAAAACAPwAAAD8AAGA/AAAAAAAAQD8AAAAAAABAPwAAAD8AACA/AAAAAAAAwD4AAAAAAADAPgAAAD8AAIA+AAAAAAAAgD8AAAA/AABgPwAAAD8AAGA/AAAAPwAAQD8AAAA/AABAPwAAAD8AACA/AAAAPwAAID8AAAA/AAAAPwAAAD8AAAA/AAAAPwAAwD4AAAA/AADAPgAAAD8AAIA+AAAAPwAAgD4AAAA/AAAAPgAAAD8AAAA+AAAAPwAAAAAAAAA/AAAgPwAAAD8AAAA/AAAAPwAAgD4AAAA/AAAAPgAAAD8AAGA/AAAAPwAAQD8AAAA/AAAAPwAAAD8AAMA+AAAAPwAAAD4AAAA/AAAAAAAAAD8AAIA/AAAAPwAAYD8AAAA/AABAPwAAAD8AACA/AAAAPwAAwD4AAAA/AACAPgAAAD8="),
+"format": 34359742487,
+"index_count": 90,
+"index_data": PackedByteArray("IAAZABcAIAAhABkAIgATABEAIgAjABMAJAAcABoAJAAlABwAJgACAAAAJgAnAAIAKAAEAAUAKAApAAQAKgAfAB0AKgArAB8ABgAHAAgABgAJAAcABwAJAAoACQAGAAsACwAGAAwACQALAA0ALAAQAA4ALAAtABAALgAWABQALgAvABYAMAABADEAMgAPADMANAASADUANgADADcAOAAVADkAOgAYADsAPAAbAD0APgAeAD8A"),
+"lods": [0.15819691, PackedByteArray("AAABAAIAAwAEAAUABgAHAAgABgAJAAcABwAJAAoACQAGAAsACwAGAAwACQALAA0ADgAPABAAEQASABMAFAAVABYAFwAYABkAGgAbABwAHQAeAB8A")],
+"material": SubResource("StandardMaterial3D_ue4bq"),
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 64,
+"vertex_data": PackedByteArray("Mg+2PTcPtr3MsYU/AAAAAAAAHDNX34O/AAAAAEa8AL7MsYU/AAAAAAAAHDNX34O/Mg+2vTcPtr3MsYU/AAAAAEa8AL7MsYU/RLwAPqfAELPMsYU/AAAAAEK8AD7MsYU/Mg+2PS0Ptj3MsYU/RLwAvqfAELPMsYU/Mg+2vS0Ptj3MsYU/AAAAAEa8AL7MsYU/Mg+2PTcPtr3MsYU/Mg+2vTcPtr3MsYU/RLwAvqfAELPMsYU/AAAAAAAAHDNX34O/Mg+2vS0Ptj3MsYU/Mg+2PS0Ptj3MsYU/AAAAAAAAHDNX34O/RLwAPqfAELPMsYU/Mg+2vS0Ptj3MsYU/AAAAAAAAHDNX34O/AAAAAEK8AD7MsYU/AAAAAEK8AD7MsYU/AAAAAAAAHDNX34O/Mg+2PS0Ptj3MsYU/RLwAPqfAELPMsYU/AAAAAAAAHDNX34O/Mg+2PTcPtr3MsYU/Mg+2vTcPtr3MsYU/AAAAAAAAHDNX34O/RLwAvqfAELPMsYU/AAAAAEa8AD7rwf6+Mg+2PTcPtj3rwf6+Mg+2PTcPtj3rwf6+RLwAPqfAEDPrwf6+RLwAPqfAEDPrwf6+Mg+2PS0Ptr3rwf6+Mg+2PS0Ptr3rwf6+AAAAAEK8AL7rwf6+AAAAAEK8AL7rwf6+Mg+2vS0Ptr3rwf6+Mg+2vS0Ptr3rwf6+RLwAvqfAEDPrwf6+RLwAvqfAEDPrwf6+Mg+2vTcPtj3rwf6+Mg+2vTcPtj3rwf6+AAAAAEa8AD7rwf6+Mg+2PS0Ptr3rwf6+AAAAAEK8AL7rwf6+RLwAvqfAEDPrwf6+Mg+2vTcPtj3rwf6+Mg+2PTcPtj3rwf6+RLwAPqfAEDPrwf6+AAAAAEK8AL7rwf6+Mg+2vS0Ptr3rwf6+Mg+2vTcPtj3rwf6+AAAAAEa8AD7rwf6+AAAAAEa8AD7rwf6+Mg+2PTcPtj3rwf6+RLwAPqfAEDPrwf6+Mg+2PS0Ptr3rwf6+Mg+2vS0Ptr3rwf6+RLwAvqfAEDPrwf6+faV9JYHavtJtsiAg////v32lfSWB2r7SkU0gIP///7+BWn0lgdpArYFafSWB2kCt/3//f////7//f/9/////v/9//3////+//3//f////7//f/9//v//v/9//3////+//3//f/7//7//f/9/////v30lfaWBWr6SICBtsv///799JX2lgVq+koHafaWBWkDt3t9tsv///7+B2n2lgVpA7YFagdp9JUCtkU3e3////7+BWoHafSVArX2lgdp9Jb7SbbLe3////799pYHafSW+0oHagVp9pUDt3t+RTf///7+B2oFafaVA7X0lgVp9pb6SICCRTf///799JYFafaW+kn2lgdp9Jb7SfaWB2n0lvtKB2n2lgVpA7YHafaWBWkDtgdqBWn2lQO2B2oFafaVA7X2lfSWB2r7SfaV9JYHavtKBWn0lgdpArYFafSWB2kCtfSWBWn2lvpJ9JYFafaW+kn0lfaWBWr6SfSV9pYFavpKBWoHafSVArYFagdp9JUCtbbIgIP///79tsiAg////vyAgbbL///+/ICBtsv///7/e322y////v97fbbL///+/kU0gIP///7+RTSAg////v5FN3t////+/kU3e3////79tst7f////v22y3t////+/3t+RTf///7/e35FN////vyAgkU3///+/ICCRTf///78=")
+}]
+blend_shape_mode = 0
+shadow_mesh = SubResource("ArrayMesh_xsmo0")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_2rusf"]
+diffuse_mode = 3
+specular_mode = 1
+albedo_color = Color(0.82376605, 0.823766, 0.82376593, 1)
+roughness = 0.0
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_2rusf"]
+size = Vector3(0.3, 0.3, 2.2)
+
+[sub_resource type="Curve" id="Curve_2rusf"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0.22826803), -1.8364791, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_cthcg"]
+curve = SubResource("Curve_2rusf")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_np454"]
+particle_flag_align_y = true
+angle_min = -29.99999
+angle_max = 30.000011
+direction = Vector3(0, 0, 1)
+spread = 8.0
+initial_velocity_min = 5.0
+initial_velocity_max = 6.0
+gravity = Vector3(0, 0, 0)
+linear_accel_min = -2.2351742e-06
+linear_accel_max = 14.999997
+tangential_accel_min = -2.2351742e-06
+tangential_accel_max = -2.2351742e-06
+scale_min = 0.5
+scale_max = 1.5
+scale_curve = SubResource("CurveTexture_cthcg")
+scale_over_velocity_max = 220.87
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_cthcg"]
+albedo_color = Color(0.80784315, 0.6745098, 0.38431373, 1)
+emission_enabled = true
+emission = Color(0.9931398, 0.9823422, 0.95991355, 1)
+emission_energy_multiplier = 6.13
+
+[sub_resource type="BoxMesh" id="BoxMesh_6cx5e"]
+material = SubResource("StandardMaterial3D_cthcg")
+size = Vector3(0.1, 0.1, 0.1)
+
+[node name="missile" type="Area3D" unique_id=723979700]
+
+[node name="柱体2" type="MeshInstance3D" parent="." unique_id=139445170]
+mesh = SubResource("ArrayMesh_oiyum")
+surface_material_override/0 = SubResource("StandardMaterial3D_2rusf")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1736574791]
+shape = SubResource("BoxShape3D_2rusf")
+
+[node name="GPUParticles3D" type="GPUParticles3D" parent="." unique_id=1620493536]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1.0334477)
+amount = 32
+process_material = SubResource("ParticleProcessMaterial_np454")
+draw_pass_1 = SubResource("BoxMesh_6cx5e")
+
+[node name="missile" type="Node3D" parent="." unique_id=1216647262]

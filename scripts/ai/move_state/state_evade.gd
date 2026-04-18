@@ -1,11 +1,11 @@
 class_name StateEvade
-extends StateBase
+extends State
 
 # 规避状态：远离玩家或进行不规则机动
 var evade_timer := 0.0
 var evade_direction := Vector3.ZERO
 
-func enter(_prev: StringName = &"") -> void:
+func enter(_prev: int = MoveSM.CHASE) -> void:
     super.enter(_prev)
     evade_timer = randf_range(1.5, 3.0)
     # 随机选择一个躲避方向（侧向或上方）
@@ -22,4 +22,4 @@ func physics_update(delta: float) -> void:
     parent_sm.move_forward(parent_sm.max_speed * 1.2, delta) # 加速逃离
     
     if evade_timer <= 0:
-        parent_sm.transition_to(&"chase")
+        parent_sm.transition_to(MoveSM.CHASE) # 逃离一段时间后重新追逐
