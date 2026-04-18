@@ -9,7 +9,8 @@ var max_speed := 60.0
 var forward_speed := 0.0
 var forward_brake := 45.0
 var forward_accel := 30.0
-var boost_release_decel := 60.0
+var boost_release_decel := 10.0
+var engine_off_decel := 10.0     # 引擎关闭时的失速减速度
 
 
 # roll
@@ -28,6 +29,8 @@ var target_yaw := 0.0
 var target_pitch := 0.0
 var _yaw_speed := 0.0
 var _pitch_speed := 0.0
+
+var velocity_smooth_factor := 5.0  # 重开引擎时速度方向转向的平滑度
 
 var is_ship_rolling := true
 
@@ -71,12 +74,12 @@ func handle_move(delta: float) -> void:
 	var is_forward_pressed := Input.is_action_pressed("forward")
 	var is_backward_pressed := Input.is_action_pressed("backward")
 	
-	var is_boosting :bool = booster_module.is_boosting() if booster_module else false
-	
+	var is_boosting :bool = booster_module.is_boosting if booster_module else false
+	var direction := -root.global_transform.basis.z.normalized()
 	# 如果引擎开启，则更新速度和方向
 	if is_engine_on:
-		var boost_speed : float = booster_module.get_boost_speed() if booster_module else max_speed
-		var boost_accel : float = booster_module.get_boost_accel() if booster_module else forward_accel
+		var boost_speed : float = booster_module.boost_speed if booster_module else max_speed
+		var boost_accel : float = booster_module.boost_accel if booster_module else forward_accel
 
 		var target_max_speed := boost_speed if is_boosting else max_speed
 		var accel_rate := boost_accel if is_boosting else forward_accel as float
@@ -91,16 +94,23 @@ func handle_move(delta: float) -> void:
 			forward_speed = move_toward(forward_speed, max_speed, boost_release_decel * delta)
 
 		# 引擎开启时，保持速度方向跟随飞船朝向
-		var direction := -root.global_transform.basis.z.normalized()
+		
 		root.velocity = direction * forward_speed
 	else:
-		# 引擎关闭（环顾模式）：保持当前 velocity 矢量不变（滑行），不随旋转改变方向
-		# 但我们仍然允许 forward_speed 变量保持数值（如果需要的话），这里不做处理即为保持原速度矢量
-		pass
+		# 引擎关闭（环顾模式）：失速逻辑
+		if root.velocity.length() > 0.001:
+			var speed = root.velocity.length()
+			var new_speed = move_toward(speed, 0.0, engine_off_decel * delta)
+			root.velocity = root.velocity.normalized() * new_speed
+			# 同步更新 forward_speed，确保引擎重启时速度顺滑
+			forward_speed = new_speed
 
+	_handle_rotation(delta)
+	_handle_particle(is_boosting)
+
+func _handle_rotation(delta: float) -> void:
 	var roll_input := Input.get_axis("left", "right")
 	# 飞船正面朝向改为 -Z
-	var direction := -root.global_transform.basis.z.normalized()
 	var target_roll_rate := roll_input * roll_speed
 	var roll_change_rate := roll_accel if abs(roll_input) > 0.001 else roll_decel
 	roll_rate = move_toward(roll_rate, target_roll_rate, roll_change_rate * delta)
@@ -109,17 +119,7 @@ func handle_move(delta: float) -> void:
 		# 绕着本地 Z 轴旋转（现在 Z 轴是前后轴）
 		root.rotate_object_local(Vector3.FORWARD, roll_rate * delta)
 
-	# 根据引擎状态应用速度
-	if is_engine_on:
-		# 引擎开启：速度方向跟随飞船朝向
-		root.velocity.x = direction.x * forward_speed
-		root.velocity.y = direction.y * forward_speed
-		root.velocity.z = direction.z * forward_speed
-	else:
-		# 引擎关闭（滑行）：不操作 root.velocity，保持原有的动量方向
-		# 此时 root.move_and_slide() 会沿之前的 velocity 继续滑行
-		pass
-
+func _handle_particle(is_boosting : bool) -> void:
 	# 更新粒子效果
 	if particle_speed:
 		# 设置 amount_ratio：速度为 100 时 ratio 为 1
@@ -131,7 +131,6 @@ func handle_move(delta: float) -> void:
 			particle_speed.emitting = true
 		else:
 			particle_speed.emitting = false
-
 
 func track_mouse(delta: float) -> void:
 	# if Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
