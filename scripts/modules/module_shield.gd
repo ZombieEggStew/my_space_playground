@@ -1,7 +1,45 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#TO DO: area改为healthcomponent，动态分配layer和teamid
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 extends Module
 class_name ShieldModule
 
-var team_id := TeamID.TEAM_NEUTRAL
+var team_id := TeamID.NEUTRAL
 @export var mesh : MeshInstance3D
 var active_alpha := 0.0
 

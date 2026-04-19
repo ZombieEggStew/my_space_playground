@@ -110,12 +110,13 @@ _surfaces = [{
 blend_shape_mode = 0
 shadow_mesh = SubResource("ArrayMesh_hrtpb")
 
-[node name="space_craft_6" type="CharacterBody3D" unique_id=937799966]
-script = ExtResource("1_2b7a6")
+[sub_resource type="BoxShape3D" id="BoxShape3D_76b8x"]
+size = Vector3(6.394287, 4.9836426, 8.501221)
 
-[node name="HealthComponent" type="Node" parent="." unique_id=915451204]
-script = ExtResource("6_76b8x")
-metadata/_custom_type_script = "uid://dbjgkv3ndhbm6"
+[node name="space_craft_6" type="CharacterBody3D" unique_id=937799966]
+collision_layer = 4
+collision_mask = 135
+script = ExtResource("1_2b7a6")
 
 [node name="AbleToBeLocked2" parent="." unique_id=250198415 instance=ExtResource("3_76b8x")]
 aabb = AABB(-2.99, -2.7, -4.115, 6.05, 5.435, 8.22)
@@ -136,3 +137,12 @@ surface_material_override/0 = ExtResource("2_ru2aj")
 [node name="环体" type="MeshInstance3D" parent="space_craft_6" unique_id=182226243]
 mesh = SubResource("ArrayMesh_qme1d")
 surface_material_override/0 = ExtResource("2_1rt8a")
+
+[node name="HealthComponent" type="Area3D" parent="." unique_id=1781197442]
+collision_layer = 1024
+collision_mask = 0
+script = ExtResource("6_76b8x")
+metadata/_custom_type_script = "uid://dbjgkv3ndhbm6"
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="HealthComponent" unique_id=2023993780]
+shape = SubResource("BoxShape3D_76b8x")

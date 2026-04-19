@@ -1,6 +1,6 @@
 extends CharacterBody3D
 
-var team_id := TeamID.TEAM_ENEMY
+var team_id := TeamID.ENEMY
 
 var hit_count := IntStat.new(0,10)
 
@@ -8,19 +8,19 @@ var hit_count := IntStat.new(0,10)
 var speed := 10.0
 var _orbit_angle := 0.0
 
-@export var player_ship: CharacterBody3D 
+var player_ship: CharacterBody3D 
 @export var spawn_radius_min := 100.0
 @export var spawn_radius_max := 600.0
 var orbit_radius := 200.0
 var orbit_angular_speed := .1
 @export var radius_correction_gain := 3.0
-@export var visible_on_screen_notifier: VisibleOnScreenNotifier3D
 
 @onready var health :HealthComponent = $HealthComponent
 
 func _ready() -> void:
-	health.setup(100, 100)
+	health.setup(team_id , 100, 100)
 	health.on_death.connect(die)
+	player_ship = GameManager.get_current_player()
 	_randomize_spawn_and_orbit()
 
 
@@ -83,6 +83,3 @@ func get_team_id() -> int:
 
 func die() -> void:
 	reset()
-
-func get_visible_on_screen_notifier() -> VisibleOnScreenNotifier3D:
-	return visible_on_screen_notifier

@@ -5,7 +5,7 @@ signal on_locked(enabled: bool)
 
 
 @onready var target_node3d: = get_parent() as Node3D
-var team_id : int = TeamID.TEAM_NEUTRAL
+var team_id : int = TeamID.NEUTRAL
 
 var distance_to_player := 0.0
 

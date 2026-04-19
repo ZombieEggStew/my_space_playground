@@ -37,16 +37,12 @@ var is_ship_rolling := true
 
 var model_node: Node3D
 
-var is_looking_around := false
-
-
 
 func _ready() -> void:
 
-	SignalBus.on_track_mouse_change.connect(_on_track_mouse_change)
-	SignalBus.on_player_look_backward.connect(_on_look_backward_change)
+	SignalBus.on_toggle_track_mouse.connect(_on_track_mouse_change)
 
-	SignalBus.on_player_look_around.connect(_on_look_around_change)
+	SignalBus.on_toggle_engine.connect(_on_engine_toggle)
 
 	model_node = root.get_model_node()
 	if model_node == null:
@@ -61,14 +57,9 @@ func get_rotation_speed() -> Vector2:
 func _on_track_mouse_change(enable: bool) -> void:
 	auto_track_enabled = enable
 
-func _on_look_backward_change(enable: bool) -> void:
-	auto_track_enabled = not enable
 
-func _on_look_around_change(enable: bool) -> void:
-	print("look around change: ", enable)
-	SignalBus.on_track_mouse_change.emit(not enable)
-	is_looking_around = enable
-	is_engine_on = not enable
+func _on_engine_toggle() -> void:
+	is_engine_on = not is_engine_on
 
 @export var turn_curve: Curve
 
@@ -151,7 +142,7 @@ func track_mouse(delta: float) -> void:
 	# 	target_yaw = 0.0
 	# 	return
 	
-	if auto_track_enabled or is_looking_around:
+	if auto_track_enabled:
 		var viewport_size = get_viewport().get_visible_rect().size
 		var center = viewport_size * 0.5
 		

@@ -10,7 +10,7 @@
 [ext_resource type="Script" uid="uid://ddkgywloc4e3j" path="res://scripts/ai/move_state/state_intercept.gd" id="7_qa38r"]
 [ext_resource type="Script" uid="uid://dd5yvcsnua35r" path="res://scripts/ai/move_state/state_evade.gd" id="8_ajf54"]
 [ext_resource type="Script" uid="uid://dfdtbhu1pgw5c" path="res://scripts/ai/move_state/state_orbit.gd" id="9_kl865"]
-[ext_resource type="Script" uid="uid://bndan88n5ibx0" path="res://scripts/ai/move_state/joust.gd" id="10_1vuip"]
+[ext_resource type="Script" uid="uid://bndan88n5ibx0" path="res://scripts/ai/move_state/state_joust.gd" id="10_1vuip"]
 [ext_resource type="Script" uid="uid://fhg75aokxjfe" path="res://scripts/ai/move_state/state_disengage.gd" id="11_kcr71"]
 
 [node name="AI_Brain" type="Node" unique_id=2066935084]

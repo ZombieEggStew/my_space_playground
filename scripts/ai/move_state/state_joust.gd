@@ -23,5 +23,5 @@ func physics_update(delta: float) -> void:
 	
 	var ai_forward = -ship.global_basis.z
 	var player_v_dir = player.velocity.normalized()
-	if ai_forward.dot(player_v_dir) > -0.6:
+	if ai_forward.dot(player_v_dir) > -0.8:
 		parent_sm.transition_to(MoveSM.ORBIT)

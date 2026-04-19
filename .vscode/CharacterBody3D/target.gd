@@ -5,7 +5,7 @@
 
 extends CharacterBody3D
 
-var team_id := TeamID.TEAM_ENEMY
+var team_id := TeamID.ENEMY
 @onready var health : HealthComponent = $HealthComponent
 
 func _ready() -> void:

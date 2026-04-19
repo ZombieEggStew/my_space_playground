@@ -14,7 +14,7 @@ enum {
 var turn_speed: float = 2.0
 var target_speed: float = 80.0
 var max_speed: float = 100.0
-var acceleration: float = 50.0
+var acceleration: float = 10.0
 
 
 func _ready() -> void:
@@ -33,7 +33,7 @@ func set_target_speed(speed: float) -> void:
 
 
 # 辅助方法：处理基础飞行转向
-func rotate_towards(target_pos: Vector3, delta: float, speed_mult: float = 10.0) -> void:
+func rotate_towards(target_pos: Vector3, delta: float, speed_mult: float = 4.0) -> void:
     if controlled_ship == null: return
     
     var to_target = target_pos - controlled_ship.global_position

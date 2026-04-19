@@ -65,7 +65,7 @@ func physics_update(delta: float) -> void:
 	
 	if player.velocity.length() > 1.0 and dist < 800.0:
 		# 1. 对冲判断 (JOUST): AI 面向与玩家速度反向对齐
-		if ai_forward.dot(player_v_dir) < -0.6:
+		if ai_forward.dot(player_v_dir) < -0.8:
 			parent_sm.transition_to(MoveSM.JOUST)
 			return
 

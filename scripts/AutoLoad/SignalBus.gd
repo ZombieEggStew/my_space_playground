@@ -12,13 +12,16 @@ signal on_player_boost_input(enable: bool)
 
 signal on_player_boost(enable:bool)
 
-signal on_track_mouse_change(enable: bool)
+signal on_toggle_track_mouse(enable: bool)
 
 signal on_player_look_backward(enable: bool)
 
 signal on_player_look_around(enable: bool)
 
 
+signal on_player_try_use_item_1()
+
+signal on_toggle_engine()
 
 
 signal on_player_lock_target(target: AbleToBeLocked)

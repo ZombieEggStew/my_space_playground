@@ -1,5 +1,7 @@
 [gd_scene format=4 uid="uid://chhhgjiibr6o4"]
 
+[ext_resource type="Script" uid="uid://ctaa2e11aqs0i" path="res://scripts/bullet/missile.gd" id="1_np454"]
+
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ue4bq"]
 
 [sub_resource type="ArrayMesh" id="ArrayMesh_xsmo0"]
@@ -41,7 +43,7 @@ albedo_color = Color(0.82376605, 0.823766, 0.82376593, 1)
 roughness = 0.0
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_2rusf"]
-size = Vector3(0.3, 0.3, 2.2)
+size = Vector3(0.5, 0.5, 3)
 
 [sub_resource type="Curve" id="Curve_2rusf"]
 _data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0.22826803), -1.8364791, 0.0, 0, 0]
@@ -79,6 +81,9 @@ material = SubResource("StandardMaterial3D_cthcg")
 size = Vector3(0.1, 0.1, 0.1)
 
 [node name="missile" type="Area3D" unique_id=723979700]
+collision_layer = 0
+collision_mask = 1792
+script = ExtResource("1_np454")
 
 [node name="柱体2" type="MeshInstance3D" parent="." unique_id=139445170]
 mesh = SubResource("ArrayMesh_oiyum")

@@ -15,14 +15,14 @@ var cam_main: Camera3D
 var forward: Vector3 = Vector3.FORWARD
 var damage := 10.0
 
-var gun_pivot_left : Node3D
+@export var gun_pivot_left : Node3D
 
 var aim_modrule: BasicAimModule
 
 var _fire_from_left := true
 var bullet_spread_deg := 0  # 子弹随机散布角度（度）
 
-var default_bullet_speed := 500.0
+var default_bullet_speed := 500
 
 var is_shooting := false
 var crosshair_3: Crosshair3 #绿色 十字准心
@@ -38,10 +38,9 @@ func _ready() -> void:
 	set_bullet_speed(default_bullet_speed)
 
 	cam_main = root.get_main_camera()
-	gun_pivot_left = root.get_gun_pivot_left()
 
-	if cam_main == null or gun_pivot_left == null:
-		Log.log_error(self,"Main camera or gun pivot not found in CharacterBody3D.")
+	if cam_main == null:
+		Log.log_error(self,"Main camera not found in CharacterBody3D.")
 		queue_free()
 	aim_modrule = modules_manager.get_aim_module()
 	if aim_modrule == null:
@@ -81,19 +80,19 @@ func _get_next_muzzle_pos() -> Vector3:
 	return muzzle_pos
 
 
-func spawn_bullet( pos: Vector3, dir: Vector3, team_id: int, shooter: Node = null) -> void:
+func spawn_bullet( pos: Vector3, dir: Vector3) -> void:
 	if bullet_scene == null:
 		return
 
-	var bullet = bullet_scene.instantiate() as Area3D
+	var bullet = bullet_scene.instantiate() as LaserBullet
 	if bullet == null:
 		return
 
 	bullets_parent.add_child(bullet)
 
-	if bullet.has_method("setup"):
-		var heat_ratio = heat_manager.get_heat_ratio() if heat_manager else 0.0
-		bullet.call("setup", round(damage * (1 + heat_ratio)) ,pos, dir, team_id, shooter)
+	var heat_ratio := heat_manager.get_heat_ratio() if heat_manager else 0.0
+	var _damage :int = round(damage * (1 + heat_ratio))
+	bullet.setup(pos, dir, TeamID.PLAYER , root).set_damage(_damage).set_speed(bullet_speed)
 
 
 func handle_shooting(enable: bool) -> void:
@@ -134,6 +133,6 @@ func shoot() -> void:
 	var offset_y := randf_range(-spread, spread)
 	var shot_dir := (forward + right * offset_x + up * offset_y).normalized() as Vector3
 	var muzzle_pos := _get_next_muzzle_pos()
-	spawn_bullet(muzzle_pos, shot_dir, TeamID.TEAM_PLAYER)
+	spawn_bullet(muzzle_pos, shot_dir)
 
 

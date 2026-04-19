@@ -1,4 +1,4 @@
-extends Node
+extends Area3D
 class_name HealthComponent
 
 signal on_death()
@@ -8,12 +8,16 @@ signal changed(new_health: int ,new_max_health: int, changed_amount:int)
 
 var health :int = 10
 var max_health :int = 10
+var team_id :int = TeamID.NEUTRAL
 
-func setup(default_health :int, _max_health :int = default_health) -> void:
+func setup(_team_id : int , default_health :int, _max_health :int = default_health) -> void:
+	team_id = _team_id
 	health = default_health
 
 	max_health = _max_health
 
+func get_team_id() -> int:
+	return team_id
 
 func get_health() -> int:
 	return health

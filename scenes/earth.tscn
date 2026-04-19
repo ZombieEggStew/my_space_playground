@@ -45,6 +45,8 @@ shadow_mesh = SubResource("ArrayMesh_2htit")
 radius = 33.018
 
 [node name="earth" type="StaticBody3D" unique_id=1193344869]
+collision_layer = 128
+collision_mask = 135
 
 [node name="球体" type="MeshInstance3D" parent="." unique_id=1302988240]
 mesh = SubResource("ArrayMesh_gvbyy")

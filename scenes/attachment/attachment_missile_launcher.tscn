@@ -1,0 +1,12 @@
+[gd_scene format=3 uid="uid://qiukoyjomao7"]
+
+[ext_resource type="Script" uid="uid://kl6wibeb2vp1" path="res://scripts/attachment/attachment_missile_launcher.gd" id="1_6w8xq"]
+[ext_resource type="PackedScene" uid="uid://chhhgjiibr6o4" path="res://scenes/missile.tscn" id="2_qcv1v"]
+
+[node name="attachment_missile_launcher" type="Node3D" unique_id=583855844 node_paths=PackedStringArray("launch_point")]
+script = ExtResource("1_6w8xq")
+missile_scene = ExtResource("2_qcv1v")
+launch_point = NodePath("launch_point")
+
+[node name="launch_point" type="Node3D" parent="." unique_id=1672362632]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.01864624, -3.6523132)

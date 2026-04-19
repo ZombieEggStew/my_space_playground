@@ -49,7 +49,7 @@ func physics_update(delta: float) -> void:
 	if current_dot > fire_angle:
 		fire_timer -= delta
 		if fire_timer <= 0:
-			spawn_bullet(ship.global_position + forward * 2.0, dir_to_lead, TeamID.TEAM_ENEMY, ship)
+			spawn_bullet(ship.global_position + forward * 2.0, dir_to_lead, TeamID.ENEMY, ship)
 			fire_timer = fire_rate
 	
 	# 3. 退出条件：如果玩家太远或角度偏差太大

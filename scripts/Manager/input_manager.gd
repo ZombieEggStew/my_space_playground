@@ -21,6 +21,8 @@ var _is_look_backward := BoolStat.new(false)
 var _is_look_around := BoolStat.new(false)
 
 
+
+
 func _input(event: InputEvent) -> void:
     if event is InputEventMouse:
         mouse_input.emit(event)
@@ -31,12 +33,15 @@ func _input(event: InputEvent) -> void:
         SignalBus.on_player_try_lock.emit()
     if event.is_action_pressed("switch_cam"):
         SignalBus.on_player_switch_camera.emit()
-    
+    if event.is_action_pressed("toggle_engine"):
+        SignalBus.on_toggle_engine.emit()
+    if event.is_action_pressed("use_item_1"):
+        SignalBus.on_player_try_use_item_1.emit()
 
     _handle_input_action(event, "shoot_player", is_toggle_mode_shoot, _is_shooting, SignalBus.on_player_shoot)
     _handle_input_action(event, "boost", is_toggle_mode_boost, _is_boosting, SignalBus.on_player_boost_input)
     _handle_input_action(event, "look_backward", is_toggle_mode_look_backward, _is_look_backward, SignalBus.on_player_look_backward)
-    _handle_input_action(event, "toggle_track", is_toggle_mode_track_mouse, _is_track_mouse, SignalBus.on_track_mouse_change)
+    _handle_input_action(event, "toggle_track", is_toggle_mode_track_mouse, _is_track_mouse, SignalBus.on_toggle_track_mouse)
     _handle_input_action(event, "look_around", is_toggle_mode_look_around, _is_look_around, SignalBus.on_player_look_around)
 
 

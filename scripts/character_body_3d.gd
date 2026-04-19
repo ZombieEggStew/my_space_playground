@@ -78,7 +78,7 @@
 extends CharacterBody3D
 class_name PlayerShip
 
-var team_id := TeamID.TEAM_PLAYER
+var team_id := TeamID.PLAYER
 
 # --- Component references ---
 var cam_main: Camera3D
@@ -93,16 +93,15 @@ var cam_pivot: Node3D
 
 @onready var move_component : MoveComponent = $MoveComponent
 
+@onready var attachment_manager : AttachmentManager = $AttachmentManager
 var fov_smooth := 8.0         # FOV 平滑插值速度
 
 
-@export var gun_pivot_left : Node3D
-
-@export var modules_manager: ModulesManager
+@onready var modules_manager: ModulesManager = $ModulesManager
 
 func _ready() -> void:
 	
-	health.setup(100, 100)
+	health.setup(team_id,100, 100)
 	health.on_death.connect(die)
 	var engine_module =  modules_manager.install_module_3d(Scenes.module_move_controller_scene) as EngineModule
 	engine_module.install_booster_module(Scenes.module_booster_scene)
@@ -118,15 +117,14 @@ func _ready() -> void:
 	modules_manager.install_module(Scenes.module_player_aim_scene)
 	modules_manager.install_module(Scenes.test_module_scene)
 
-	var laser := modules_manager.install_module(Scenes.module_laser_gun_scene)
+	var laser := modules_manager.install_module_3d(Scenes.module_laser_gun_scene)
 	var laser_predict := modules_manager.install_module(Scenes.module_predict_aim_scene)
 	laser_predict.init_module(laser)
 
+	attachment_manager.attach_to(Slot.SLOT_1, Scenes.attachment_missile_launcher_scene)
+
 	GameManager.register_player(self)
 
-
-func get_gun_pivot_left() -> Node:
-	return gun_pivot_left
 
 func take_damage(damage: int) -> void:
 	health.take_damage(damage)
@@ -159,13 +157,9 @@ func die() -> void:
 	pass
 
 func _input(event: InputEvent) -> void:
-	if event is InputEventKey and event.pressed and event.keycode == Key.KEY_Q:
+	if event is InputEventKey and event.pressed and event.keycode == Key.KEY_O:
 		health.take_damage(10)
-	if event is InputEventKey and event.pressed and event.keycode == Key.KEY_F:
-		health.take_damage(20)
-	if event is InputEventKey and event.pressed and event.keycode == Key.KEY_E:
-		health.heal(10)
-	if event is InputEventKey and event.pressed and event.keycode == Key.KEY_R:
+	if event is InputEventKey and event.pressed and event.keycode == Key.KEY_P:
 		BuffManager.apply_buff_by_name(self, self, "healing_1")
 
 

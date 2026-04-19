@@ -3,9 +3,9 @@
 [ext_resource type="Script" uid="uid://nvatpo7axdb8" path="res://scripts/space_craft_5.gd" id="1_oihk3"]
 [ext_resource type="Material" uid="uid://b2ypfyebn18tb" path="res://material/color/white.tres" id="1_vfsme"]
 [ext_resource type="PackedScene" uid="uid://cbbd3t6dtcpoc" path="res://scenes/state_machine/AI_Brain.tscn" id="2_1grbo"]
-[ext_resource type="Script" uid="uid://dbjgkv3ndhbm6" path="res://scripts/component/health_component.gd" id="5_1grbo"]
 [ext_resource type="PackedScene" uid="uid://c2vpnamuf2w8x" path="res://scenes/component/able_to_be_locked.tscn" id="5_f8h0h"]
 [ext_resource type="Material" uid="uid://bcwpsthimbm7r" path="res://material/red.tres" id="6_1grbo"]
+[ext_resource type="PackedScene" uid="uid://clbmhved44n61" path="res://scenes/component/health_component.tscn" id="6_7fmft"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_oihk3"]
 size = Vector3(5.145, 2.57, 10.24)
@@ -110,14 +110,15 @@ _surfaces = [{
 blend_shape_mode = 0
 shadow_mesh = SubResource("ArrayMesh_lqyhr")
 
+[sub_resource type="BoxShape3D" id="BoxShape3D_1grbo"]
+size = Vector3(5.989319, 3.4597168, 11.251831)
+
 [node name="space_craft_5" type="CharacterBody3D" unique_id=1578308677]
+collision_layer = 4
+collision_mask = 135
 script = ExtResource("1_oihk3")
 
 [node name="AI_Brain" parent="." unique_id=2066935084 instance=ExtResource("2_1grbo")]
-
-[node name="HealthComponent" type="Node" parent="." unique_id=1678657678]
-script = ExtResource("5_1grbo")
-metadata/_custom_type_script = "uid://dbjgkv3ndhbm6"
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1744172207]
 shape = SubResource("BoxShape3D_oihk3")
@@ -138,3 +139,10 @@ surface_material_override/0 = ExtResource("1_vfsme")
 [node name="环体" type="MeshInstance3D" parent="space_craft_5" unique_id=718186982]
 mesh = SubResource("ArrayMesh_5guva")
 surface_material_override/0 = ExtResource("6_1grbo")
+
+[node name="HealthComponent" parent="." unique_id=1573653502 instance=ExtResource("6_7fmft")]
+collision_layer = 1024
+collision_mask = 0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="HealthComponent" unique_id=1890754052]
+shape = SubResource("BoxShape3D_1grbo")

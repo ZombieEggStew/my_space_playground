@@ -24,3 +24,4 @@ var dead_zone_indicator_scene: PackedScene = preload("res://scenes/ui/dead_zone_
 
 var test_module_scene: PackedScene = preload("res://scenes/modules/module_test.tscn")
 
+var attachment_missile_launcher_scene: PackedScene = preload("res://scenes/attachment/attachment_missile_launcher.tscn")

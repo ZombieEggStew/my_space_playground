@@ -1,0 +1,41 @@
+[gd_scene format=3 uid="uid://cveradmg4aeue"]
+
+[ext_resource type="Script" uid="uid://rc8mf3fvqios" path="res://scripts/tool/test_box.gd" id="1_gsqoq"]
+[ext_resource type="Script" uid="uid://dbjgkv3ndhbm6" path="res://scripts/component/health_component.gd" id="2_jeuno"]
+[ext_resource type="PackedScene" uid="uid://c2vpnamuf2w8x" path="res://scenes/component/able_to_be_locked.tscn" id="3_hbp24"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_mw25s"]
+size = Vector3(6, 6, 6)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_b5spy"]
+shading_mode = 0
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_b5spy"]
+size = Vector3(6, 6, 6)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_gsqoq"]
+size = Vector3(7, 7, 7)
+
+[node name="test_box" type="CharacterBody3D" unique_id=464010870]
+collision_layer = 4
+collision_mask = 135
+script = ExtResource("1_gsqoq")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=1808014379]
+mesh = SubResource("BoxMesh_mw25s")
+surface_material_override/0 = SubResource("StandardMaterial3D_b5spy")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1754003164]
+shape = SubResource("BoxShape3D_b5spy")
+
+[node name="AbleToBeLocked" parent="." unique_id=250198415 instance=ExtResource("3_hbp24")]
+aabb = AABB(-3.15, -3.18, -3.14, 6.315, 6.355, 6.38)
+
+[node name="HealthComponent" type="Area3D" parent="." unique_id=317539709]
+collision_layer = 1024
+collision_mask = 0
+script = ExtResource("2_jeuno")
+metadata/_custom_type_script = "uid://dbjgkv3ndhbm6"
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="HealthComponent" unique_id=1327664429]
+shape = SubResource("BoxShape3D_gsqoq")
