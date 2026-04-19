@@ -9,8 +9,8 @@ var max_speed := 60.0
 var forward_speed := 0.0
 var forward_brake := 45.0
 var forward_accel := 30.0
-var boost_release_decel := 10.0
-var engine_off_decel := 10.0     # 引擎关闭时的失速减速度
+var boost_release_decel := 5.0
+var engine_off_decel := 0.0     # 引擎关闭时的失速减速度
 
 
 # roll
@@ -30,7 +30,8 @@ var target_pitch := 0.0
 var _yaw_speed := 0.0
 var _pitch_speed := 0.0
 
-var velocity_smooth_factor := 5.0  # 重开引擎时速度方向转向的平滑度
+var base_smooth_factor := 10.0
+var boost_smooth_factor := 20.0
 
 var is_ship_rolling := true
 
@@ -69,6 +70,7 @@ func _on_look_around_change(enable: bool) -> void:
 	is_looking_around = enable
 	is_engine_on = not enable
 
+@export var turn_curve: Curve
 
 func handle_move(delta: float) -> void:
 	var is_forward_pressed := Input.is_action_pressed("forward")
@@ -76,6 +78,7 @@ func handle_move(delta: float) -> void:
 	
 	var is_boosting :bool = booster_module.is_boosting if booster_module else false
 	var direction := -root.global_transform.basis.z.normalized()
+
 	# 如果引擎开启，则更新速度和方向
 	if is_engine_on:
 		var boost_speed : float = booster_module.boost_speed if booster_module else max_speed
@@ -93,17 +96,27 @@ func handle_move(delta: float) -> void:
 		elif not is_boosting and forward_speed > max_speed:
 			forward_speed = move_toward(forward_speed, max_speed, boost_release_decel * delta)
 
+		var angle := root.velocity.normalized().angle_to(direction)
+	
+
+		var curve_factor = turn_curve.sample(angle / PI) # 从曲线中获取调整后的权重
+	
+		var factor := boost_smooth_factor if is_boosting else base_smooth_factor
+
+		var new_dir : = root.velocity.normalized().slerp(direction , curve_factor * delta * factor)
+
 		# 引擎开启时，保持速度方向跟随飞船朝向
-		
-		root.velocity = direction * forward_speed
+		root.velocity = new_dir * forward_speed
+
 	else:
+		pass
 		# 引擎关闭（环顾模式）：失速逻辑
-		if root.velocity.length() > 0.001:
-			var speed = root.velocity.length()
-			var new_speed = move_toward(speed, 0.0, engine_off_decel * delta)
-			root.velocity = root.velocity.normalized() * new_speed
-			# 同步更新 forward_speed，确保引擎重启时速度顺滑
-			forward_speed = new_speed
+		# if root.velocity.length() > 0.001:
+		# 	var speed = root.velocity.length()
+		# 	var new_speed = move_toward(speed, 0.0, engine_off_decel * delta)
+		# 	root.velocity = root.velocity.normalized() * new_speed
+			# # 同步更新 forward_speed，确保引擎重启时速度顺滑
+			# forward_speed = new_speed
 
 	_handle_rotation(delta)
 	_handle_particle(is_boosting)

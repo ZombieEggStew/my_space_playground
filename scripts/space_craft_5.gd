@@ -6,7 +6,7 @@ var team_id := TeamID.TEAM_ENEMY
 
 func _ready() -> void:
 	health.on_death.connect(die)
-	health.setup(100, 100)
+	health.setup(1000, 1000)
 
 func hit(damage: int) -> void:
 	health.take_damage(damage)

@@ -23,6 +23,7 @@
 [ext_resource type="PackedScene" uid="uid://dvopp258cqkyy" path="res://scenes/space_craft_5.tscn" id="12_rvs2r"]
 [ext_resource type="Script" uid="uid://dbjgkv3ndhbm6" path="res://scripts/component/health_component.gd" id="12_tqxxy"]
 [ext_resource type="PackedScene" uid="uid://c2vpnamuf2w8x" path="res://scenes/component/able_to_be_locked.tscn" id="18_103ce"]
+[ext_resource type="PackedScene" uid="uid://chkhb5jx5xyp2" path="res://scenes/node.tscn" id="24_85lt4"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_kk2rg"]
 shader = ExtResource("4_rurhu")
@@ -551,6 +552,23 @@ flow_effect = NodePath("EffectManager/UI_FloatEffect")
 rotation_effect = NodePath("EffectManager/UI_RotationEffect")
 boost_offset_effect = NodePath("EffectManager/UI_BoostOffsetEffect")
 boost_shake_effect = NodePath("EffectManager/UI_BoostShakeEffect")
+
+[node name="3D_hud" type="SubViewportContainer" parent="HUD_Manager" unique_id=772706556]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+stretch = true
+
+[node name="SubViewport" type="SubViewport" parent="HUD_Manager/3D_hud" unique_id=1159712246]
+own_world_3d = true
+transparent_bg = true
+handle_input_locally = false
+size = Vector2i(1920, 1080)
+render_target_update_mode = 4
+
+[node name="Node" parent="HUD_Manager/3D_hud/SubViewport" unique_id=1427099791 instance=ExtResource("24_85lt4")]
 
 [node name="hud_container" type="Control" parent="HUD_Manager" unique_id=435618338]
 texture_filter = 2

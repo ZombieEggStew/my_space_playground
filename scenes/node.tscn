@@ -1,0 +1,81 @@
+[gd_scene format=4 uid="uid://chkhb5jx5xyp2"]
+
+[ext_resource type="Script" uid="uid://cuwgapl7wtbmo" path="res://scripts/ui/3d/3d_ui_test.gd" id="1_6r00q"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_6r00q"]
+render_priority = 1
+cull_mode = 2
+no_depth_test = true
+diffuse_mode = 3
+specular_mode = 1
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_h07nv"]
+_surfaces = [{
+"aabb": AABB(-0.25640696, -0.25640696, -0.8478087, 0.5128139, 0.5128139, 1.8478087),
+"format": 34359742465,
+"index_count": 12,
+"index_data": PackedByteArray("AAABAAIAAwAAAAIAAAAEAAIABQAAAAIA"),
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 6,
+"vertex_data": PackedByteArray("AAAAAAAAAABYjz0/xkeDPgAAAAAAAIA/AAAAAAAAAAD+CVm/G0mmssZHgz4AAIA/G0mmMsZHg74AAIA/xkeDvgAAAAAAAIA/")
+}]
+blend_shape_mode = 0
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_mrsli"]
+resource_name = "arrow_平面"
+_surfaces = [{
+"aabb": AABB(-0.25640696, -0.25640696, -0.8478087, 0.5128139, 0.5128139, 1.8478087),
+"attribute_data": PackedByteArray("AAAAAAAAgD8AAAAAAACAPwAAAAAAAIA/AAAAAAAAgD8AAAAAAACAPwAAAAAAAIA/AAAAAAAAgD8AAAAAAACAPw=="),
+"format": 34359742487,
+"index_count": 12,
+"index_data": PackedByteArray("AAABAAIAAwAAAAIABAAFAAYABwAEAAYA"),
+"material": SubResource("StandardMaterial3D_6r00q"),
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 8,
+"vertex_data": PackedByteArray("AAAAAAAAAABYjz0/xkeDPgAAAAAAAIA/AAAAAAAAAAD+CVm/xkeDvgAAAAAAAIA/AAAAAAAAAABYjz0/G0mmMsZHg74AAIA/AAAAAAAAAAD+CVm/G0mmssZHgz4AAIA//38AAP///7//fwAA////v/9/AAD///+//38AAP///78AAP9/////vwAA/3////+/AAD/f////78AAP9/////vw==")
+}]
+blend_shape_mode = 0
+shadow_mesh = SubResource("ArrayMesh_h07nv")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ignic"]
+cull_mode = 2
+shading_mode = 0
+albedo_color = Color(0, 1, 0, 1)
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_dondh"]
+resource_name = "arrow_平面"
+_surfaces = [{
+"aabb": AABB(-0.25640696, -0.25640696, -0.8478087, 0.5128139, 0.5128139, 1.8478087),
+"attribute_data": PackedByteArray("AAAAAAAAgD8AAAAAAACAPwAAAAAAAIA/AAAAAAAAgD8AAAAAAACAPwAAAAAAAIA/AAAAAAAAgD8AAAAAAACAPw=="),
+"format": 34359742487,
+"index_count": 12,
+"index_data": PackedByteArray("AAABAAIAAwAAAAIABAAFAAYABwAEAAYA"),
+"material": SubResource("StandardMaterial3D_ignic"),
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 8,
+"vertex_data": PackedByteArray("AAAAAAAAAABYjz0/xkeDPgAAAAAAAIA/AAAAAAAAAAD+CVm/xkeDvgAAAAAAAIA/AAAAAAAAAABYjz0/G0mmMsZHg74AAIA/AAAAAAAAAAD+CVm/G0mmssZHgz4AAIA//38AAP///7//fwAA////v/9/AAD///+//38AAP///78AAP9/////vwAA/3////+/AAD/f////78AAP9/////vw==")
+}]
+blend_shape_mode = 0
+shadow_mesh = SubResource("ArrayMesh_h07nv")
+
+[node name="Node" type="Node" unique_id=1427099791 node_paths=PackedStringArray("test_mesh", "test")]
+script = ExtResource("1_6r00q")
+test_mesh = NodePath("平面")
+test = NodePath("平面/平面2")
+
+[node name="Camera3D" type="Camera3D" parent="." unique_id=324824231]
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=348435045]
+transform = Transform3D(0.9659258, -0.12940952, 0.22414386, 0, 0.8660254, 0.5, -0.25881904, -0.4829629, 0.83651626, 0.84571123, 1.3008587, 0)
+
+[node name="平面" type="MeshInstance3D" parent="." unique_id=1151298451]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.426, -3.385)
+mesh = SubResource("ArrayMesh_mrsli")
+
+[node name="平面2" type="MeshInstance3D" parent="平面" unique_id=1423969469]
+transform = Transform3D(1.22, 0, 0, 0, 1.22, 0, 0, 0, 1.1, 0, 0, 0)
+visible = false
+mesh = SubResource("ArrayMesh_dondh")

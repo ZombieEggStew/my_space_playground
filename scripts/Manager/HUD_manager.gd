@@ -13,7 +13,6 @@ class_name HUDManager
 @export var boost_shake_effect : UIBoostShakeEffect
 
 
-
 func register_hud_group(group: Control) -> MyHUD:
 	print("HUDManager: Registering HUD element: " + group.name)
 

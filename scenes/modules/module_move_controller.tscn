@@ -2,6 +2,10 @@
 
 [ext_resource type="Script" uid="uid://twyon1v3vlvv" path="res://scripts/modules/module_move_controller.gd" id="1_kws0a"]
 
+[sub_resource type="Curve" id="Curve_lue6l"]
+_data = [Vector2(0.0044998974, 1), 0.0, -1.0119793, 0, 0, Vector2(0.22540398, 0.8802569), -2.1365848, -2.1365848, 0, 0, Vector2(0.44630802, 0.28241515), -0.9872288, -0.9872288, 0, 0, Vector2(1, 0), -0.23150405, 0.0, 0, 0]
+point_count = 4
+
 [sub_resource type="Gradient" id="Gradient_ygpba"]
 colors = PackedColorArray(1, 1, 0.2, 1, 1, 1, 1, 1)
 
@@ -44,6 +48,7 @@ size = Vector3(0.2, 0.2, 0.2)
 [node name="module_move_controller" type="Node3D" unique_id=413472576 node_paths=PackedStringArray("particle_speed")]
 script = ExtResource("1_kws0a")
 particle_speed = NodePath("GPUParticles3D")
+turn_curve = SubResource("Curve_lue6l")
 
 [node name="GPUParticles3D" type="GPUParticles3D" parent="." unique_id=742572135]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1.2682004)

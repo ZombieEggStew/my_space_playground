@@ -47,7 +47,7 @@
 #TO DO :“惯性弹道”。可以将飞船加速到极快，然后关闭引擎，此时飞船本身就是一个巨大的动能抛射体。
 #TO DO :
 #TO DO :
-#TO DO :
+#TO DO : 敌人咬尾时使用PID控制器来调整速度和转向，以保持在玩家的后方。
 #TO DO :
 #TO DO :
 #TO DO :
@@ -128,6 +128,8 @@ func _ready() -> void:
 func get_gun_pivot_left() -> Node:
 	return gun_pivot_left
 
+func take_damage(damage: int) -> void:
+	health.take_damage(damage)
 
 func get_main_camera() -> Camera3D:
 	return modules_manager.get_camera_module().get_main_camera()
@@ -140,6 +142,9 @@ func get_health_component() -> HealthComponent:
 
 func get_speed_string() -> String:
 	return "%.2f" % velocity.length()
+
+func get_speed_magnitude() -> String:
+	return "%.2f" % velocity.dot(-global_transform.basis.z.normalized())
 
 func hit(damage: int) -> void:
 	health.take_damage(damage)

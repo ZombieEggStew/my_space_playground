@@ -46,6 +46,8 @@ func _ready() -> void:
 	add_child(shaker)
 	shaker.setup(cam_main)
 
+	cam_main.current = true
+
 func _on_look_around_change(enable: bool) -> void:
 	return
 	# is_looking_around = enable

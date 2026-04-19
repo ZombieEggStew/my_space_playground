@@ -87,7 +87,7 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 
-[node name="panel_speed" type="PanelContainer" parent="basic_info" unique_id=866523806 node_paths=PackedStringArray("speed_label")]
+[node name="panel_speed" type="PanelContainer" parent="basic_info" unique_id=866523806 node_paths=PackedStringArray("speed_label", "magnitude_label")]
 layout_mode = 1
 anchors_preset = 3
 anchor_left = 1.0
@@ -103,31 +103,43 @@ grow_vertical = 0
 mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_eq387")
 script = ExtResource("2_eq387")
-speed_label = NodePath("VBoxContainer/MarginContainer/HBoxContainer/speed_value")
+speed_label = NodePath("MarginContainer/VBoxContainer/HBoxContainer/abs_speed_value")
+magnitude_label = NodePath("MarginContainer/VBoxContainer/HBoxContainer2/magnitude")
 metadata/_edit_group_ = true
 
-[node name="VBoxContainer" type="VBoxContainer" parent="basic_info/panel_speed" unique_id=865570120]
-layout_mode = 2
-
-[node name="MarginContainer" type="MarginContainer" parent="basic_info/panel_speed/VBoxContainer" unique_id=412149411]
+[node name="MarginContainer" type="MarginContainer" parent="basic_info/panel_speed" unique_id=412149411]
 layout_mode = 2
 theme_override_constants/margin_left = 10
 theme_override_constants/margin_top = 5
 theme_override_constants/margin_right = 10
 theme_override_constants/margin_bottom = 10
 
-[node name="HBoxContainer" type="HBoxContainer" parent="basic_info/panel_speed/VBoxContainer/MarginContainer" unique_id=13526220]
+[node name="VBoxContainer" type="VBoxContainer" parent="basic_info/panel_speed/MarginContainer" unique_id=865570120]
 layout_mode = 2
 
-[node name="speed_label" type="Label" parent="basic_info/panel_speed/VBoxContainer/MarginContainer/HBoxContainer" unique_id=229008661]
+[node name="HBoxContainer" type="HBoxContainer" parent="basic_info/panel_speed/MarginContainer/VBoxContainer" unique_id=13526220]
 layout_mode = 2
-text = "speed:"
+
+[node name="label" type="Label" parent="basic_info/panel_speed/MarginContainer/VBoxContainer/HBoxContainer" unique_id=229008661]
+layout_mode = 2
+text = "speed_abs:"
 label_settings = ExtResource("2_tdvs8")
 
-[node name="speed_value" type="Label" parent="basic_info/panel_speed/VBoxContainer/MarginContainer/HBoxContainer" unique_id=1631699711]
+[node name="abs_speed_value" type="Label" parent="basic_info/panel_speed/MarginContainer/VBoxContainer/HBoxContainer" unique_id=1631699711]
 layout_mode = 2
 text = "--"
 label_settings = ExtResource("2_tdvs8")
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="basic_info/panel_speed/MarginContainer/VBoxContainer" unique_id=694637609]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="basic_info/panel_speed/MarginContainer/VBoxContainer/HBoxContainer2" unique_id=427529052]
+layout_mode = 2
+text = "magnitude : "
+
+[node name="magnitude" type="Label" parent="basic_info/panel_speed/MarginContainer/VBoxContainer/HBoxContainer2" unique_id=983490563]
+layout_mode = 2
+text = "--"
 
 [node name="buff_container" type="HFlowContainer" parent="basic_info" unique_id=640689833]
 layout_mode = 1

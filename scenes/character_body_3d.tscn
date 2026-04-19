@@ -7,7 +7,6 @@
 [ext_resource type="Script" uid="uid://cduj7aj1uywad" path="res://scripts/component/move_component.gd" id="4_1u7qd"]
 [ext_resource type="Material" uid="uid://dvifks8sp3xdg" path="res://material/rocket_mat_1.tres" id="4_86qqj"]
 [ext_resource type="Texture2D" uid="uid://dbxe1rog8h2hq" path="res://blender_export/rocket2_rocket_2_tex_1.png" id="5_86qqj"]
-[ext_resource type="PackedScene" uid="uid://ccfjrnx7b4636" path="res://scenes/modules/module_shield.tscn" id="5_v00sg"]
 [ext_resource type="Material" uid="uid://b2ypfyebn18tb" path="res://material/color/white.tres" id="7_lxkhp"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_cthcg"]
@@ -108,8 +107,6 @@ metadata/_custom_type_script = "uid://cduj7aj1uywad"
 
 [node name="modules_manager" type="Node3D" parent="." unique_id=654185517]
 script = ExtResource("2_lxkhp")
-
-[node name="module_shield" parent="modules_manager" unique_id=1039999896 instance=ExtResource("5_v00sg")]
 
 [node name="first_person_camera_pivot" type="Node3D" parent="." unique_id=270887944]
 visible = false

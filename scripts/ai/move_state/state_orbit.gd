@@ -12,12 +12,20 @@ func enter(_prev: int = MoveSM.CHASE) -> void:
 func physics_update(delta: float) -> void:
 	if player == null or ship == null: return
 	
-	# 获取玩家的后方位置 (玩家 basis.z 指向其后方)
+	# 获取玩家的攻击追踪点 (玩家速度的反方向)
+	var player_velocity := Vector3.ZERO
+	if player.get("velocity") != null:
+		player_velocity = player.velocity
+	
+	var back_dir := player.global_basis.z
+	if player_velocity.length() > 0.1:
+		back_dir = -player_velocity.normalized()
 
-	var player_back_pos := player.global_position + player.global_basis.z * 50.0 # 目标点在玩家后方 50 米
+	var player_back_pos := player.global_position + back_dir * 10.0 # 目标点在玩家运动轨迹后方 50 米
 	
 	var to_player := player.global_position - ship.global_position
 	var dist := to_player.length()
+
 
 	# 环绕/切入逻辑：
 	# 1. 如果离得远，直接切向玩家后方
@@ -40,13 +48,31 @@ func physics_update(delta: float) -> void:
 	# 环绕状态维持基础速度
 	parent_sm.set_target_speed(parent_sm.max_speed * 0.8)
 	
-	# 逻辑切换：判断是否处于玩家 6 点钟方向
+	# 逻辑切换：判断是否处于玩家速度轨迹的后方区域
 	# 计算从玩家指向 AI 的向量
 	var from_player = (ship.global_position - player.global_position).normalized()
-	# 玩家的后方是 player.global_basis.z
-	var alignment = from_player.dot(player.global_basis.z)
 	
-	# 如果在玩家后方 45 度锥角内 (dot > 0.7)，且距离在 600m 内，进入追逐(咬尾)模式
+	# 如果在目标点方向的 45 度锥角内 (dot > 0.7)，且距离在 600m 内，进入追逐(咬尾)模式
+	var alignment = from_player.dot(back_dir)
+	
 	if alignment > 0.7 and dist < 600.0:
 		parent_sm.transition_to(MoveSM.CHASE)
+
+	# 逻辑切换：判断是否处于对冲状态 (JOUST) 或 侧方拦截状态 (INTERCEPT)
+	var ai_forward = -ship.global_basis.z
+	var player_v_dir = player.velocity.normalized()
+	var to_player_dir = (to_player).normalized()
+	
+	if player.velocity.length() > 1.0 and dist < 800.0:
+		# 1. 对冲判断 (JOUST): AI 面向与玩家速度反向对齐
+		if ai_forward.dot(player_v_dir) < -0.6:
+			parent_sm.transition_to(MoveSM.JOUST)
+			return
+
+		# 2. 侧方拦截判断 (INTERCEPT): AI 在玩家侧向，且玩家有一定的速度
+		# 如果 AI 的朝向和到玩家的向量夹角较大，且玩家正在横向通过
+		var side_dot = to_player_dir.dot(player_v_dir) # 玩家是否在横向运动
+		if abs(side_dot) < 0.5: # 玩家相对于 AI 是侧向运动
+			parent_sm.transition_to(MoveSM.INTERCEPT)
+			return
 

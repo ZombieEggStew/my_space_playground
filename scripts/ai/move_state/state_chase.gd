@@ -7,9 +7,21 @@ func enter(_prev: int = MoveSM.CHASE) -> void:
 func physics_update(delta: float) -> void:
 	if player == null or ship == null: return
 	
+	# 获取玩家的攻击追踪点 (玩家速度的反方向)
+	var player_velocity := Vector3.ZERO
+	if player.get("velocity") != null:
+		player_velocity = player.velocity
+	
+	var back_dir := player.global_basis.z
+	if player_velocity.length() > 0.1:
+		back_dir = -player_velocity.normalized()
+
+	var player_back_pos := player.global_position + back_dir * 10.0 # 目标点在玩家运动轨迹后方 50 米
+
+
 	var to_player := player.global_position - ship.global_position
 	var dist := to_player.length()
-	var player_back_pos := player.global_position + player.global_basis.z * 10.0 # 目标距离设为 10m
+
 
 	# 1. 始终对准玩家 6 点钟方向
 	parent_sm.rotate_towards(player_back_pos, delta)
@@ -35,6 +47,6 @@ func physics_update(delta: float) -> void:
 
 	# 逻辑切换：如果脱离了 6 点钟方向，回到环绕模式
 	var from_player = (ship.global_position - player.global_position).normalized()
-	var alignment = from_player.dot(player.global_basis.z)
+	var alignment = from_player.dot(back_dir)
 	if alignment < 0.5: # 角度变大，咬丢了
 		parent_sm.transition_to(MoveSM.ORBIT)
