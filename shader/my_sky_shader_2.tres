@@ -1,22 +1,141 @@
 [gd_resource type="VisualShader" format=3 uid="uid://b0lqlfuxab2c8"]
 
+[sub_resource type="VisualShaderNodeFloatParameter" id="VisualShaderNodeFloatParameter_tkd7x"]
+parameter_name = "star_size"
+default_value_enabled = true
+default_value = 0.01
+
+[sub_resource type="VisualShaderNodeFloatParameter" id="VisualShaderNodeFloatParameter_5ktbn"]
+parameter_name = "star_size_var"
+default_value_enabled = true
+default_value = 0.04
+
+[sub_resource type="Gradient" id="Gradient_tkd7x"]
+offsets = PackedFloat32Array(0, 0.5152778, 1)
+colors = PackedColorArray(1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_5ktbn"]
+gradient = SubResource("Gradient_tkd7x")
+
+[sub_resource type="VisualShaderNodeTexture" id="VisualShaderNodeTexture_lqji5"]
+output_port_for_preview = 0
+texture = SubResource("GradientTexture1D_5ktbn")
+
+[sub_resource type="VisualShaderNodeVectorCompose" id="VisualShaderNodeVectorCompose_tkd7x"]
+default_input_values = [0, 0.0, 1, 1.0, 2, 0.0]
+op_type = 0
+
 [sub_resource type="VisualShaderNodeColorParameter" id="VisualShaderNodeColorParameter_tkd7x"]
 parameter_name = "ColorParameter"
+default_value_enabled = true
+default_value = Color(0.07058824, 0.0627451, 0.20784314, 1)
 
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_tkd7x"]
-noise_type = 2
+[sub_resource type="VisualShaderNodeMix" id="VisualShaderNodeMix_5ktbn"]
+default_input_values = [0, Vector3(0, 0, 0), 1, Vector3(1, 1, 1), 2, Vector3(0.5, 0.5, 0.5)]
+op_type = 3
 
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_5ktbn"]
-noise = SubResource("FastNoiseLite_tkd7x")
+[sub_resource type="VisualShaderNodeVectorOp" id="VisualShaderNodeVectorOp_tkd7x"]
+operator = 2
 
-[sub_resource type="VisualShaderNodeTexture" id="VisualShaderNodeTexture_1egel"]
-texture = SubResource("NoiseTexture2D_5ktbn")
+[sub_resource type="VisualShaderNodeTexture2DParameter" id="VisualShaderNodeTexture2DParameter_5ktbn"]
+parameter_name = "nebula_noise"
 
-[sub_resource type="VisualShaderNodeGlobalExpression" id="VisualShaderNodeGlobalExpression_hh70o"]
-size = Vector2(480, 300.00003)
+[sub_resource type="VisualShaderNodeInput" id="VisualShaderNodeInput_lqji5"]
+input_name = "eyedir"
+
+[sub_resource type="VisualShaderNodeVectorOp" id="VisualShaderNodeVectorOp_ewt5d"]
+default_input_values = [0, Vector2(0, 0), 1, Vector2(0, 0)]
+op_type = 0
+
+[sub_resource type="VisualShaderNodeMix" id="VisualShaderNodeMix_ftnv1"]
+default_input_values = [0, Quaternion(0, 0, 0, 0), 1, Quaternion(1, 1, 1, 1), 2, 0.5]
+op_type = 6
+
+[sub_resource type="Gradient" id="Gradient_035m7"]
+colors = PackedColorArray(0, 1, 1, 1, 1, 0, 1, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_k1hap"]
+gradient = SubResource("Gradient_035m7")
+
+[sub_resource type="VisualShaderNodeTexture" id="VisualShaderNodeTexture_tm0d8"]
+texture = SubResource("GradientTexture1D_k1hap")
+
+[sub_resource type="VisualShaderNodeTexture" id="VisualShaderNodeTexture_tkd7x"]
+expanded_output_ports = [0]
+source = 5
+
+[sub_resource type="VisualShaderNodeVectorOp" id="VisualShaderNodeVectorOp_5ktbn"]
+default_input_values = [0, Quaternion(0, 0, 0, 0), 1, Quaternion(0, 0, 0, 0)]
+op_type = 2
+
+[sub_resource type="VisualShaderNodeSmoothStep" id="VisualShaderNodeSmoothStep_tkd7x"]
+default_input_values = [0, 0.645, 1, 1.075, 2, 0.5]
+
+[sub_resource type="VisualShaderNodeExpression" id="VisualShaderNodeExpression_tkd7x"]
+size = Vector2(560, 240)
+expression = "// 将 3D 方向向量转换为 0.0 到 1.0 的经纬度 UV
+float phi = atan(dir.x, dir.z) / (2.0 * PI) + 0.5;
+float theta = asin(clamp(dir.y, -1.0, 1.0)) / PI + 0.5;
+uv_out = vec2(phi, theta);"
 
 [sub_resource type="VisualShaderNodeExpression" id="VisualShaderNodeExpression_rwbhc"]
-size = Vector2(286.45834, 171.875)
+size = Vector2(720, 980)
+expression = "// 预先声明变量
+vec2 uv = vec2(atan(dir.x, dir.z) / (2.0 * PI) + 0.5, asin(clamp(dir.y, -1.0, 1.0)) / PI + 0.5);
+vec2 p_grid = uv * star_scale;
+vec2 n = floor(p_grid);
+vec2 f = fract(p_grid);
+
+brightness = 0.0;
+star_seed = 0.0;
+
+for (int j = -2; j <= 2; j++) {
+    for (int i = -2; i <= 2; i++) {
+        vec2 cell = n + vec2(float(i), float(j));
+        
+        // 内联 hash22 逻辑：p = vec2(dot(p, vec2(127.1, 311.7)), dot(p, vec2(269.5, 183.3)));
+        vec2 h_p = cell + vec2(seed, seed * 1.37);
+        float h_x = dot(h_p, vec2(127.1, 311.7));
+        float h_y = dot(h_p, vec2(269.5, 183.3));
+        vec2 rnd = fract(sin(vec2(h_x, h_y)) * 43758.5453123);
+
+        vec2 starPos = vec2(float(i), float(j)) + rnd - f;
+        float d = length(starPos);
+        float r = star_size + rnd.x * star_size_var;
+        float t = clamp(1.0 - d / r, 0.0, 1.0);
+        float contrib = t * t;
+        float inten = 0.5 + rnd.y * 1.5;
+        
+        float val = contrib * inten * star_density;
+        brightness += val;
+        
+        // 记录随机种子用于颜色采样
+        if (val > 0.001) {
+            star_seed = rnd.y;
+        }
+    }
+}
+
+brightness = clamp(brightness, 0.0, 1.0);"
+
+[sub_resource type="VisualShaderNodeInput" id="VisualShaderNodeInput_ewt5d"]
+input_name = "eyedir"
+
+[sub_resource type="VisualShaderNodeFloatParameter" id="VisualShaderNodeFloatParameter_ftnv1"]
+parameter_name = "seed"
+default_value_enabled = true
+
+[sub_resource type="VisualShaderNodeFloatParameter" id="VisualShaderNodeFloatParameter_035m7"]
+parameter_name = "star_scale"
+hint = 1
+max = 100.0
+default_value_enabled = true
+default_value = 60.0
+
+[sub_resource type="VisualShaderNodeFloatParameter" id="VisualShaderNodeFloatParameter_k1hap"]
+parameter_name = "star_density"
+default_value_enabled = true
+default_value = 1.0
 
 [resource]
 mode = 3
@@ -24,20 +143,94 @@ flags/use_half_res_pass = false
 flags/use_quarter_res_pass = false
 flags/disable_fog = false
 flags/use_debanding = false
-nodes/sky/2/node = SubResource("VisualShaderNodeColorParameter_tkd7x")
-nodes/sky/2/position = Vector2(17.454544, 104.72727)
-nodes/sky/3/node = SubResource("VisualShaderNodeTexture_1egel")
-nodes/sky/3/position = Vector2(20.200262, 432.43674)
-nodes/sky/4/node = SubResource("VisualShaderNodeGlobalExpression_hh70o")
-nodes/sky/4/position = Vector2(17.454544, 750.5454)
-nodes/sky/4/size = Vector2(480, 300.00003)
-nodes/sky/4/input_ports = ""
-nodes/sky/4/output_ports = ""
-nodes/sky/4/expression = ""
+nodes/sky/0/position = Vector2(1989.8181, -384)
 nodes/sky/5/node = SubResource("VisualShaderNodeExpression_rwbhc")
-nodes/sky/5/position = Vector2(279.2727, 576)
-nodes/sky/5/size = Vector2(286.45834, 171.875)
-nodes/sky/5/input_ports = ""
-nodes/sky/5/output_ports = ""
-nodes/sky/5/expression = ""
-nodes/sky/connections = PackedInt32Array(2, 0, 0, 0)
+nodes/sky/5/position = Vector2(-506.1818, 17.454544)
+nodes/sky/5/size = Vector2(720, 980)
+nodes/sky/5/input_ports = "0,0,seed;1,0,star_scale;2,0,star_density;3,0,star_size;4,0,star_size_var;5,4,dir;"
+nodes/sky/5/output_ports = "0,0,brightness;1,0,star_seed;"
+nodes/sky/5/expression = "// 预先声明变量
+vec2 uv = vec2(atan(dir.x, dir.z) / (2.0 * PI) + 0.5, asin(clamp(dir.y, -1.0, 1.0)) / PI + 0.5);
+vec2 p_grid = uv * star_scale;
+vec2 n = floor(p_grid);
+vec2 f = fract(p_grid);
+
+brightness = 0.0;
+star_seed = 0.0;
+
+for (int j = -2; j <= 2; j++) {
+    for (int i = -2; i <= 2; i++) {
+        vec2 cell = n + vec2(float(i), float(j));
+        
+        // 内联 hash22 逻辑：p = vec2(dot(p, vec2(127.1, 311.7)), dot(p, vec2(269.5, 183.3)));
+        vec2 h_p = cell + vec2(seed, seed * 1.37);
+        float h_x = dot(h_p, vec2(127.1, 311.7));
+        float h_y = dot(h_p, vec2(269.5, 183.3));
+        vec2 rnd = fract(sin(vec2(h_x, h_y)) * 43758.5453123);
+
+        vec2 starPos = vec2(float(i), float(j)) + rnd - f;
+        float d = length(starPos);
+        float r = star_size + rnd.x * star_size_var;
+        float t = clamp(1.0 - d / r, 0.0, 1.0);
+        float contrib = t * t;
+        float inten = 0.5 + rnd.y * 1.5;
+        
+        float val = contrib * inten * star_density;
+        brightness += val;
+        
+        // 记录随机种子用于颜色采样
+        if (val > 0.001) {
+            star_seed = rnd.y;
+        }
+    }
+}
+
+brightness = clamp(brightness, 0.0, 1.0);"
+nodes/sky/6/node = SubResource("VisualShaderNodeInput_ewt5d")
+nodes/sky/6/position = Vector2(-925.0909, 576)
+nodes/sky/7/node = SubResource("VisualShaderNodeFloatParameter_ftnv1")
+nodes/sky/7/position = Vector2(-855.2727, -366.54544)
+nodes/sky/8/node = SubResource("VisualShaderNodeFloatParameter_035m7")
+nodes/sky/8/position = Vector2(-1239.2727, -314.1818)
+nodes/sky/9/node = SubResource("VisualShaderNodeFloatParameter_k1hap")
+nodes/sky/9/position = Vector2(-1291.6364, -52.363636)
+nodes/sky/10/node = SubResource("VisualShaderNodeFloatParameter_tkd7x")
+nodes/sky/10/position = Vector2(-1326.5454, 209.45454)
+nodes/sky/11/node = SubResource("VisualShaderNodeFloatParameter_5ktbn")
+nodes/sky/11/position = Vector2(-1064.7273, 331.63635)
+nodes/sky/13/node = SubResource("VisualShaderNodeTexture_lqji5")
+nodes/sky/13/position = Vector2(541.0909, 34.90909)
+nodes/sky/14/node = SubResource("VisualShaderNodeVectorCompose_tkd7x")
+nodes/sky/14/position = Vector2(244.36363, 69.81818)
+nodes/sky/17/node = SubResource("VisualShaderNodeColorParameter_tkd7x")
+nodes/sky/17/position = Vector2(436.36362, -418.9091)
+nodes/sky/18/node = SubResource("VisualShaderNodeMix_5ktbn")
+nodes/sky/18/position = Vector2(1169.4545, 17.454544)
+nodes/sky/19/node = SubResource("VisualShaderNodeVectorOp_tkd7x")
+nodes/sky/19/position = Vector2(925.0909, -261.81818)
+nodes/sky/20/node = SubResource("VisualShaderNodeTexture2DParameter_5ktbn")
+nodes/sky/20/position = Vector2(139.63635, -837.8182)
+nodes/sky/24/node = SubResource("VisualShaderNodeInput_lqji5")
+nodes/sky/24/position = Vector2(-837.8182, -890.18176)
+nodes/sky/26/node = SubResource("VisualShaderNodeVectorOp_ewt5d")
+nodes/sky/26/position = Vector2(-174.54546, -907.63635)
+nodes/sky/27/node = SubResource("VisualShaderNodeMix_ftnv1")
+nodes/sky/27/position = Vector2(1309.0908, -820.3636)
+nodes/sky/28/node = SubResource("VisualShaderNodeTexture_tm0d8")
+nodes/sky/28/position = Vector2(1099.6364, -994.90906)
+nodes/sky/29/node = SubResource("VisualShaderNodeTexture_tkd7x")
+nodes/sky/29/position = Vector2(558.5454, -802.90906)
+nodes/sky/31/node = SubResource("VisualShaderNodeVectorOp_5ktbn")
+nodes/sky/31/position = Vector2(1501.0908, -715.63635)
+nodes/sky/32/node = SubResource("VisualShaderNodeSmoothStep_tkd7x")
+nodes/sky/32/position = Vector2(802.90906, -872.72723)
+nodes/sky/33/node = SubResource("VisualShaderNodeExpression_tkd7x")
+nodes/sky/33/position = Vector2(-698.1818, -698.1818)
+nodes/sky/33/size = Vector2(560, 240)
+nodes/sky/33/input_ports = "0,4,dir;"
+nodes/sky/33/output_ports = "0,3,uv_out;"
+nodes/sky/33/expression = "// 将 3D 方向向量转换为 0.0 到 1.0 的经纬度 UV
+float phi = atan(dir.x, dir.z) / (2.0 * PI) + 0.5;
+float theta = asin(clamp(dir.y, -1.0, 1.0)) / PI + 0.5;
+uv_out = vec2(phi, theta);"
+nodes/sky/connections = PackedInt32Array(7, 0, 5, 0, 8, 0, 5, 1, 9, 0, 5, 2, 10, 0, 5, 3, 11, 0, 5, 4, 14, 0, 13, 0, 5, 1, 14, 0, 5, 0, 18, 2, 17, 0, 18, 0, 13, 0, 18, 1, 6, 0, 5, 5, 13, 0, 19, 0, 5, 0, 19, 1, 24, 0, 26, 0, 17, 0, 27, 0, 20, 0, 29, 2, 27, 0, 31, 0, 19, 0, 31, 1, 28, 0, 27, 1, 32, 0, 28, 0, 29, 1, 32, 2, 32, 0, 27, 2, 24, 0, 33, 0, 33, 0, 29, 0, 31, 0, 0, 0)

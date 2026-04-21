@@ -7,7 +7,6 @@
 [ext_resource type="AudioStream" uid="uid://jfvkaqge3b2i" path="res://audio/ding.mp3" id="3_6aqbo"]
 [ext_resource type="Script" uid="uid://bj471fsaood7v" path="res://scripts/Manager/HUD_manager.gd" id="3_ldkr4"]
 [ext_resource type="Script" uid="uid://1wuvthmkj82j" path="res://scripts/Manager/effect_manager.gd" id="4_6aqbo"]
-[ext_resource type="Shader" uid="uid://fsv2qc31tla1" path="res://shader/my_shy_shader.gdshader" id="4_rurhu"]
 [ext_resource type="Script" uid="uid://idnc24of6yk8" path="res://scripts/ui/ui_float_effect.gd" id="5_ro0ie"]
 [ext_resource type="Script" uid="uid://cq16e0xs7dp58" path="res://scripts/ui/ui_rotation_effect.gd" id="6_103ce"]
 [ext_resource type="Script" uid="uid://chn6hyukrwgl2" path="res://scripts/Manager/hud_far_manager.gd" id="7_103ce"]
@@ -20,23 +19,35 @@
 [ext_resource type="Material" uid="uid://djeunexyuwbdk" path="res://material/test_material.tres" id="10_mw25s"]
 [ext_resource type="PackedScene" uid="uid://csvjfmieyjaub" path="res://scenes/space_craft_6.tscn" id="11_tcjrq"]
 [ext_resource type="PackedScene" uid="uid://dvopp258cqkyy" path="res://scenes/space_craft_5.tscn" id="12_rvs2r"]
+[ext_resource type="Shader" uid="uid://b0lqlfuxab2c8" path="res://shader/my_sky_shader_2.tres" id="16_103ce"]
 [ext_resource type="PackedScene" uid="uid://cveradmg4aeue" path="res://scenes/test_box.tscn" id="19_103ce"]
 [ext_resource type="PackedScene" uid="uid://chkhb5jx5xyp2" path="res://scenes/node.tscn" id="24_85lt4"]
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_kk2rg"]
-shader = ExtResource("4_rurhu")
-shader_parameter/seed = 1.0
-shader_parameter/star_scale = 60.0
-shader_parameter/star_density = 1.0
-shader_parameter/star_size = 0.01
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_103ce"]
+frequency = 0.0044
+fractal_octaves = 3
+domain_warp_enabled = true
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_pb36m"]
+noise = SubResource("FastNoiseLite_103ce")
+seamless = true
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_103ce"]
+shader = ExtResource("16_103ce")
+shader_parameter/ColorParameter = Color(0.070588, 0.062745, 0.207843, 1)
+shader_parameter/nebula_noise = SubResource("NoiseTexture2D_pb36m")
+shader_parameter/seed = 0.0
+shader_parameter/star_scale = 60.00000285
+shader_parameter/star_density = 2.0
+shader_parameter/star_size = 0.02
 shader_parameter/star_size_var = 0.04
 
-[sub_resource type="Sky" id="Sky_b5spy"]
-sky_material = SubResource("ShaderMaterial_kk2rg")
+[sub_resource type="Sky" id="Sky_pb36m"]
+sky_material = SubResource("ShaderMaterial_103ce")
 
 [sub_resource type="Environment" id="Environment_utbpp"]
 background_mode = 2
-sky = SubResource("Sky_b5spy")
+sky = SubResource("Sky_pb36m")
 ambient_light_source = 3
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_onqr8"]

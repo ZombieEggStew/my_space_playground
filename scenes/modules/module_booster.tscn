@@ -4,7 +4,7 @@
 [ext_resource type="Texture2D" uid="uid://35piuouavkat" path="res://textures/white_1x1px.png" id="2_d6521"]
 
 [sub_resource type="Gradient" id="Gradient_ffmcp"]
-colors = PackedColorArray(0.34901962, 1, 1, 1, 1, 1, 1, 1)
+colors = PackedColorArray(1, 0, 1, 1, 0, 0.972549, 1, 1)
 
 [sub_resource type="GradientTexture1D" id="GradientTexture1D_lcyjr"]
 gradient = SubResource("Gradient_ffmcp")
@@ -31,7 +31,7 @@ scale_min = 0.5
 scale_max = 1.5
 scale_curve = SubResource("CurveTexture_cthcg")
 scale_over_velocity_max = 220.87
-color_ramp = SubResource("GradientTexture1D_lcyjr")
+color_initial_ramp = SubResource("GradientTexture1D_lcyjr")
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_cthcg"]
 transparency = 1

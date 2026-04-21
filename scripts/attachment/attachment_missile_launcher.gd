@@ -23,5 +23,6 @@ func _launch_missile() -> void:
 	print("Missile Launcher Activated!")
 	var missile_instance := missile_scene.instantiate() as Missile_1
 	add_child(missile_instance)
-	missile_instance.setup(launch_point.global_position, -launch_point.global_transform.basis.z,TeamID.PLAYER,self)
-	missile_instance.set_target(_locked_target)
+	var dir := -launch_point.global_transform.basis.z.normalized()
+	missile_instance.setup(launch_point.global_position, dir,TeamID.PLAYER,self).set_target(_locked_target)
+	missile_instance.set_velocity(_owner.velocity) # 继承发射者的速度大小

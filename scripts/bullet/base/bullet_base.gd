@@ -17,6 +17,7 @@ var speed :int = 500
 var max_lifetime := 10.0
 var destroy_on_hit := true
 var team_id : int = TeamID.NEUTRAL
+var _is_destroyed := false # 标记是否已经触发过击中逻辑
 
 func _ready():
 	area_entered.connect(_on_area_entered)
@@ -27,6 +28,8 @@ func set_speed(_speed: int) -> Bullet:
 func set_damage(_damage: int) -> Bullet:
 	damage = _damage
 	return self
+
+
 
 func setup(pos: Vector3, dir: Vector3, _team_id: int , shooter: Node = null) -> Bullet:
 	global_position = pos
@@ -94,6 +97,11 @@ func _on_area_entered(area: Area3D) -> void:
 
 
 func _try_handle_hit(collider: Node) -> void:
+	if _is_destroyed:
+		return
+	
+	_is_destroyed = true # 立即标记，防止同一帧内多次触发
+	
 	var collider_team := _extract_team_id(collider)
 	_handle_hit(collider_team, collider)
 

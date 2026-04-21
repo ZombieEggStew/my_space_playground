@@ -2,16 +2,23 @@ extends Bullet
 class_name Missile_1
 
 
-var _locked_target: Node3D = null
+var _locked_target: AbleToBeLocked = null
 
 @export_group("Missile Physics")
-@export var turn_speed: float = 3.0      # 转向速度（弧度/秒），决定转弯半径
-@export var acceleration: float = 150.0  # 加速度
-@export var max_speed: float = 200.0     # 最高航速
-@export var start_delay: float = 0.5     # 点火延迟：延迟追踪，增加发射时的力量感
+@export var turn_speed: float = 3.0      # 基础由于转弯半径导致的转向速度
+@export var acceleration: float = 100.0    # 加速度
+@export var max_speed: float = 500.0     # 最高航速
+@export var start_delay: float = 0.5     # 点火延迟
+@export var navigation_constant: float = 4.0 # 比例导引 N 值：值越大，导弹响应越快，转弯越狠
 
-var _current_speed: float = 100.0 # 初始初速
+var _current_speed: float = 0.0 # 初始初速
+var _last_los: Vector3 = Vector3.ZERO # 上一帧的视线向量
 
+
+func set_velocity(_velocity: Vector3) -> Bullet:
+	_current_speed = _velocity.length()
+
+	return self
 
 # 默认设置
 func _enter_tree() -> void:
@@ -21,9 +28,9 @@ func _enter_tree() -> void:
 	team_id = TeamID.NEUTRAL 
 
 
-func set_target(target: Node3D) -> void:
+func set_target(target: AbleToBeLocked) -> Bullet:
 	_locked_target = target
-
+	return self
 
 func _physics_process(delta: float) -> void:
 
@@ -31,7 +38,7 @@ func _physics_process(delta: float) -> void:
 	_current_speed = move_toward(_current_speed, max_speed, acceleration * delta)
 	
 	# 2. 追踪引导逻辑
-	if max_lifetime > start_delay and is_instance_valid(_locked_target):
+	if timer.wait_time - timer.time_left > start_delay and is_instance_valid(_locked_target):
 		_guide_towards_target(delta)
 
 	# 3. 位移逻辑
@@ -45,22 +52,34 @@ func _physics_process(delta: float) -> void:
 			look_at(global_position + move_dir, Vector3.UP)
 
 
+
 func _guide_towards_target(delta: float) -> void:
+	if not is_instance_valid(_locked_target): return
+	
 	var target_pos = _locked_target.global_position
-	var target_dir = (target_pos - global_position).normalized()
+	# 1. 计算当前的视线向量 (Line of Sight, LOS)
+	var los := (target_pos - global_position).normalized()
 	
-	# 计算当前方向与目标方向的夹角
-	var angle_to_target = move_dir.angle_to(target_dir)
-	if angle_to_target < 0.001:
-		return
+	# 2. 计算视线变化率 (LOS Rate)
+	if _last_los == Vector3.ZERO:
+		_last_los = los
 		
-	# 限制每帧最大转动角度，产生“转弯半径”效果
-	var max_angle = turn_speed * delta
-	var t = min(1.0, max_angle / angle_to_target)
+	var los_rate := (los - _last_los) / delta
+	_last_los = los
 	
-	# 使用球形插值平滑转向
-	var current_basis = Basis.looking_at(move_dir)
-	var target_basis = Basis.looking_at(target_dir)
-	var next_basis = Basis(Quaternion(current_basis).slerp(Quaternion(target_basis), t))
+	# 3. 比例导引逻辑：计算向心加速度修正量
+	# 比例导引公式：加速度 = N * 视线变化率
+	var lateral_correction := los_rate * navigation_constant
 	
-	move_dir = -next_basis.z # Basis.looking_at 默认前方是 -Z
+	# 4. 更新移动方向 (move_dir)
+	# 将修正量叠加到当前方向，并限制其最大转向速率以符合导弹物理性能
+	var next_dir := (move_dir + lateral_correction * delta).normalized()
+	
+	# 计算转向角以应用 turn_speed 限制
+	var angle_to_next = move_dir.angle_to(next_dir)
+	if angle_to_next > 0.001:
+		var max_angle = turn_speed * delta
+		var t = min(1.0, max_angle / angle_to_next)
+		move_dir = move_dir.slerp(next_dir, t).normalized()
+	else:
+		move_dir = next_dir

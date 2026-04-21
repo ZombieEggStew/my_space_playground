@@ -4,8 +4,8 @@
 
 [resource]
 resource_name = "rocket_mat_1"
-cull_mode = 2
 diffuse_mode = 3
 specular_mode = 1
 albedo_texture = ExtResource("1_5p47b")
 roughness = 0.0
+grow_amount = 0.1

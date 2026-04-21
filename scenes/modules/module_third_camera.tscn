@@ -7,6 +7,13 @@
 [sub_resource type="BoxShape3D" id="BoxShape3D_tn1hr"]
 size = Vector3(0.6, 0.6, 0.6)
 
+[sub_resource type="Gradient" id="Gradient_575jf"]
+offsets = PackedFloat32Array(0.00046125462, 1)
+colors = PackedColorArray(1, 0, 1, 1, 0, 1, 1, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_tpxcn"]
+gradient = SubResource("Gradient_575jf")
+
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_575jf"]
 emission_shape = 3
 emission_box_extents = Vector3(5, 5, 0)
@@ -22,12 +29,14 @@ radial_accel_min = -2.2351742e-06
 radial_accel_max = -2.2351742e-06
 tangential_accel_min = -2.2351742e-06
 tangential_accel_max = -2.2351742e-06
+color_initial_ramp = SubResource("GradientTexture1D_tpxcn")
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_575jf"]
 transparency = 1
 cull_mode = 2
 shading_mode = 0
 specular_mode = 2
+vertex_color_use_as_albedo = true
 albedo_color = Color(1, 1, 1, 0.33333334)
 proximity_fade_distance = 6.0
 distance_fade_min_distance = 2.0
