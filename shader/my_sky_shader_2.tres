@@ -37,9 +37,6 @@ op_type = 3
 [sub_resource type="VisualShaderNodeVectorOp" id="VisualShaderNodeVectorOp_tkd7x"]
 operator = 2
 
-[sub_resource type="VisualShaderNodeTexture2DParameter" id="VisualShaderNodeTexture2DParameter_5ktbn"]
-parameter_name = "nebula_noise"
-
 [sub_resource type="VisualShaderNodeInput" id="VisualShaderNodeInput_lqji5"]
 input_name = "eyedir"
 
@@ -57,30 +54,12 @@ gradient = SubResource("Gradient_5ktbn")
 source = 5
 texture = SubResource("GradientTexture1D_k1hap")
 
-[sub_resource type="VisualShaderNodeTexture" id="VisualShaderNodeTexture_tkd7x"]
-expanded_output_ports = [0]
-source = 5
-
 [sub_resource type="VisualShaderNodeVectorOp" id="VisualShaderNodeVectorOp_5ktbn"]
 default_input_values = [0, Quaternion(0, 0, 0, 0), 1, Quaternion(0, 0, 0, 0)]
 op_type = 2
 
 [sub_resource type="VisualShaderNodeSmoothStep" id="VisualShaderNodeSmoothStep_tkd7x"]
 default_input_values = [0, 0.5, 1, 1.0, 2, 0.5]
-
-[sub_resource type="VisualShaderNodeExpression" id="VisualShaderNodeExpression_tkd7x"]
-size = Vector2(560, 240)
-expression = "// 将 3D 方向向量转换为 0.0 到 1.0 的经纬度 UV
-float phi = atan(dir.x, dir.z) / (2.0 * PI) + 0.5;
-float theta = asin(clamp(dir.y, -1.0, 1.0)) / PI + 0.5;
-uv_out = vec2(phi, theta);"
-
-[sub_resource type="VisualShaderNodeTexture3D" id="VisualShaderNodeTexture3D_tkd7x"]
-expanded_output_ports = [0]
-source = 1
-
-[sub_resource type="VisualShaderNodeTexture3DParameter" id="VisualShaderNodeTexture3DParameter_5ktbn"]
-parameter_name = "Texture3DParameter"
 
 [sub_resource type="VisualShaderNodeFloatParameter" id="VisualShaderNodeFloatParameter_1egel"]
 parameter_name = "PixelCount"
@@ -99,9 +78,6 @@ operator = 3
 [sub_resource type="VisualShaderNodeIntParameter" id="VisualShaderNodeIntParameter_tkd7x"]
 parameter_name = "IntParameter2"
 default_value_enabled = true
-
-[sub_resource type="VisualShaderNodeTexture2DParameter" id="VisualShaderNodeTexture2DParameter_tkd7x"]
-parameter_name = "nebula_noise2"
 
 [sub_resource type="VisualShaderNodeExpression" id="VisualShaderNodeExpression_rwbhc"]
 size = Vector2(720, 980)
@@ -143,10 +119,6 @@ for (int j = -2; j <= 2; j++) {
 
 brightness = clamp(brightness, 0.0, 1.0);"
 
-[sub_resource type="VisualShaderNodeTexture" id="VisualShaderNodeTexture_5ktbn"]
-expanded_output_ports = [0]
-source = 5
-
 [sub_resource type="VisualShaderNodeSmoothStep" id="VisualShaderNodeSmoothStep_1egel"]
 default_input_values = [0, 0.5, 1, 1.0, 2, 0.5]
 
@@ -163,6 +135,62 @@ parameter_name = "Texture2DParameter"
 
 [sub_resource type="VisualShaderNodeTexture2DParameter" id="VisualShaderNodeTexture2DParameter_hh70o"]
 parameter_name = "Texture2DParameter2"
+
+[sub_resource type="VisualShaderNodeExpression" id="VisualShaderNodeExpression_hh70o"]
+size = Vector2(700.00006, 440)
+expression = "vec3 p = pos * scale;
+float total_n = 0.0;
+float amp = 1.0;
+float max_amp = 0.0;
+
+// 分形循环 (fBm)
+for (int k = 0; k < 5; k++) { // 注意：循环次数需为常数，这里用 5 次模拟 Detail
+    if (float(k) >= float(detail)) break;
+
+    vec3 i = floor(p);
+    vec3 f = fract(p);
+    vec3 u = f * f * (3.0 - 2.0 * f);
+
+    // 8个顶点的哈希随机值（手动内联 hash 逻辑）
+    float n_raw[8];
+    for (int j = 0; j < 8; j++) {
+        vec3 corner = i + vec3(float(j % 2), float((j / 2) % 2), float(j / 4));
+        // 简易哈希函数
+        vec3 p3 = fract(corner * vec3(0.1031, 0.1030, 0.0973));
+        p3 += dot(p3, p3.yzx + 19.19);
+        n_raw[j] = fract((p3.x + p3.y) * p3.z) * 2.0 - 1.0; // 映射到 -1 ~ 1
+    }
+
+    // 三线性插值
+    float res = mix(
+        mix(mix(n_raw[0], n_raw[1], u.x), mix(n_raw[2], n_raw[3], u.x), u.y),
+        mix(mix(n_raw[4], n_raw[5], u.x), mix(n_raw[6], n_raw[7], u.x), u.y), 
+        u.z
+    );
+
+    total_n += res * amp;
+    max_amp += amp;
+    amp *= roughness;
+    p *= 2.0;
+}
+
+// 归一化并输出，范围 0.0 ~ 1.0
+value = (total_n / max_amp) * 0.5 + 0.5;"
+
+[sub_resource type="VisualShaderNodeInput" id="VisualShaderNodeInput_5ktbn"]
+input_name = "eyedir"
+
+[sub_resource type="VisualShaderNodeFloatConstant" id="VisualShaderNodeFloatConstant_tkd7x"]
+constant = 5.0
+
+[sub_resource type="VisualShaderNodeFloatConstant" id="VisualShaderNodeFloatConstant_5ktbn"]
+constant = 0.5
+
+[sub_resource type="VisualShaderNodeIntConstant" id="VisualShaderNodeIntConstant_1egel"]
+constant = 4
+
+[sub_resource type="VisualShaderNodeFloatOp" id="VisualShaderNodeFloatOp_tkd7x"]
+default_input_values = [0, 0.0, 1, 0.1]
 
 [sub_resource type="VisualShaderNodeFloatParameter" id="VisualShaderNodeFloatParameter_ftnv1"]
 parameter_name = "seed"
@@ -186,7 +214,7 @@ flags/use_half_res_pass = false
 flags/use_quarter_res_pass = false
 flags/disable_fog = false
 flags/use_debanding = false
-nodes/sky/0/position = Vector2(2967.2727, -994.90906)
+nodes/sky/0/position = Vector2(3805.0908, -1256.7272)
 nodes/sky/5/node = SubResource("VisualShaderNodeExpression_rwbhc")
 nodes/sky/5/position = Vector2(-506.1818, 17.454544)
 nodes/sky/5/size = Vector2(720, 980)
@@ -249,33 +277,16 @@ nodes/sky/18/node = SubResource("VisualShaderNodeMix_5ktbn")
 nodes/sky/18/position = Vector2(1169.4545, 17.454544)
 nodes/sky/19/node = SubResource("VisualShaderNodeVectorOp_tkd7x")
 nodes/sky/19/position = Vector2(925.0909, -261.81818)
-nodes/sky/20/node = SubResource("VisualShaderNodeTexture2DParameter_5ktbn")
-nodes/sky/20/position = Vector2(0, -1326.5454)
 nodes/sky/24/node = SubResource("VisualShaderNodeInput_lqji5")
-nodes/sky/24/position = Vector2(-3473.4543, -1134.5454)
+nodes/sky/24/position = Vector2(-2932.3635, -1361.4545)
 nodes/sky/27/node = SubResource("VisualShaderNodeMix_ftnv1")
-nodes/sky/27/position = Vector2(1850.1818, -1099.6364)
+nodes/sky/27/position = Vector2(1850.1818, -1186.909)
 nodes/sky/28/node = SubResource("VisualShaderNodeTexture_tm0d8")
-nodes/sky/28/position = Vector2(1186.909, -1186.909)
-nodes/sky/29/node = SubResource("VisualShaderNodeTexture_tkd7x")
-nodes/sky/29/position = Vector2(453.81818, -1169.4545)
+nodes/sky/28/position = Vector2(1448.7272, -1605.8181)
 nodes/sky/31/node = SubResource("VisualShaderNodeVectorOp_5ktbn")
-nodes/sky/31/position = Vector2(2740.3635, -942.5454)
+nodes/sky/31/position = Vector2(2757.818, -1064.7273)
 nodes/sky/32/node = SubResource("VisualShaderNodeSmoothStep_tkd7x")
-nodes/sky/32/position = Vector2(768, -1047.2727)
-nodes/sky/33/node = SubResource("VisualShaderNodeExpression_tkd7x")
-nodes/sky/33/position = Vector2(-872.72723, -959.99994)
-nodes/sky/33/size = Vector2(560, 240)
-nodes/sky/33/input_ports = "0,4,dir;"
-nodes/sky/33/output_ports = "0,3,uv_out;"
-nodes/sky/33/expression = "// 将 3D 方向向量转换为 0.0 到 1.0 的经纬度 UV
-float phi = atan(dir.x, dir.z) / (2.0 * PI) + 0.5;
-float theta = asin(clamp(dir.y, -1.0, 1.0)) / PI + 0.5;
-uv_out = vec2(phi, theta);"
-nodes/sky/34/node = SubResource("VisualShaderNodeTexture3D_tkd7x")
-nodes/sky/34/position = Vector2(349.0909, -733.0909)
-nodes/sky/35/node = SubResource("VisualShaderNodeTexture3DParameter_5ktbn")
-nodes/sky/35/position = Vector2(-192, -628.3636)
+nodes/sky/32/position = Vector2(1064.7273, -1291.6364)
 nodes/sky/36/node = SubResource("VisualShaderNodeFloatParameter_1egel")
 nodes/sky/36/position = Vector2(-3473.4543, -750.5454)
 nodes/sky/38/node = SubResource("VisualShaderNodeVectorOp_rwbhc")
@@ -283,21 +294,70 @@ nodes/sky/38/position = Vector2(-2862.5454, -715.63635)
 nodes/sky/39/node = SubResource("VisualShaderNodeVectorFunc_lqji5")
 nodes/sky/39/position = Vector2(-2600.7273, -733.0909)
 nodes/sky/40/node = SubResource("VisualShaderNodeVectorOp_ewt5d")
-nodes/sky/40/position = Vector2(-2408.7273, -698.1818)
+nodes/sky/40/position = Vector2(-453.81818, -2146.909)
 nodes/sky/48/node = SubResource("VisualShaderNodeIntParameter_tkd7x")
 nodes/sky/48/position = Vector2(-593.4545, -453.81818)
-nodes/sky/49/node = SubResource("VisualShaderNodeTexture2DParameter_tkd7x")
-nodes/sky/49/position = Vector2(34.90909, -1762.909)
-nodes/sky/50/node = SubResource("VisualShaderNodeTexture_5ktbn")
-nodes/sky/50/position = Vector2(349.0909, -1693.0908)
 nodes/sky/51/node = SubResource("VisualShaderNodeSmoothStep_1egel")
-nodes/sky/51/position = Vector2(645.8182, -1605.8181)
+nodes/sky/51/position = Vector2(1413.8181, -2146.909)
 nodes/sky/52/node = SubResource("VisualShaderNodeTexture_hh70o")
-nodes/sky/52/position = Vector2(1204.3636, -1762.909)
+nodes/sky/52/position = Vector2(1972.3635, -2304)
 nodes/sky/53/node = SubResource("VisualShaderNodeMix_rwbhc")
 nodes/sky/53/position = Vector2(2269.0908, -1413.8181)
 nodes/sky/54/node = SubResource("VisualShaderNodeTexture2DParameter_1egel")
-nodes/sky/54/position = Vector2(680.72723, -750.5454)
+nodes/sky/54/position = Vector2(977.4545, -1728)
 nodes/sky/55/node = SubResource("VisualShaderNodeTexture2DParameter_hh70o")
-nodes/sky/55/position = Vector2(698.1818, -1972.3635)
-nodes/sky/connections = PackedInt32Array(8, 0, 5, 1, 9, 0, 5, 2, 10, 0, 5, 3, 11, 0, 5, 4, 14, 0, 13, 0, 5, 1, 14, 0, 5, 0, 18, 2, 17, 0, 18, 0, 13, 0, 18, 1, 13, 0, 19, 0, 5, 0, 19, 1, 20, 0, 29, 2, 19, 0, 31, 1, 28, 0, 27, 1, 33, 0, 29, 0, 35, 0, 34, 2, 17, 0, 27, 0, 24, 0, 38, 0, 36, 0, 38, 1, 38, 0, 39, 0, 39, 0, 40, 0, 36, 0, 40, 1, 40, 0, 5, 5, 40, 0, 33, 0, 40, 0, 34, 0, 32, 0, 28, 0, 32, 0, 27, 2, 29, 1, 32, 2, 48, 0, 5, 0, 49, 0, 50, 2, 50, 1, 51, 2, 52, 0, 53, 1, 51, 0, 53, 2, 54, 0, 28, 2, 55, 0, 52, 2, 51, 0, 52, 0, 33, 0, 50, 0, 27, 0, 53, 0, 31, 0, 0, 0, 53, 0, 31, 0)
+nodes/sky/55/position = Vector2(1605.8181, -2530.909)
+nodes/sky/60/node = SubResource("VisualShaderNodeExpression_hh70o")
+nodes/sky/60/position = Vector2(0, -1832.7272)
+nodes/sky/60/size = Vector2(700.00006, 440)
+nodes/sky/60/input_ports = "0,4,pos;1,0,scale;2,1,detail;3,0,roughness;"
+nodes/sky/60/output_ports = "0,0,value;"
+nodes/sky/60/expression = "vec3 p = pos * scale;
+float total_n = 0.0;
+float amp = 1.0;
+float max_amp = 0.0;
+
+// 分形循环 (fBm)
+for (int k = 0; k < 5; k++) { // 注意：循环次数需为常数，这里用 5 次模拟 Detail
+    if (float(k) >= float(detail)) break;
+
+    vec3 i = floor(p);
+    vec3 f = fract(p);
+    vec3 u = f * f * (3.0 - 2.0 * f);
+
+    // 8个顶点的哈希随机值（手动内联 hash 逻辑）
+    float n_raw[8];
+    for (int j = 0; j < 8; j++) {
+        vec3 corner = i + vec3(float(j % 2), float((j / 2) % 2), float(j / 4));
+        // 简易哈希函数
+        vec3 p3 = fract(corner * vec3(0.1031, 0.1030, 0.0973));
+        p3 += dot(p3, p3.yzx + 19.19);
+        n_raw[j] = fract((p3.x + p3.y) * p3.z) * 2.0 - 1.0; // 映射到 -1 ~ 1
+    }
+
+    // 三线性插值
+    float res = mix(
+        mix(mix(n_raw[0], n_raw[1], u.x), mix(n_raw[2], n_raw[3], u.x), u.y),
+        mix(mix(n_raw[4], n_raw[5], u.x), mix(n_raw[6], n_raw[7], u.x), u.y), 
+        u.z
+    );
+
+    total_n += res * amp;
+    max_amp += amp;
+    amp *= roughness;
+    p *= 2.0;
+}
+
+// 归一化并输出，范围 0.0 ~ 1.0
+value = (total_n / max_amp) * 0.5 + 0.5;"
+nodes/sky/61/node = SubResource("VisualShaderNodeInput_5ktbn")
+nodes/sky/61/position = Vector2(-715.63635, -1885.0908)
+nodes/sky/62/node = SubResource("VisualShaderNodeFloatConstant_tkd7x")
+nodes/sky/62/position = Vector2(-715.63635, -1745.4545)
+nodes/sky/63/node = SubResource("VisualShaderNodeFloatConstant_5ktbn")
+nodes/sky/63/position = Vector2(-768, -1518.5454)
+nodes/sky/64/node = SubResource("VisualShaderNodeIntConstant_1egel")
+nodes/sky/64/position = Vector2(-768, -1623.2727)
+nodes/sky/65/node = SubResource("VisualShaderNodeFloatOp_tkd7x")
+nodes/sky/65/position = Vector2(898.1639, -2054.919)
+nodes/sky/connections = PackedInt32Array(8, 0, 5, 1, 9, 0, 5, 2, 10, 0, 5, 3, 11, 0, 5, 4, 14, 0, 13, 0, 5, 1, 14, 0, 5, 0, 18, 2, 17, 0, 18, 0, 13, 0, 18, 1, 13, 0, 19, 0, 5, 0, 19, 1, 19, 0, 31, 1, 28, 0, 27, 1, 17, 0, 27, 0, 24, 0, 38, 0, 36, 0, 38, 1, 38, 0, 39, 0, 39, 0, 40, 0, 36, 0, 40, 1, 40, 0, 5, 5, 32, 0, 28, 0, 32, 0, 27, 2, 48, 0, 5, 0, 52, 0, 53, 1, 51, 0, 53, 2, 54, 0, 28, 2, 55, 0, 52, 2, 51, 0, 52, 0, 27, 0, 53, 0, 53, 0, 31, 0, 62, 0, 60, 1, 63, 0, 60, 3, 64, 0, 60, 2, 31, 0, 0, 0, 40, 0, 60, 0, 60, 0, 65, 0, 65, 0, 51, 2)

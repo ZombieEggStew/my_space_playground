@@ -20,51 +20,30 @@
 [ext_resource type="PackedScene" uid="uid://csvjfmieyjaub" path="res://scenes/space_craft_6.tscn" id="11_tcjrq"]
 [ext_resource type="PackedScene" uid="uid://dvopp258cqkyy" path="res://scenes/space_craft_5.tscn" id="12_rvs2r"]
 [ext_resource type="Shader" uid="uid://b0lqlfuxab2c8" path="res://shader/my_sky_shader_2.tres" id="16_103ce"]
-[ext_resource type="Script" uid="uid://cm7lfdeoajd5o" path="res://scripts/compositor/my_effect.gd" id="17_pb36m"]
 [ext_resource type="PackedScene" uid="uid://cveradmg4aeue" path="res://scenes/test_box.tscn" id="19_103ce"]
 [ext_resource type="PackedScene" uid="uid://chkhb5jx5xyp2" path="res://scenes/node.tscn" id="24_85lt4"]
 
 [sub_resource type="Gradient" id="Gradient_pb36m"]
-offsets = PackedFloat32Array(0, 0.8331712, 0.97083336, 1)
-colors = PackedColorArray(0.06666667, 0.05882353, 0.21176471, 1, 0.22352941, 0.8235294, 0.9843137, 1, 0.81611913, 0.9536846, 0.9981689, 1, 0.7287656, 0.9301037, 0.9985196, 1)
+interpolation_mode = 1
+offsets = PackedFloat32Array(0, 0.19815892, 0.4500969, 0.67325366, 0.7872243, 0.8975184)
+colors = PackedColorArray(0.06666667, 0.05882353, 0.21176471, 1, 0.105882354, 0.16470589, 0.49803922, 1, 0.23921569, 0.7764706, 0.9882353, 1, 0.27450982, 0.8862745, 0.9843137, 1, 0.7287656, 0.9301037, 0.9985196, 1, 0.9138563, 0.97733194, 0.99952155, 1)
 
 [sub_resource type="GradientTexture1D" id="GradientTexture1D_85lt4"]
 gradient = SubResource("Gradient_pb36m")
 
 [sub_resource type="Gradient" id="Gradient_85lt4"]
-offsets = PackedFloat32Array(0, 0.8300926, 0.99675924)
-colors = PackedColorArray(0.06666667, 0.05882353, 0.21176471, 1, 0.96499735, 0.6008543, 0.9736401, 1, 0.9999998, 0.8890577, 0.9976714, 1)
+interpolation_mode = 1
+offsets = PackedFloat32Array(0, 0.21594311, 0.3686377, 0.5213323, 0.7189371, 0.87761974)
+colors = PackedColorArray(0.078431375, 0.047058824, 0.19215687, 1, 0.16470589, 0.06666667, 0.42352942, 1, 0.5294118, 0.09411765, 0.5686275, 1, 1, 0.17254902, 0.81960785, 1, 1, 0.5764706, 1, 1, 0.96862745, 0.972549, 0.91764706, 1)
 
 [sub_resource type="GradientTexture1D" id="GradientTexture1D_xgstd"]
 gradient = SubResource("Gradient_85lt4")
 
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_103ce"]
-seed = 7
-frequency = 0.0045
-fractal_octaves = 3
-domain_warp_enabled = true
-
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_pb36m"]
-noise = SubResource("FastNoiseLite_103ce")
-seamless = true
-
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_pb36m"]
-seed = 13
-frequency = 0.0045
-fractal_octaves = 3
-domain_warp_enabled = true
-
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_ttvoq"]
-noise = SubResource("FastNoiseLite_pb36m")
-seamless = true
-
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_103ce"]
 shader = ExtResource("16_103ce")
 shader_parameter/ColorParameter = Color(0.070588, 0.062745, 0.207843, 1)
-shader_parameter/PixelCount = 256.0
-shader_parameter/nebula_noise = SubResource("NoiseTexture2D_pb36m")
 shader_parameter/Texture2DParameter = SubResource("GradientTexture1D_85lt4")
-shader_parameter/nebula_noise2 = SubResource("NoiseTexture2D_ttvoq")
+shader_parameter/PixelCount = 256.0
 shader_parameter/Texture2DParameter2 = SubResource("GradientTexture1D_xgstd")
 shader_parameter/IntParameter2 = 1
 shader_parameter/star_scale = 60.00000285
@@ -79,19 +58,6 @@ sky_material = SubResource("ShaderMaterial_103ce")
 background_mode = 2
 sky = SubResource("Sky_pb36m")
 ambient_light_source = 3
-
-[sub_resource type="CompositorEffect" id="CompositorEffect_pb36m"]
-resource_local_to_scene = false
-resource_name = ""
-enabled = false
-effect_callback_type = 4
-needs_motion_vectors = false
-needs_normal_roughness = false
-script = ExtResource("17_pb36m")
-metadata/_custom_type_script = "uid://cm7lfdeoajd5o"
-
-[sub_resource type="Compositor" id="Compositor_85lt4"]
-compositor_effects = Array[CompositorEffect]([SubResource("CompositorEffect_pb36m")])
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_onqr8"]
 size = Vector2(100, 100)
@@ -667,7 +633,6 @@ render_target_update_mode = 4
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="3D_ViewportDistortion/MainSubViewport/World_Container" unique_id=2142292844]
 environment = SubResource("Environment_utbpp")
-compositor = SubResource("Compositor_85lt4")
 
 [node name="CharacterBody3D" parent="3D_ViewportDistortion/MainSubViewport/World_Container" unique_id=150363559 instance=ExtResource("1_w5aja")]
 

@@ -1,0 +1,18 @@
+[gd_scene format=3 uid="uid://cm8w7d7p4k7a1"]
+
+[ext_resource type="Script" uid="uid://dgt461dok771w" path="res://scripts/meteor.gd" id="1_script"]
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_uowsl"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_dpr5l"]
+shading_mode = 0
+use_particle_trails = true
+
+[sub_resource type="TubeTrailMesh" id="TubeTrailMesh_v37q0"]
+material = SubResource("StandardMaterial3D_dpr5l")
+
+[node name="Meteor" type="GPUParticles3D" unique_id=1963212048]
+amount = 1
+process_material = SubResource("ParticleProcessMaterial_uowsl")
+draw_pass_1 = SubResource("TubeTrailMesh_v37q0")
+script = ExtResource("1_script")
