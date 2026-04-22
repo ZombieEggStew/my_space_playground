@@ -32,7 +32,7 @@ border_width_left = 2
 border_width_top = 2
 border_width_right = 2
 border_width_bottom = 2
-border_color = Color(0.24705882, 0.84705883, 0.9098039, 1)
+border_color = Color(0.36862746, 0.2627451, 0.9098039, 1)
 corner_detail = 1
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_w1gke"]
@@ -44,14 +44,22 @@ _data = [Vector2(0.005906038, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
 point_count = 2
 
 [sub_resource type="CurveTexture" id="CurveTexture_p4vrk"]
+width = 64
 curve = SubResource("Curve_ru8r4")
+
+[sub_resource type="Gradient" id="Gradient_1fqis"]
+interpolation_mode = 1
+colors = PackedColorArray(1, 0.14901961, 0.7490196, 1, 1, 1, 1, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_evxb0"]
+gradient = SubResource("Gradient_1fqis")
 
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_ru8r4"]
 emission_shape_offset = Vector3(0, 15, 0)
 angle_min = 1.0728835e-05
 angle_max = 1.0728835e-05
 gravity = Vector3(0, 98, 0)
-color = Color(0, 1, 1, 1)
+color_initial_ramp = SubResource("GradientTexture1D_evxb0")
 alpha_curve = SubResource("CurveTexture_p4vrk")
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_eq387"]
@@ -201,7 +209,7 @@ layout_mode = 2
 value = 75.0
 nine_patch_stretch = true
 texture_progress = ExtResource("5_qbege")
-tint_progress = Color(0.10980392, 0.91764706, 0.92941177, 0.4117647)
+tint_progress = Color(0.36862746, 0.2627451, 0.9098039, 0.35686275)
 
 [node name="hp_bar_true" type="TextureProgressBar" parent="basic_info/hp_bar_and_label/hp_bar" unique_id=1819935985]
 custom_minimum_size = Vector2(0, 25)
@@ -210,7 +218,7 @@ value = 50.0
 rounded = true
 nine_patch_stretch = true
 texture_progress = ExtResource("5_qbege")
-tint_progress = Color(0.99607843, 0.10980392, 0.6039216, 1)
+tint_progress = Color(1, 0.14901961, 0.7490196, 1)
 
 [node name="health_down_effect" type="GPUParticles2D" parent="basic_info/hp_bar_and_label/hp_bar" unique_id=250556252]
 emitting = false
