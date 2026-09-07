@@ -9,6 +9,15 @@ var _groups: Array[Control] = []
 # 由 HUDManager 统一合成。
 var _offsets: Dictionary = {}
 
+# boost 状态:直接监听 SignalBus.on_player_boost,不再读父节点(消除硬父节点耦合)
+var _is_boosting := false
+
+func _ready() -> void:
+	SignalBus.on_player_boost.connect(_on_player_boost)
+
+func _on_player_boost(enable: bool) -> void:
+	_is_boosting = enable
+
 func setup(group: Control) -> void:
 	if group not in _groups:
 		_groups.append(group)
@@ -20,16 +29,13 @@ func _process(_delta: float) -> void:
 	_update_shake(_delta)
 
 func _update_shake(_delta: float) -> void:
-	# FIX ME : boost 状态读取方式(Bug 3)下一轮改为监听 SignalBus.on_player_boost
-	var is_boosting: bool = get_parent().is_boosting if "is_boosting" in get_parent() else false
-	
 	for group in _groups:
 		if not is_instance_valid(group):
 			_offsets.erase(group)
 			continue
 
 		var target_offset := Vector2.ZERO
-		if is_boosting:
+		if _is_boosting:
 			target_offset = Vector2(
 				randf_range(-shake_intensity, shake_intensity),
 				randf_range(-shake_intensity, shake_intensity)

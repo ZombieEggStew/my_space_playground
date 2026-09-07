@@ -45,6 +45,9 @@ func setup(target: AbleToBeLocked, cam: Camera3D) -> void:
 		target.screen_entered.connect(_on_enter_screen)
 	if not target.screen_exited.is_connected(_on_exit_screen):
 		target.screen_exited.connect(_on_exit_screen)
+	# Bug 4:目标销毁/离开场景树时立即自毁(不依赖 _process 轮询,避免离屏泄漏)
+	if not target.tree_exited.is_connected(queue_free):
+		target.tree_exited.connect(queue_free)
 	
 	_is_locked = target.is_locked
 	_is_on_screen = target.is_on_screen()

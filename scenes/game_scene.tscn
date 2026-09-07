@@ -6,7 +6,6 @@
 [ext_resource type="Script" uid="uid://bu0xfm7ox3sut" path="res://scripts/Manager/input_manager.gd" id="2_ro0ie"]
 [ext_resource type="AudioStream" uid="uid://jfvkaqge3b2i" path="res://audio/ding.mp3" id="3_6aqbo"]
 [ext_resource type="Script" uid="uid://bj471fsaood7v" path="res://scripts/Manager/HUD_manager.gd" id="3_ldkr4"]
-[ext_resource type="Script" uid="uid://1wuvthmkj82j" path="res://scripts/Manager/effect_manager.gd" id="4_6aqbo"]
 [ext_resource type="Script" uid="uid://idnc24of6yk8" path="res://scripts/ui/ui_float_effect.gd" id="5_ro0ie"]
 [ext_resource type="Script" uid="uid://cq16e0xs7dp58" path="res://scripts/ui/ui_rotation_effect.gd" id="6_103ce"]
 [ext_resource type="Script" uid="uid://chn6hyukrwgl2" path="res://scripts/Manager/hud_far_manager.gd" id="7_103ce"]
@@ -638,7 +637,6 @@ script = ExtResource("8_xgstd")
 damage_number_scene = ExtResource("9_ttvoq")
 
 [node name="EffectManager" type="Node" parent="HUD_Manager" unique_id=2110931767]
-script = ExtResource("4_6aqbo")
 
 [node name="UI_FloatEffect" type="Node" parent="HUD_Manager/EffectManager" unique_id=1062517989]
 script = ExtResource("5_ro0ie")

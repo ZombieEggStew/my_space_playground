@@ -41,6 +41,8 @@ func _ready() -> void:
 		queue_free()
 	
 	rader_module.on_target_found.connect(_spawn_ui_for_target)
+	# Bug 4:目标死亡/离开场景树时清掉悬挂引用
+	SignalBus.on_lockable_target_died.connect(_on_target_died)
 
 func init_crosshair_2() -> void:
 	crosshair_2 = GameManager.hud_manager.register_hud_static(scene_lock_reticle)
@@ -80,6 +82,13 @@ func _on_mouse_enter_target(target: AbleToBeLocked) -> void:
 
 func _on_mouse_exit_target() -> void:
 	hovered_target = null
+
+# Bug 4:目标死亡/离开场景树时清掉悬挂引用,避免 _process 里访问已释放目标
+func _on_target_died(target: AbleToBeLocked) -> void:
+	if locked_target == target:
+		locked_target = null
+	if hovered_target == target:
+		hovered_target = null
 
 func set_locked_target(target: AbleToBeLocked) -> void:
 	if target:
@@ -133,7 +142,8 @@ func _is_enemy_visible_from_camera(target: Node3D) -> bool:
 
 
 func handle_locked_target():
-	if locked_target == null:
+	if not is_instance_valid(locked_target):
+		locked_target = null
 		return
 
 	var world_pos := locked_target.global_position
@@ -158,16 +168,16 @@ func handle_locked_target():
 	crosshair_2.set_target_pos(screen_pos)
 	
 func handle_cross_hair_2():
-	if locked_target:
+	if is_instance_valid(locked_target):
 		handle_locked_target()
-	elif hovered_target:
+	elif is_instance_valid(hovered_target):
 		crosshair_2.set_target_pos(cam_main.unproject_position(hovered_target.global_position))
 	else:
 		crosshair_2.reset()
 
 
 func get_aim_direction_from_crosshair(aim_screen_pos:Vector2) -> Vector3:
-	if locked_target:
+	if is_instance_valid(locked_target):
 		aim_ray_length = locked_target.global_position.distance_to(root.global_position) 
 
 	var ray_origin := cam_main.project_ray_origin(aim_screen_pos)

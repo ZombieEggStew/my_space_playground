@@ -1,5 +1,6 @@
 extends Node
 class_name HUD_TargetSelector
+
 ## 白色方形目标选择框(准心1):框住屏幕中每个可见的可锁定目标。
 ##
 ## 每目标一个实例,由 [code]BasicAimModule[/code](module_player_aim) 生成;
@@ -11,8 +12,8 @@ class_name HUD_TargetSelector
 ## - 数据来源:目标的 [code]screen_entered/screen_exited[/code]、玩家位置、主相机。
 ## - 对外接口:[method setup]、[method set_active]、[method get_size_factor]。
 ## - 注册方式:[code]HUDManager.register_hud_static[/code]。
-## - 注意:目标离屏时停用 [method _process];目标销毁后在 [method _process] 内自毁
-##   (生命周期可靠性见 .memo/.CURRENT.md Bug 4)。
+## - 注意:目标离屏时停用 [method _process];目标销毁时经 [code]tree_exited[/code] 信号自毁
+##   (修复记录见 .memo/.CURRENT.md Bug 4)。
 
 signal mouse_entered(target: AbleToBeLocked)
 signal mouse_exited()
@@ -36,6 +37,9 @@ func setup(_target: AbleToBeLocked, _player:PlayerShip, _cam:Camera3D) -> void:
 	self.cam = _cam
 	target.screen_entered.connect(_on_enter_screen)
 	target.screen_exited.connect(_on_exit_screen)
+	# Bug 4:目标销毁/离开场景树时立即自毁(不依赖 _process 轮询,避免离屏泄漏)
+	if not target.tree_exited.is_connected(queue_free):
+		target.tree_exited.connect(queue_free)
 
 func _ready() -> void:
 	reset()
@@ -64,7 +68,7 @@ func set_active(t:bool) -> void:
 
 
 func update_visuals() -> void:
-	if not target : 
+	if not is_instance_valid(target): 
 		queue_free()
 		return
 	set_active(true)

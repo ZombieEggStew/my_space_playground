@@ -11,6 +11,15 @@ var smooth : float = 8.0
 
 var groups: Array[Control] = []
 
+# boost 状态:直接监听 SignalBus.on_player_boost,不再读父节点(消除硬父节点耦合)
+var _is_boosting := false
+
+func _ready() -> void:
+	SignalBus.on_player_boost.connect(_on_player_boost)
+
+func _on_player_boost(enable: bool) -> void:
+	_is_boosting = enable
+
 func setup(group: Control) -> void:
 	for child in group.get_children():
 		# 记录原始位置，用于 Boost 效果恢复
@@ -29,7 +38,7 @@ func _update_boost_effect(delta: float) -> void:
 				# 计算目标 Boost 偏移量
 				var target_boost_pos = Vector2.ZERO
 				
-				if get_parent().is_boosting:
+				if _is_boosting:
 					smooth = 8.0
 					# 核心逻辑：根据自身的旋转角度（弧度）向“前方”偏移
 					# 这里假设 rotation 指向的是 UI 的发散方向
