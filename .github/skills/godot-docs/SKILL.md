@@ -48,10 +48,11 @@ Quickest: use the bundled helper (Python 3, stdlib only) from anywhere in the
 repo:
 
 ```
-python .github/skills/godot-docs/scripts/godot_docs_lookup.py symbol "Node.queue_free()"
-python .github/skills/godot-docs/scripts/godot_docs_lookup.py symbol "process_mode"
-python .github/skills/godot-docs/scripts/godot_docs_lookup.py page CharacterBody2D
-python .github/skills/godot-docs/scripts/godot_docs_lookup.py search "physics interpolation"
+python .tools/godot-docs/godot_docs_lookup.py symbol "Node.queue_free()"
+python .tools/godot-docs/godot_docs_lookup.py symbol "process_mode"
+python .tools/godot-docs/godot_docs_lookup.py page CharacterBody2D
+python .tools/godot-docs/godot_docs_lookup.py topic "物理层"
+python .tools/godot-docs/godot_docs_lookup.py search "physics interpolation"
 ```
 
 No Python available? Equivalent plain-text lookups:
@@ -61,7 +62,24 @@ No Python available? Equivalent plain-text lookups:
 - Search prose: `rg -n -i "term1 term2" godot-docs-md/tutorials` (or your
   editor's file search over `godot-docs-md/`).
 
-### 2. Read the resolved page, then the exact entry
+### 2. Cross-reference: topic → canonical page
+
+`topic-index.tsv` (in `.tools/godot-docs/`, next to the script) is a
+curated **topic → canonical page** index covering the topics this project
+actually touches (physics layers, signals, shaders, viewports, input map, …).
+Columns: `category \t topic \t aliases \t page \t note`. Use it when you only
+have a **concept / Chinese keyword** and no concrete API name:
+
+```
+python .tools/godot-docs/godot_docs_lookup.py topic "物理层"
+python .tools/godot-docs/godot_docs_lookup.py topic "spring arm"
+```
+
+Matching is case-insensitive substring over topic+aliases (multiple terms are
+AND-ed). On no curated match it falls back to full-text `search`. The hit gives
+the canonical page path — read that page.
+
+### 3. Read the resolved page, then the exact entry
 
 Open the page given by the index. A class page has this anatomy:
 
@@ -80,7 +98,7 @@ The `anchor` value from the index (e.g. `class_Node_method_queue_free`) appears
 verbatim in the page source, so grep the page for it to land on the entry:
 `rg -n "class_Node_method_queue_free" godot-docs-md/classes/class_node.md`.
 
-### 3. Manuals / tutorials
+### 4. Manuals / tutorials
 
 `tutorials/` mirrors the docs site (`tutorials/scripting/gdscript/…`,
 `tutorials/physics/…`, `tutorials/rendering/…`, `tutorials/ui/…`,

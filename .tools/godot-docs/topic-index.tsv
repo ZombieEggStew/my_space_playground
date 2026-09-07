@@ -1,0 +1,61 @@
+category	topic	aliases	page	note
+物理	物理与碰撞总览	physics, collision, 物理, 碰撞	tutorials/physics/physics_introduction.md	物理层/形状/检测机制总览,先读这里
+物理	物理层与碰撞掩码	collision_layer, collision_mask, layer, mask, 物理层	classes/class_collisionobject3d.md	collision_layer/mask 位掩码语义(本项目 9/10/11 hurtbox 层)
+物理	区域触发检测	Area3D, area_entered, area_exited, 区域, 触发	classes/class_area3d.md	重叠/触发检测;本项目 hurtbox 就是 Area3D
+物理	角色体移动	CharacterBody3D, move_and_slide, move_and_collide, 角色	classes/class_characterbody3d.md	玩家/敌机载具的移动与碰撞
+物理	刚体	RigidBody3D, rigid, 刚体	classes/class_rigidbody3d.md	物理驱动刚体
+物理	射线检测	ray, raycast, 射线	tutorials/physics/ray-casting.md	射线步进/命中(本项目子弹防穿透)
+物理	物理空间查询	PhysicsDirectSpaceState3D, intersect_ray, intersect_shape, 查询	classes/class_physicsdirectspacestate3d.md	射线/形状/碰撞体命中查询
+物理	形状投射	ShapeCast3D, shapecast, 形状投射	classes/class_shapecast3d.md	沿向量形状扫掠
+物理	弹簧臂相机	SpringArm3D, spring arm, 弹簧臂	tutorials/3d/spring_arm.md	相机避障/平滑跟随(项目 spring_arm 用法)
+物理	Jolt 物理引擎	jolt, 物理引擎	tutorials/physics/using_jolt_physics.md	4.7 默认物理引擎
+物理	物理插值	interpolation, jitter, stutter, 插值, 抖动	tutorials/rendering/jitter_stutter.md	物理插值消除抖动
+输入	输入动作映射	InputMap, input action, is_action_pressed, 输入映射	classes/class_inputmap.md	动作/轴查询(输入映射在 project.godot)
+输入	输入事件处理	InputEvent, _input, _unhandled_input, 输入事件	tutorials/inputs/inputevent.md	事件分发与处理顺序
+输入	鼠标坐标	mouse, mouse_position, 屏幕坐标	tutorials/inputs/mouse_and_input_coordinates.md	屏幕/世界坐标换算(瞄准相关)
+脚本	单例 autoload	autoload, singleton, 单例	tutorials/scripting/singletons_autoload.md	全局单例(项目 SignalBus/GameManager 等)
+脚本	帧与物理回调	idle_and_physics_processing, _process, _physics_process, _enter_tree, _ready	tutorials/scripting/idle_and_physics_processing.md	帧回调/物理回调
+脚本	节点生命周期	_enter_tree, _ready, _exit_tree, 生命周期	tutorials/scripting/overridable_functions.md	节点生命周期钩子
+脚本	场景实例与节点	nodes, instancing, 场景实例	tutorials/scripting/nodes_and_scene_instances.md	实例化/引用节点
+脚本	切换场景	change_scene, change_scene_to_packed, 场景切换	tutorials/scripting/change_scenes_manually.md	运行时切换场景
+脚本	PackedScene	PackedScene, instantiate, 场景资源	classes/class_packedscene.md	@export PackedScene + instantiate
+脚本	资源系统	Resource, resource, 资源	tutorials/scripting/resources.md	Resource 用法与自定义资源(项目用 Stat 资源)
+脚本	组	groups, add_to_group, get_nodes_in_group, 组	tutorials/scripting/groups.md	按组管理节点(如可锁定目标)
+脚本	暂停	process_mode, pause, 暂停	tutorials/scripting/pausing_games.md	暂停与 process_mode 语义
+脚本	日志	print, push_error, push_warning, 日志	tutorials/scripting/logging.md	日志输出规范(项目 Log 封装)
+语言	GDScript 基础	gdscript_basics, 语法	tutorials/scripting/gdscript/gdscript_basics.md	GDScript 语法基础
+语言	@export 导出	@export, export, 导出变量	tutorials/scripting/gdscript/gdscript_exports.md	@export 变量(场景/资源绑定)
+语言	静态类型	static typing, 类型标注	tutorials/scripting/gdscript/static_typing.md	类型标注与推断
+语言	文档注释	documentation comments, ##, 文档注释	tutorials/scripting/gdscript/gdscript_documentation_comments.md	官方 ## 文档注释规范
+语言	GDScript 全局	@GDScript, global scope, 内建, 全局函数	classes/class_@gdscript.md	全局函数/常量/内建类型
+渲染	多分辨率与拉伸	stretch, canvas_items, 分辨率	tutorials/rendering/multiple_resolutions.md	项目 1920×1080 canvas_items 拉伸
+渲染	视口	viewport, 视口	tutorials/rendering/viewports.md	视口与渲染目标
+渲染	SubViewport	SubViewport, 子视口	classes/class_subviewport.md	独立渲染子视口(3D HUD)
+渲染	CanvasLayer	CanvasLayer, canvas layer, 图层	tutorials/2d/canvas_layers.md	UI/远 HUD 分层(项目 layer 2/3)
+渲染	相机	Camera3D, camera, FOV, 相机	classes/class_camera3d.md	视锥/投影/加速 FOV
+着色器	着色器入门	shader, shader_type, 着色器	tutorials/shaders/introduction_to_shaders.md	着色器语法入门
+着色器	ShaderMaterial	ShaderMaterial, uniform, 材质参数	classes/class_shadermaterial.md	uniform 控制材质
+着色器	VisualShader	VisualShader, visual shader	tutorials/shaders/visual_shaders.md	可视化节点着色器(项目有自定义节点)
+着色器	计算着色器	compute shader, compute, 计算着色器	tutorials/shaders/compute_shaders.md	RD 计算着色器
+着色器	后处理	CompositorEffect, compositor, 后处理	tutorials/rendering/compositor.md	Compositor 后处理(项目 glsl/test.glsl)
+着色器	读屏	SCREEN_TEXTURE, screen reading, 读屏	tutorials/shaders/screen-reading_shaders.md	采样屏幕纹理
+UI	锚点与布局	anchor, offset, size_and_anchors, 锚点	tutorials/ui/size_and_anchors.md	控件锚点/自适应(血条/准星定位)
+UI	容器	container, VBoxContainer, HBoxContainer, 容器	tutorials/ui/gui_containers.md	自动布局容器
+UI	主题皮肤	theme, StyleBox, skinning, 主题	tutorials/ui/gui_skinning.md	控件皮肤定制
+UI	富文本	RichTextLabel, bbcode, 富文本	tutorials/ui/bbcode_in_richtextlabel.md	BBcode 富文本
+UI	Control 基类	Control, gui_input, 控件	classes/class_control.md	控件输入/焦点/最小尺寸
+UI	自定义绘制	_draw, draw_rect, draw_line, 自绘	tutorials/2d/custom_drawing_in_2d.md	自定义 _draw(准星/指示器)
+动画	Tween 补间	tween, tween_property, 补间	classes/class_tween.md	链式补间(血条缓冲/特效)
+动画	粒子系统	GPUParticles3D, particles, 粒子	classes/class_gpuparticles3d.md	3D 粒子(尾焰/治疗粒子)
+动画	粒子材质	ParticleProcessMaterial, 粒子材质	classes/class_particleprocessmaterial.md	粒子发射/运动参数
+动画	AnimationPlayer	animation, AnimationPlayer, AnimationTree, 动画	tutorials/animation/animation_track_types.md	动画轨道类型
+动画	批量实例	MultiMesh, multimesh, 批量	tutorials/performance/using_multimesh.md	批量渲染(流星等)
+音频	音频播放	AudioStreamPlayer, 音频, BGM	classes/class_audiostreamplayer.md	音效/BGM 播放
+数学	向量数学	vector math, Vector3, 向量	tutorials/math/vector_math.md	向量运算基础
+数学	变换矩阵	transform, basis, 变换	tutorials/math/matrices_and_transforms.md	全局/局部坐标变换
+数学	插值	lerp, slerp, 插值	tutorials/math/interpolation.md	lerp/slerp/插值(平滑转向/相机)
+数学	随机数	random, randi, randf, 随机	tutorials/math/random_number_generation.md	随机数
+性能	3D 性能优化	optimization, 性能, draw call	tutorials/performance/optimizing_3d_performance.md	3D 渲染性能要点
+性能	多线程	thread, Thread, 多线程	tutorials/performance/using_multiple_threads.md	多线程与线程安全
+IO	数据路径	res://, user://, 路径	tutorials/io/data_paths.md	res:// 与 user:// 路径语义
+IO	运行时读写	FileAccess, 读写, 保存	tutorials/io/runtime_file_loading_and_saving.md	运行时文件读写

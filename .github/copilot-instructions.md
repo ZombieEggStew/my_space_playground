@@ -1,106 +1,82 @@
-# Copilot Instructions — test-1 (Godot 4.6 Space Combat Prototype)
+# AGENTS.md — test-1(Godot 4.7 太空空战原型)
 
-> Architecture overview: see [`code-map.md`](../../code-map.md) at repo root.
-> Godot API questions: use the `godot-docs` skill (offline docs in `godot-docs-md/`). Never guess API signatures from memory.
+> 架构/接口/场景/信号流细节见根目录 [`code-map.md`](code-map.md)。
+> Godot API 问题:使用 `godot-docs` 技能(离线文档在 `godot-docs-md/`),不要凭记忆猜 API 签名。
+> godot位置：D:\.godot\Godot_v4.7.2-stable_win64.exe\Godot_v4.7.2-stable_win64.exe
 
-## Project Overview
+## 项目概述
 
-Single-player space combat prototype: modular player ship, AI state-machine enemies,
-laser/missile weapons, HUD + buff system. Main scene: `scenes/game_scene.tscn`.
+单人太空空战原型:模块化玩家飞船 + AI 状态机敌机 + 激光/导弹武器 + HUD/Buff 系统。
+主场景:`scenes/game_scene.tscn`。
 
-## Architecture Rules (follow these strictly)
+## 工作原则(最高优先级,必须遵守)
 
-### Global singletons (autoloads) — roles are fixed, do not mix them
+- **实测优先**:证据不足时不要埋头推理,先写最小调试代码,请用户进游戏做针对性测试并反馈结果,再定位问题。
+- **少思考多提问**:每轮先问「这步真的必要吗」;缺关键信息或能直接问用户时,立即用 `ask_user_question` 提问(复现步骤、具体表现、期望行为),禁止在证据不足时长时间自主推理或空转。
 
-| Autoload | Role |
+## 架构规则(必须遵守)
+
+### 全局单例(autoload)——职责固定,不要混用
+
+| 单例 | 职责 |
 |---|---|
-| `SignalBus` | **Event bus. Signals only — zero logic, zero state.** All cross-module communication goes through it. |
-| `GameManager` | Service locator. Holds references (`player_instance`, `hud_manager`, `input_manager`, ...). Register via `register_*()`, read via fields/`get_current_player()`. |
-| `Scenes` (`my_scenes.gd`) | **Central PackedScene registry.** Any scene instantiated at runtime must be preloaded here — no scattered `preload()` in feature scripts. |
-| `BuffManager` | Buff factory. Applies buffs by file-name convention. |
-| `PlayerInfo` | Shared player constants (currently `dead_zone_px`). |
+| `SignalBus` | **事件总线。只声明信号,零逻辑、零状态。** 所有跨模块通信走它。 |
+| `GameManager` | 服务定位器。持有引用;通过 `register_*()` 注册,通过字段/`get_current_player()` 读取。 |
+| `BuffManager` | Buff 工厂,按文件名约定应用 Buff。 |
+| `PlayerInfo` | 玩家共享常量(目前是 `dead_zone_px`)。 |
 
-### Communication pattern
+### 通信模式
 
-- Modules/components **never call each other directly**. Emit/consume `SignalBus` signals
-  (`on_player_shoot`, `on_player_lock_target`, `on_player_boost`, ...).
-- Signal naming: prefix `on_` (e.g. `on_player_registered`, `on_lockable_target_died`).
-- When adding a feature that needs a new event: declare the signal in `SignalBus.gd` first,
-  then emit/connect. **Every emitted signal must be declared** (known bug: `input_manager.gd`
-  emits `on_player_switch_camera` which is not declared — do not replicate this).
-- Lookup shared node references through `GameManager` / `ModulesManager` getters
-  (`get_camera_module()`, `get_aim_module()`, ...), not `get_node("../../...")` paths.
+- 模块/组件之间**禁止直接互相调用**,通过 `SignalBus` 信号收发;信号命名前缀 `on_`,
+  所有 emit 的信号必须先在 `SignalBus.gd` 声明,再 emit/connect。
+- 共享节点引用一律通过 `GameManager` / `ModulesManager` 的 getter 获取,不要写 `get_node("../../...")` 相对路径。
+- 场景引用用 `@export var xxx: PackedScene` 在编辑器里绑定(`uid://` 自动维护),禁止散落 `preload("res://...")` 路径字符串。
 
-### Module system (`scripts/modules/`)
+### 模块系统(`scripts/modules/`)
 
-- Ship features are `Module`/`Module3D` nodes installed into `ModulesManager`
-  (`install_module()` / `install_module_3d()`), usually from `PlayerShip._ready`.
-- Base classes cache `modules_manager` and `root` (the ship) in `_enter_tree` — do not
-  re-resolve them in `_ready`.
-- Missing dependency pattern: `Log.log_missing_component(self, "x")` then `queue_free()`.
-  Never hard-crash on a missing sibling module.
-- New module = script in `scripts/modules/` + scene in `scenes/modules/` + preload entry in `Scenes`.
+- 飞船功能 = `Module`/`Module3D` 节点,装进 `ModulesManager`;基类在 `_enter_tree` 缓存 `modules_manager` 与 `root`,不在 `_ready` 重复解析。
+- 缺依赖:`Log.log_missing_component(self, "x")` 后 `queue_free()`,绝不硬崩溃。
+- 新增模块 = `scripts/modules/` 建脚本 + `scenes/modules/` 建场景,消费方 `@export` 绑定。
 
-### Components & combat
+### 组件与战斗
 
-- `HealthComponent` (Area3D hurtbox) owns HP; ships expose `hit(damage)` / `get_team_id()` /
-  `get_health_component()` as their public combat interface. Damage flows:
-  `Bullet` → `HealthComponent.take_damage()` → `changed` signal → UI.
-- Factions: `TeamID` enum (PLAYER/NEUTRAL/ENEMY) + physics layers 9/10/11 (hurtboxes).
-  Projectiles compute `collision_mask` from `team_id` in `Bullet.setup()` — friendly fire
-  rules live there, don't hardcode masks elsewhere.
-- Projectiles extend `Bullet` (`scripts/bullet/base/bullet_base.gd`): use the chainable
-  `setup(pos, dir, team, shooter).set_damage().set_speed()` API. Keep both hit channels
-  (per-frame ray step + `area_entered`) and the lifetime `Timer` — they prevent tunneling
-  and leaked bullets.
-- Buffs: create `scripts/buff/buff_<id>.gd` extending `Buff`; icon goes to
-  `textures/icon/icon_buff_<id>.png`. Apply via `BuffManager.apply_buff_by_name()`.
+- 载具对外暴露 `hit(damage)` / `get_team_id()` / `get_health_component()`;伤害流
+  `Bullet → HealthComponent.take_damage() → changed → UI`。
+- 投射物必须继承 `Bullet`(双命中通道 + 寿命 Timer,防穿透/泄漏);**友军伤害规则集中在
+  `Bullet.setup()` 的 collision_mask**,别处禁止硬编码掩码(详见 code-map.md §4.5)。
 
-### AI (`scripts/ai/`)
+### AI(`scripts/ai/`)
 
-- States are child nodes of a `StateMachine`; switch with `transition_to(index)`.
-  State order in the scene tree IS the index — don't reorder children casually.
-- New behaviors: extend `State`, implement `enter()`/`exit()`/`physics_update()`.
-  Use `MoveSM` helpers (`rotate_towards`, `move_forward`, `set_target_speed`) for maneuvering.
+- 状态是 `StateMachine` 的子节点,用 `transition_to(index)` 切换。
+  **场景树中状态的顺序就是 index**——不要随意调整子节点顺序。
+- 新行为:继承 `State`,实现 `enter()`/`exit()`/`physics_update()`;机动动作优先用 `MoveSM`
+  的公共原语(`rotate_towards`、`move_forward`、`set_target_speed`)。
 
 ### HUD
 
-- Dynamic HUD groups: `GameManager.hud_manager.register_hud_group(control)` returns a
-  `MyHUD` — chain effects: `.set_flow_effect(...).set_rotation_effect().set_boost_offset_effect()...`.
-- Screen-projected ("far") HUD elements extend `HUDFarBase` and are registered via
-  `register_hud_far(_node)`; they read `HUDFarManager.nose_pos_2d` / `mouse_pos`.
+- **特效不直接改 `position`**:只写 `meta` 里的独立 offset 通道(`hud_flow_offset` / `hud_shake_offset`),
+  由 `HUDManager` 统一合成,避免特效互踩布局。
+- 特效的 boost 状态监听 `SignalBus.on_player_boost`,不要读父节点属性。
+- **目标 UI**(选择框/血条)在 `setup()` 里连 `target.tree_exited → queue_free` 自毁,不要靠 `_process` 轮询。
+- HUD 组/远 HUD 的注册与 API 见 code-map.md §4.7。
 
-## Code Style
+## 代码风格
 
-- GDScript, Godot 4.6 syntax. **Tabs** for indentation (Godot default); some legacy files use
-  spaces — match the file you are editing.
-- Naming: `class_name` PascalCase; files/functions/vars snake_case; private members prefixed
-  `_` (`_locked_target`, `_is_destroyed`); signals `on_*`.
-- Observable values that UI listens to use `BoolStat` / `IntStat` / `FloatStat` resources
-  (signal on set) instead of polling.
-- Setup methods that return `self` (chainable) are the preferred configuration style.
-- Use `Log.log_error` / `Log.log_missing_component` / `Log.log_info` instead of raw `print`
-  for diagnostics.
-- Long-lived intent goes in `# TO DO :` / `# FIX ME :` comment blocks at the top of the file
-  (existing convention, e.g. `character_body_3d.gd`).
+- GDScript,Godot 4.7;缩进用 **Tab**(部分旧文件用空格,跟随所编辑文件的现状)。
+- 命名:`class_name` PascalCase;文件/函数/变量 snake_case;私有成员 `_` 前缀;信号 `on_*`。
+- UI 可观察数值用 `BoolStat` / `IntStat` / `FloatStat` 资源(set 时发信号),不要轮询;链式 setup 返回 `self` 是首选。
+- 诊断用 `Log.log_*`,不要裸 `print`;文档注释用官方 `##`(置于 `extends`/`class_name` 后),不用 `===` 分隔线。
+- 长期意图写入文件顶部的 `# TO DO :` / `# FIX ME :` 注释块(见 `character_body_3d.gd`)。
 
-## Godot Gotchas (project-verified)
+## Godot 坑点(本项目实测)
 
-- **Register into singletons in `_enter_tree`, not `_ready`** — child `_ready` may run before
-  the parent's, so `_ready`-time registration can be too late (see `Main.gd`).
-- **Never duplicate a `class_name`** in a scene's embedded script when an external script with
-  the same name exists — causes "Class X hides a global script class". Reference the external
-  script from the `.tscn` instead.
-- Node cleanup: combine lifetime timeout with hit-triggered `queue_free()`; guard with
-  `is_instance_valid()` before touching freed targets (missiles, locks, buffs all do this).
-- Smooth camera/spring-arm motion: assign back to the node property (`spring_arm.position = arm_pos`),
-  and cache the base offset for relative boosts — updating a local copy does nothing.
+- **注册进单例要放在 `_enter_tree`,不要放 `_ready`**(子节点 `_ready` 可能早于父节点执行)。
+- **不要重复 `class_name`**:场景内嵌脚本与外部脚本同名会报 "Class X hides a global script class";应在 `.tscn` 中引用外部脚本。
+- 节点清理:寿命超时与命中触发 `queue_free()` 双保险;访问已释放目标前用 `is_instance_valid()` 防护。
+- 相机/弹簧臂平滑:必须把局部变量赋回节点属性(`spring_arm.position = arm_pos`)并缓存基准偏移,只改局部副本无效。
 
-## Build / Run / Validate
+## 构建 / 运行 / 验证
 
-- No build step and **no automated test suite**. Validate changes by running the main scene
-  (`scenes/game_scene.tscn`) in the Godot 4.6 editor and exercising the feature.
-- Debug keys: `O` = self-damage 10, `P` = apply healing buff, `1` = fire missile,
-  RMB = lock on, LMB = shoot, Shift = boost, Q = toggle engine.
-- Do not edit generated/ignored paths: `.godot/`, `godot-docs-md/` (offline docs corpus),
-  `.dsh/`, `*.import` files.
+- 无构建步骤,**无自动化测试**。验证方式:在 Godot 4.7 编辑器中运行主场景 `scenes/game_scene.tscn` 并手动操作。
+- 调试按键:`O` 自伤 10,`P` 治疗 Buff,`1` 发射导弹,右键锁定,左键开火,Shift 加速,Q 引擎开关。
+- 不要改动生成/忽略路径:`.godot/`、`godot-docs-md/`(离线文档语料)、`.dsh/`、`*.import` 文件。

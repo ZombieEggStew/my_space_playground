@@ -42,10 +42,11 @@ Sprite2D.texture   property  classes/class_sprite2d.md class_Sprite2D_property_t
 最快方式——用捆绑查找脚本(纯 Python 标准库,仓库内任意位置可跑):
 
 ```
-python .agents/skills/godot-docs/scripts/godot_docs_lookup.py symbol "Node.queue_free()"
-python .agents/skills/godot-docs/scripts/godot_docs_lookup.py symbol "process_mode"
-python .agents/skills/godot-docs/scripts/godot_docs_lookup.py page CharacterBody2D
-python .agents/skills/godot-docs/scripts/godot_docs_lookup.py search "physics interpolation"
+python .tools/godot-docs/godot_docs_lookup.py symbol "Node.queue_free()"
+python .tools/godot-docs/godot_docs_lookup.py symbol "process_mode"
+python .tools/godot-docs/godot_docs_lookup.py page CharacterBody2D
+python .tools/godot-docs/godot_docs_lookup.py topic "物理层"
+python .tools/godot-docs/godot_docs_lookup.py search "physics interpolation"
 ```
 
 没有 Python 时用文本检索等价手段:
@@ -54,7 +55,22 @@ python .agents/skills/godot-docs/scripts/godot_docs_lookup.py search "physics in
 - 模糊查:`Select-String -Pattern "queue_free" godot-docs-md\api-symbol-index.tsv | Select-Object -First 20`(Windows)/rg 同理
 - 全文搜正文:在 `godot-docs-md\` 上做文件搜索即可
 
-### 2. 读定位到的页面,再读具体条目
+### 2. 交叉查找(主题 → 规范页)
+
+`topic-index.tsv`(与脚本同位于 `.tools/godot-docs/`)是**精选的主题 → 规范页**
+索引,专为本项目常用主题整理(物理层、信号、着色器、视口、输入映射…),
+列:`category \t topic \t aliases \t page \t note`。当你手里只有**概念/
+中文词**、没有具体 API 名时,用它代替全文搜索:
+
+```
+python .tools/godot-docs/godot_docs_lookup.py topic "物理层"
+python .tools/godot-docs/godot_docs_lookup.py topic "spring arm"
+```
+
+按 topic/aliases 列做不区分大小写的子串匹配(多个词按 AND);无命中时
+自动回退到全文 `search`。命中即给出规范页路径,直接读该页即可。
+
+### 3. 读定位到的页面,再读具体条目
 
 按索引里的 page 打开文件。类页结构:
 
@@ -72,7 +88,7 @@ python .agents/skills/godot-docs/scripts/godot_docs_lookup.py search "physics in
 索引里的 anchor(如 `class_Node_method_queue_free`)会原样出现在页面正文,
 需要精确定位条目时可对页面再 grep 一次该锚点。
 
-### 3. 查教程/手册
+### 4. 查教程/手册
 
 `tutorials/` 镜像官网目录(scripting/gdscript、physics、rendering、ui、
 networking…)。先猜主题目录,再用上面的全文搜索。每页一个文件、无

@@ -4,8 +4,8 @@
 godot_docs_lookup.py — offline lookup over the bundled Godot docs corpus
 (`godot-docs-md/`, generated from the official Godot 4.7-dev docs HTML download).
 
-Canonical copy: .github/skills/godot-docs/scripts/godot_docs_lookup.py
-(an identical copy lives under .agents/skills/godot-docs/scripts/ — keep in sync)
+Single canonical copy: .tools/godot-docs/godot_docs_lookup.py
+(only one copy exists; the skills under .agents/ and .github/ both point here)
 
 Stdlib only, no third-party dependencies. Run from anywhere; the repo root is
 auto-detected by walking up until a folder containing `godot-docs-md/` is found
@@ -21,6 +21,9 @@ Subcommands
                                     Area3D.body_entered
   page <Class>           Print the markdown page for a Godot class.
                          Examples:  Node | node | CharacterBody2D | @GDScript
+  topic <terms...>       Curated topic -> canonical page lookup (topic-index.tsv
+                         in the same dir as this script); falls back to
+                         full-text search when no curated topic matches.
   search <terms...>      Full-text search of the corpus (all terms must appear
                          in one line). Prints relpath:line: text.
 
@@ -34,6 +37,7 @@ import sys
 from pathlib import Path
 
 CORPUS_DIRNAME = "godot-docs-md"
+TOPIC_INDEX_NAME = "topic-index.tsv"
 DEFAULT_LIMIT = 50
 
 
@@ -115,6 +119,45 @@ def cmd_page(root: Path, cls: str) -> int:
     return 1
 
 
+def load_topic_index(script_dir: Path) -> list[tuple[str, str, str, str, str]]:
+    """Load curated topic->page rows from topic-index.tsv (next to the script,
+    or one level up for the legacy skill-dir layout)."""
+    rows: list[tuple[str, str, str, str, str]] = []
+    cands = [script_dir / TOPIC_INDEX_NAME, script_dir.parent / TOPIC_INDEX_NAME]
+    idx = next((c for c in cands if c.is_file()), None)
+    if idx is None:
+        return rows
+    for ln in idx.read_text(encoding="utf-8", errors="replace").splitlines():
+        parts = ln.split("\t")
+        if len(parts) >= 5 and parts[0] != "category":
+            rows.append((parts[0], parts[1], parts[2], parts[3], parts[4]))
+    return rows
+
+
+def cmd_topic(script_dir: Path, root: Path, terms: list[str], limit: int) -> int:
+    """Cross-lookup: curated topic -> canonical page; fall back to full-text."""
+    rows = load_topic_index(script_dir)
+    if not rows:
+        out(f"[godot-docs] no topic index next to {script_dir / TOPIC_INDEX_NAME}; "
+            f"falling back to full-text search")
+        return cmd_search(root, terms, limit)
+    lows = [t.lower() for t in terms]
+    hits: list[tuple[str, str, str, str]] = []
+    for cat, topic, aliases, page, note in rows:
+        hay = (cat + " " + topic + " " + aliases).lower()
+        if all(t in hay for t in lows):
+            hits.append((cat, topic, page, note))
+    if not hits:
+        out(f"[godot-docs] no curated topic matched {terms}; "
+            f"falling back to full-text search")
+        return cmd_search(root, terms, limit)
+    for cat, topic, page, note in hits[:limit]:
+        out(f"[{cat}] {topic}\t{page}\t{note}")
+    if len(hits) > limit:
+        out(f"# ... and {len(hits) - limit} more topics (limit {limit})")
+    return 0
+
+
 def cmd_search(root: Path, terms: list[str], limit: int) -> int:
     if not terms:
         out("[godot-docs] search needs at least one term")
@@ -166,7 +209,7 @@ def main(argv: list[str]) -> int:
         else:
             cleaned.append(args[i])
             i += 1
-    if not cleaned or cleaned[0] not in ("symbol", "page", "search"):
+    if not cleaned or cleaned[0] not in ("symbol", "page", "topic", "search"):
         print(__doc__)
         return 2
     cmd, rest = cleaned[0], cleaned[1:]
@@ -180,6 +223,11 @@ def main(argv: list[str]) -> int:
             print(__doc__)
             return 2
         return cmd_page(root, rest[0])
+    if cmd == "topic":
+        if not rest:
+            print(__doc__)
+            return 2
+        return cmd_topic(Path(__file__).resolve().parent, root, rest, limit)
     rows = load_index(root)
     if cmd == "symbol":
         if not rest:
