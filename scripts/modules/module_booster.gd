@@ -20,7 +20,7 @@ func _ready() -> void:
 	if boost_particle:
 		boost_particle.emitting = false
 	SignalBus.on_player_boost_input.connect(_handle_boost_input)
-	GameManager.hud_manager.register_hud_group(hud_container).set_flow_effect(ControlGroup.Index.GROUP_2).set_rotation_effect().set_boost_offset_effect().set_boost_shake_effect()
+	GameManager.hud_manager.register_hud(hud_container).set_flow_effect(ControlGroup.Index.GROUP_2).set_rotation_effect().set_boost_offset_effect().set_boost_shake_effect()
 	
 	if energy_tick:
 		energy_tick.timeout.connect(_on_energy_tick)

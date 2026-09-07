@@ -8,6 +8,7 @@
 [ext_resource type="Script" uid="uid://buhdvs7dw32k3" path="res://scripts/modules/module_component/laser_gun_hud_system.gd" id="4_pcc1v"]
 [ext_resource type="Texture2D" uid="uid://c8bhpxdqfp07i" path="res://textures/white_100x100px.png" id="5_67tsh"]
 [ext_resource type="PackedScene" uid="uid://bxxkpontk1uym" path="res://scenes/hud/dead_zone_indicator.tscn" id="5_lblfk"]
+[ext_resource type="Script" uid="uid://cnjyaqdbs02tj" path="res://scripts/hud/hud_far_anchor.gd" id="9_anchor"]
 [ext_resource type="AudioStream" uid="uid://d68riyvl2b67" path="res://audio/power_down.wav" id="6_rg41u"]
 [ext_resource type="Material" uid="uid://b2ypfyebn18tb" path="res://material/color/white.tres" id="8_2u2c3"]
 
@@ -88,6 +89,7 @@ hud_container = NodePath("laser_gun_heat")
 one_shot = true
 
 [node name="laser_gun_heat" type="Node2D" parent="heat_manager" unique_id=167179851]
+script = ExtResource("9_anchor")
 
 [node name="PanelContainer" type="PanelContainer" parent="heat_manager/laser_gun_heat" unique_id=1009708249]
 offset_left = -109.0

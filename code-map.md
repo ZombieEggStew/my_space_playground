@@ -172,10 +172,9 @@ MoveSM 提供公共机动原语:`rotate_towards / move_forward / set_target_spee
 | 管理器 | 职责 |
 |---|---|
 | `input_manager.gd` (`InputManager`) | 输入中枢:输入动作 → SignalBus 信号(toggle/hold 两种模式),转发鼠标事件 |
-| `HUD_manager.gd` (`HUDManager`) | HUD 注册中心:`register_hud_group`(动态 UI 组,返回 MyHUD 链式配置)、`register_hud_static(_far)`;持有 4 个 UI 特效节点 |
+| `HUD_manager.gd` (`HUDManager`) | HUD 注册中心:统一 `register_hud(element) -> HudElement`(element 可为 PackedScene 或 Node;归属由元素 `@export hud_slot: HudElement.Slot` 自声明,默认 GROUP);持有 4 个 UI 特效节点 |
 | `hud_far_manager.gd` (`HUDFarManager`) | 远 HUD 层:每帧计算机头前方 1000m 点的屏幕投影 `nose_pos_2d`、鼠标位置、是否在屏 |
 | `damage_number_pool.gd` | 伤害飘字对象池(预建 20 个 Label),监听 `on_damage_dealt` |
-| `effect_manager.gd` | 缓存 `is_boosting` 供 UI 特效读取 |
 | `attachment_manager.gd` (`AttachmentManager`) | 按 Slot 把挂件实例化到槽位并 `setup(player_ship)` |
 | `ui_manager.gd` (`UIManager`) | 主 UI 层(空壳,含 Main_Menu/Transition_Rect) |
 
@@ -185,7 +184,7 @@ MoveSM 提供公共机动原语:`rotate_towards / move_forward / set_target_spee
 
 ### 4.8 工具类
 
-- `MyClass/`:`BoolStat / IntStat / FloatStat`(带信号的可观察 Resource)、`ControlGroup`(HUD 分组 GROUP_1..3)、`MyHUD`(链式 HUD 配置器)。
+- `MyClass/`:`BoolStat / IntStat / FloatStat`(带信号的可观察 Resource)、`ControlGroup`(HUD 分组 GROUP_1..3)、`HudElement`(统一注册句柄,取代旧 MyHUD;含归属枚举 `Slot` = STATIC/FAR/GROUP)。
 - `static/team_id.gd`(`TeamID`):阵营枚举 PLAYER / NEUTRAL / ENEMY。
 - `static/component_manager.gd`:`get_health_component(node)`。
 - `static/My_Log.gd`(`Log`):静态日志工具。

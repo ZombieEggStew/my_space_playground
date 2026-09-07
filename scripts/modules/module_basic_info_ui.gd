@@ -16,5 +16,5 @@ func _ready() -> void:
 	speed_panel.setup(root)
 	
 
-	GameManager.hud_manager.register_hud_group(hud_container).set_flow_effect(ControlGroup.Index.GROUP_1).set_rotation_effect().set_boost_offset_effect()
+	GameManager.hud_manager.register_hud(hud_container).set_flow_effect(ControlGroup.Index.GROUP_1).set_rotation_effect().set_boost_offset_effect()
 	

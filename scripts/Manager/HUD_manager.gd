@@ -16,29 +16,45 @@ class_name HUDManager
 var _dynamic_groups: Array[Control] = []
 
 
-func register_hud_group(group: Control) -> MyHUD:
-	print("HUDManager: Registering HUD element: " + group.name)
+## 统一注册契约:把元素挂到 HUD(取代旧的 register_hud_group / register_hud_static /
+## register_hud_far / register_hud_far_node 四套并行 API,见 .memo/.CURRENT.md §4.1)。
+##
+## [param element] 可为 [PackedScene](自动实例化)或已有节点([Node])。
+## 归属由元素自声明的 `@export var hud_slot: HudElement.Slot` 决定;未声明时默认 [constant HudElement.Slot.GROUP]。
+## 返回 [HudElement] 句柄:GROUP 元素可链式配置特效,通过 `.node` 取回实际节点。
+func register_hud(element) -> HudElement:
+	if element is PackedScene:
+		element = element.instantiate()
+	if not (element is Node):
+		push_error("HUDManager.register_hud: 需要 PackedScene 或 Node,收到 %s" % element)
+		return null
 
-	group.reparent(hud_container)
-	_init_dynamic_group(group)
-	return MyHUD.new(group)
-	
-func register_hud_static(scene: PackedScene) -> Node:
-	var item = scene.instantiate()
-	print("HUDManager: Registering HUD static element: " + item.name)
-	hud_static.add_child(item)
-	return item
+	var slot := HudElement.Slot.GROUP
+	var declared: Variant = element.get("hud_slot")
+	if declared is int:
+		slot = declared
 
-func register_hud_far(scene: PackedScene) -> Node:
-	var item = scene.instantiate()
-	print("HUDManager: Registering HUD far element: " + item.name)
-	hud_far.add_child(item)
-	return item
+	print("HUDManager: Registering HUD element: " + element.name + " (slot=" + HudElement.Slot.keys()[slot] + ")")
 
-func register_hud_far_node(node: Node2D) -> Node:
-	print("HUDManager: Registering HUD far element: " + node.name)
-	node.reparent(hud_far)
-	return node
+	match slot:
+		HudElement.Slot.GROUP:
+			if not (element is Control):
+				push_error("HUDManager.register_hud: GROUP 元素必须是 Control,收到 %s" % element)
+				return null
+			if element.get_parent() == null:
+				hud_container.add_child(element)
+			else:
+				element.reparent(hud_container)
+			_init_dynamic_group(element as Control)
+		HudElement.Slot.STATIC:
+			hud_static.add_child(element)
+		HudElement.Slot.FAR:
+			# 场景实例无父节点 → add_child;已有父节点(如 heat 容器)→ reparent 保持全局变换
+			if element.get_parent() == null:
+				hud_far.add_child(element)
+			else:
+				element.reparent(hud_far)
+	return HudElement.new(element, slot)
 
 
 # 捕获作者好的布局基准位置,并初始化各特效的 offset 通道

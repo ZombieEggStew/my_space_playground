@@ -17,6 +17,10 @@ func _on_player_registered(_player:PlayerShip):
 func _process(_delta):
 	mouse_pos = get_viewport().get_mouse_position()
 
+	# 玩家/相机未注册或已销毁时不更新,避免 "previously freed"(无玩家防护)
+	if not is_instance_valid(player) or not is_instance_valid(cam):
+		return
+
 	# 1. 计算机头正前方的 3D 点
 	# 如果你的模型初始旋转了 180 度，说明模型的 Z 正方向才是真正的机头方向。
 	# 我们使用 global_transform.basis.z 产生的点（不带负号）

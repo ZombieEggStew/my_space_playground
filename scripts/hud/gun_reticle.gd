@@ -8,7 +8,8 @@ class_name HUD_GunReticle
 ## 职责边界:
 ## - 数据来源:[code]HUDFarManager.nose_pos_2d[/code] / [code]mouse_pos[/code] / [code]is_on_screen[/code]。
 ## - 对外接口:[method setup]、[method set_target_pos]。
-## - 注册方式:由 [code]LaserGunHudSystem[/code] 经 [code]HUDManager.register_hud_far[/code] 注册。
+## - 注册方式:由 [code]LaserGunHudSystem[/code] 经 [code]HUDManager.register_hud[/code] 注册,
+##   归属继承自 [code]HUDFarBase[/code] 的 [member hud_slot](FAR),自动挂到远层。
 ## - 坐标约定:父节点 hud_far_manager 定位到机头投影,本元素 position 为机头局部坐标,
 ##   消费方需 + hud.position 转回视口坐标。
 

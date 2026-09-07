@@ -28,13 +28,13 @@ func _ready() -> void:
 	_init_crosshair_4()
 	SignalBus.on_player_lock_target.connect(_on_player_lock_target)
 	cam_main = root.get_main_camera()
-	GameManager.hud_manager.register_hud_group(hud_container).set_flow_effect(ControlGroup.Index.GROUP_1).set_rotation_effect().set_boost_offset_effect()
+	GameManager.hud_manager.register_hud(hud_container).set_flow_effect(ControlGroup.Index.GROUP_1).set_rotation_effect().set_boost_offset_effect()
 	if cam_main == null:
 		Log.log_missing_component(self,"main camera")
 		queue_free()
 	
 func _init_crosshair_4() -> void:
-	lead_indicator = GameManager.hud_manager.register_hud_static(scene_lead_indicator)
+	lead_indicator = GameManager.hud_manager.register_hud(scene_lead_indicator).node as Node2D
 
 func _process(_delta: float) -> void:
 	if _locked_enemy_target == null:

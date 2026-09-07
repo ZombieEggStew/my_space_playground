@@ -8,9 +8,13 @@ class_name HUD_LeadIndicator
 ## - 数据来源:由 [code]PredictAimModule[/code](module_predict_aim) 每帧传入 aim_data 驱动。
 ## - 对外接口:[method set_target_pos]、[method reset]。
 ##   aim_data 键:[code]screen_pos: Vector2[/code]、[code]distance: float[/code] 等。
-## - 注册方式:[code]HUDManager.register_hud_static[/code]。
+## - 注册方式:由 [code]HUDManager.register_hud[/code] 读取本脚本的
+##   [member hud_slot](STATIC)自动挂到静态层。
 ## - 注意:目前经 [code].call("set_target_pos", aim_data)[/code] + Dictionary 鸭子类型驱动,
 ##   建议后续统一为类型化接口(见 .memo/.CURRENT.md §5)。
+
+## HUD 归属:静态层(由 HUDManager.register_hud 读取)
+@export var hud_slot: HudElement.Slot = HudElement.Slot.STATIC
 
 @export var circle_diameter := 16.0
 @export var line_width := 2.0

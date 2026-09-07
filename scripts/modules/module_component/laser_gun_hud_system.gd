@@ -9,9 +9,9 @@ var indicator: Node2D
 @export var scene_dead_zone_indicator:PackedScene
 
 func setup(dead_zone:float) -> void:
-	indicator = GameManager.hud_manager.register_hud_far(scene_dead_zone_indicator)
+	indicator = GameManager.hud_manager.register_hud(scene_dead_zone_indicator).node as Node2D
 	indicator.setup(dead_zone)
-	crosshair_3 = GameManager.hud_manager.register_hud_far(scene_gun_reticle)
+	crosshair_3 = GameManager.hud_manager.register_hud(scene_gun_reticle).node as HUD_GunReticle
 	crosshair_3.setup(dead_zone)
 
 func get_aim_point_screen_pos() -> Vector2:

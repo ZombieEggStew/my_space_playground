@@ -25,7 +25,7 @@ var _orig_bar_pos: Vector2
 
 func _ready() -> void:
 
-	GameManager.hud_manager.register_hud_far_node(hud_container)
+	GameManager.hud_manager.register_hud(hud_container)
 	if heat_bar:
 		# 强制等待一帧或在布局完成后的闲置时间记录位置
 		await get_tree().process_frame

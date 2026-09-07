@@ -45,7 +45,7 @@ func _ready() -> void:
 	SignalBus.on_lockable_target_died.connect(_on_target_died)
 
 func init_crosshair_2() -> void:
-	crosshair_2 = GameManager.hud_manager.register_hud_static(scene_lock_reticle)
+	crosshair_2 = GameManager.hud_manager.register_hud(scene_lock_reticle).node
 
 func _spawn_ui_for_target(target:AbleToBeLocked) -> void:
 	init_crosshair_1_for_target(target)
@@ -54,14 +54,14 @@ func _spawn_ui_for_target(target:AbleToBeLocked) -> void:
 
 
 func init_crosshair_1_for_target(target:AbleToBeLocked) -> void:
-	var crosshair_1 = GameManager.hud_manager.register_hud_static(scene_target_selector)
+	var crosshair_1 = GameManager.hud_manager.register_hud(scene_target_selector).node
 	crosshair_1.mouse_entered.connect(_on_mouse_enter_target)
 	crosshair_1.mouse_exited.connect(_on_mouse_exit_target)
 
 	crosshair_1.setup(target, root , cam_main) # 完成绑定
 
 func init_locked_target_hp_bar(target:AbleToBeLocked) -> void:
-	var hp_bar_target = GameManager.hud_manager.register_hud_static(scene_hp_bar_target)
+	var hp_bar_target = GameManager.hud_manager.register_hud(scene_hp_bar_target).node
 	hp_bar_target.setup(target , cam_main)
 	
 

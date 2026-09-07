@@ -11,12 +11,14 @@ class_name HUD_TargetSelector
 ## - 只负责"目标选择框"的显示与悬停事件,不含锁定判定(判定在 [code]BasicAimModule[/code])。
 ## - 数据来源:目标的 [code]screen_entered/screen_exited[/code]、玩家位置、主相机。
 ## - 对外接口:[method setup]、[method set_active]、[method get_size_factor]。
-## - 注册方式:[code]HUDManager.register_hud_static[/code]。
-## - 注意:目标离屏时停用 [method _process];目标销毁时经 [code]tree_exited[/code] 信号自毁
-##   (修复记录见 .memo/.CURRENT.md Bug 4)。
+## - 注册方式:由 [code]HUDManager.register_hud[/code] 读取本脚本的
+##   [member hud_slot](STATIC)自动挂到静态层。
 
 signal mouse_entered(target: AbleToBeLocked)
 signal mouse_exited()
+
+## HUD 归属:静态层(由 HUDManager.register_hud 读取)
+@export var hud_slot: HudElement.Slot = HudElement.Slot.STATIC
 
 @export var base_size := Vector2(64, 64)
 @export var size_scale_numerator := 100.0
