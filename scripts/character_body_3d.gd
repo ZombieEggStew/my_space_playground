@@ -18,7 +18,6 @@ var cam_pivot: Node3D
 @export var scene_module_move_controller:PackedScene
 @export var scene_module_third_camera:PackedScene
 @export var scene_module_player_aim:PackedScene
-@export var scene_module_screen:PackedScene
 @export var scene_module_basic_info_ui:PackedScene
 @export var scene_module_booster:PackedScene
 @export var scene_module_radar:PackedScene

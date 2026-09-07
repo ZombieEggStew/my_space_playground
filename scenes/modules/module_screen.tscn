@@ -1,6 +1,0 @@
-[gd_scene format=3 uid="uid://ctoco7y53upyw"]
-
-[ext_resource type="Script" uid="uid://cipnsrjx87suv" path="res://scripts/modules/module_screen.gd" id="1_uvdkp"]
-
-[node name="ModuleScreen" type="Node" unique_id=1053321223]
-script = ExtResource("1_uvdkp")

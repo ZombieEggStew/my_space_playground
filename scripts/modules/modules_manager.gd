@@ -5,7 +5,6 @@ class_name ModulesManager
 var movement_module: MoveControllerModule
 var third_camera_module: ThirdCameraModule
 var player_aim_module: BasicAimModule
-var screen_module: ScreenModule
 var rader_module: RadarModule
 
 func install_module(module_scene:PackedScene) -> Module:
@@ -14,8 +13,6 @@ func install_module(module_scene:PackedScene) -> Module:
 	if module is BasicAimModule:
 		player_aim_module = module
 
-	if module is ScreenModule:
-		screen_module = module
 	if module is RadarModule:
 		rader_module = module
 
@@ -41,9 +38,6 @@ func get_aim_module() -> BasicAimModule:
 
 func get_move_module() -> EngineModule:
 	return movement_module
-
-func get_screen_module() -> ScreenModule:
-	return screen_module
 
 func get_radar_module() -> RadarModule:
 	return rader_module

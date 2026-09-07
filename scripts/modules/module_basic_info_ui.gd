@@ -1,10 +1,9 @@
 extends UIModule
+class_name HUDModule
 
 @export var hp_bar: HPBar
 
 @export var speed_panel: SpeedPanel
-
-var screen_module: ScreenModule
 
 
 func _ready() -> void:

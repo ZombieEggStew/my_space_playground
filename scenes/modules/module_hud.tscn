@@ -82,7 +82,7 @@ gravity = Vector3(0, 0, 0)
 color = Color(0, 1, 1, 1)
 alpha_curve = SubResource("CurveTexture_1fqis")
 
-[node name="module_basic_info_ui" type="Node" unique_id=2111012816 node_paths=PackedStringArray("hp_bar", "speed_panel", "hud_container")]
+[node name="module_hud" type="Node" unique_id=2111012816 node_paths=PackedStringArray("hp_bar", "speed_panel", "hud_container")]
 script = ExtResource("1_chcyh")
 hp_bar = NodePath("basic_info/hp_bar_and_label")
 speed_panel = NodePath("basic_info/panel_speed")

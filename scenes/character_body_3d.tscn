@@ -11,8 +11,7 @@
 [ext_resource type="PackedScene" uid="uid://clbmhved44n61" path="res://scenes/component/health_component.tscn" id="4_6k07c"]
 [ext_resource type="Material" uid="uid://dvifks8sp3xdg" path="res://material/rocket_mat_1.tres" id="4_86qqj"]
 [ext_resource type="PackedScene" uid="uid://cc1r6mss3o2ds" path="res://scenes/modules/module_player_aim.tscn" id="4_wgwu6"]
-[ext_resource type="PackedScene" uid="uid://ctoco7y53upyw" path="res://scenes/modules/module_screen.tscn" id="5_gvn1x"]
-[ext_resource type="PackedScene" uid="uid://dldi60ppqknmu" path="res://scenes/modules/module_basic_info_ui.tscn" id="6_agthx"]
+[ext_resource type="PackedScene" uid="uid://dldi60ppqknmu" path="res://scenes/modules/module_hud.tscn" id="6_agthx"]
 [ext_resource type="PackedScene" uid="uid://b5mnunoxq7tad" path="res://scenes/modules/module_booster.tscn" id="7_o05n0"]
 [ext_resource type="PackedScene" uid="uid://brgpgqvf2a5v" path="res://scenes/modules/module_radar.tscn" id="8_weg1c"]
 [ext_resource type="PackedScene" uid="uid://cwxsl3xxh0vg" path="res://scenes/modules/module_laser_gun.tscn" id="9_mqk7l"]
@@ -66,7 +65,6 @@ script = ExtResource("1_o7tup")
 scene_module_move_controller = ExtResource("2_ls2h8")
 scene_module_third_camera = ExtResource("3_ix3jf")
 scene_module_player_aim = ExtResource("4_wgwu6")
-scene_module_screen = ExtResource("5_gvn1x")
 scene_module_basic_info_ui = ExtResource("6_agthx")
 scene_module_booster = ExtResource("7_o05n0")
 scene_module_radar = ExtResource("8_weg1c")
