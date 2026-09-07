@@ -58,7 +58,8 @@ func _on_overheated(overheated_status: bool) -> void:
 
 func _get_crosshair3_screen_pos() -> Vector2:
 	if crosshair_3 :
-		return crosshair_3.position  
+		# crosshair_3.position 是机头局部坐标,换算回视口全局坐标
+		return crosshair_3.position + crosshair_3.hud.position  
 	else:
 		return get_viewport().get_mouse_position()
 

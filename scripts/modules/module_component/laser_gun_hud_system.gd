@@ -13,5 +13,7 @@ func setup(dead_zone:float) -> void:
 
 func get_aim_point_screen_pos() -> Vector2:
 	if crosshair_3 and crosshair_3.visible:
-		return crosshair_3.position
+		# crosshair_3.position 是机头局部坐标(父节点 hud_far_manager 定位在机头),
+		# 瞄准需要视口全局坐标 → 加回机头偏移
+		return crosshair_3.position + crosshair_3.hud.position
 	return Vector2.INF # 表示无效或离屏

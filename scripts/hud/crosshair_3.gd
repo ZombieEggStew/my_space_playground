@@ -50,7 +50,9 @@ func _update_lines() -> void:
 
 
 func set_target_pos(target_pos: Vector2) -> void:
-	position = target_pos
+	# hud_far_manager 自身定位到机头投影,子元素处于"机头局部"坐标系。
+	# 传入的 target_pos 是视口全局坐标,需减去机头偏移作为局部 position。
+	position = target_pos - hud.position
 	visible = true
 
 
@@ -73,5 +75,5 @@ func update_from_center(center: Vector2, mouse_pos: Vector2, is_center_on_screen
 
 
 func reset() -> void:
-	position = get_viewport().get_visible_rect().size / 2.0
+	position = get_viewport().get_visible_rect().size / 2.0 - hud.position
 	visible = true
