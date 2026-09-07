@@ -45,18 +45,10 @@ var active_alpha := 0.0
 
 var tween: Tween
 
-var shield_value := 0:
-	set(v):
-		shield_value = v
-		if ui_container != null:
-			ui_container.update_shield_value(shield_value, max_shield_value)
-			
+# Stat 桥接:护盾数值经 FloatStat 发布(单写者),UI bind(shield_stat) 订阅(见 .memo/.CURRENT.md P2)
+var shield_stat: FloatStat
 
-var max_shield_value := 100 :
-	set(v):
-		max_shield_value = v
-		if ui_container != null:
-			ui_container.update_shield_value(shield_value, max_shield_value)
+@export var max_shield_value := 100
 
 var shield_regen_rate := 5  # 每秒恢复的护盾强度
 var is_shield_active := true
@@ -65,7 +57,9 @@ var is_shield_active := true
 
 func _ready():
 	team_id = root.get_team_id()
-	shield_value = max_shield_value
+	shield_stat = FloatStat.new(max_shield_value, max_shield_value)
+	if ui_container:
+		ui_container.bind(shield_stat)
 	active_alpha = mesh.material_override.get("albedo_color").a
 	# 初始化为透明
 	var color = mesh.material_override.get("albedo_color")
@@ -95,7 +89,7 @@ func take_damage(amount: int) -> void:
 	tween.tween_interval(0.5)
 	tween.tween_property(mesh.material_override, "albedo_color:a", 0.0, 1.0).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
 	
-	shield_value -= amount
-	if shield_value < 0:
-		shield_value = 0
+	shield_stat.value -= amount
+	if shield_stat.value < 0:
+		shield_stat.value = 0
 		is_shield_active = false

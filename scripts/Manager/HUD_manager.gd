@@ -21,8 +21,8 @@ var _dynamic_groups: Array[Control] = []
 ##
 ## [param element] 可为 [PackedScene](自动实例化)或已有节点([Node])。
 ## 归属由元素自声明的 `@export var hud_slot: HudElement.Slot` 决定;未声明时默认 [constant HudElement.Slot.GROUP]。
-## 返回 [HudElement] 句柄:GROUP 元素可链式配置特效,通过 `.node` 取回实际节点。
-func register_hud(element) -> HudElement:
+## 返回 [HudHandle] 句柄:GROUP 元素可链式配置特效,通过 `.node` 取回实际节点。
+func register_hud(element) -> HudHandle:
 	if element is PackedScene:
 		element = element.instantiate()
 	if not (element is Node):
@@ -54,7 +54,7 @@ func register_hud(element) -> HudElement:
 				hud_far.add_child(element)
 			else:
 				element.reparent(hud_far)
-	return HudElement.new(element, slot)
+	return HudHandle.new(element, slot)
 
 
 # 捕获作者好的布局基准位置,并初始化各特效的 offset 通道

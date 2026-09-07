@@ -1,4 +1,5 @@
 extends HUDFarBase
+class_name HUD_DeadZoneIndicator
 
 var aim_dead_zone_px := 64.0
 var width := 1.0

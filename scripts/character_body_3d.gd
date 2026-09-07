@@ -3,6 +3,12 @@ class_name PlayerShip
 
 var team_id := TeamID.PLAYER
 
+# --- 可观察数值(Stat 桥接,见 .memo/.CURRENT.md P2) ---
+## 速度大小(每物理帧更新;UI 经 value_changed 订阅,不再每帧轮询 get_speed_string)
+var speed_stat := FloatStat.new(0.0, INF)
+## 前进分量速度(带符号,沿机体 -Z 投影)
+var forward_speed_stat := FloatStat.new(0.0, INF)
+
 # --- Component references ---
 var cam_main: Camera3D
 var cam_main_pivot: Node3D
@@ -66,11 +72,14 @@ func get_model_node() -> Node3D:
 func get_health_component() -> HealthComponent:
 	return health
 
-func get_speed_string() -> String:
-	return "%.2f" % velocity.length()
-
-func get_speed_magnitude() -> String:
-	return "%.2f" % velocity.dot(-global_transform.basis.z.normalized())
+# 每物理帧把速度发布到 Stat(单写者);仅变化时赋值,避免信号空发
+func _physics_process(_delta: float) -> void:
+	var s := velocity.length()
+	if speed_stat.value != s:
+		speed_stat.value = s
+	var fs := velocity.dot(-global_transform.basis.z.normalized())
+	if forward_speed_stat.value != fs:
+		forward_speed_stat.value = fs
 
 func hit(damage: int) -> void:
 	health.take_damage(damage)

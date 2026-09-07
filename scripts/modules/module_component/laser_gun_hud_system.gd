@@ -3,13 +3,13 @@ class_name LaserGunHudSystem
 
 
 var crosshair_3: HUD_GunReticle
-var indicator: Node2D
+var indicator: HUD_DeadZoneIndicator
 
 @export var scene_gun_reticle:PackedScene
 @export var scene_dead_zone_indicator:PackedScene
 
 func setup(dead_zone:float) -> void:
-	indicator = GameManager.hud_manager.register_hud(scene_dead_zone_indicator).node as Node2D
+	indicator = GameManager.hud_manager.register_hud(scene_dead_zone_indicator).node as HUD_DeadZoneIndicator
 	indicator.setup(dead_zone)
 	crosshair_3 = GameManager.hud_manager.register_hud(scene_gun_reticle).node as HUD_GunReticle
 	crosshair_3.setup(dead_zone)

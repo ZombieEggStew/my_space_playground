@@ -1,16 +1,16 @@
-extends RefCounted
+extends Node2D
 class_name HudElement
 
-## HUD 注册句柄:[method HUDManager.register_hud] 的唯一返回类型。
+## HUD 元件基类(统一接口,见 .memo/.CURRENT.md §5):声明归属枚举,并提供类型化元素接口。
 ##
-## 元素通过 `@export var hud_slot: HudElement.Slot` 自声明归属;register_hud 读取该值
-## 决定挂到哪一层,并把 [member node] 与实际槽位一起包进本句柄返回。
-## 链式特效方法(`set_*_effect`)仅对 [constant Slot.GROUP] 有效,其余归属调用会被忽略。
+## 归属:元素各自在脚本里 `@export var hud_slot: HudElement.Slot` 自声明(§5 机制),
+## 由 [method HUDManager.register_hud] 读取决定挂载层;本基类不声明该成员(GDScript 禁止子类
+## 重声明继承成员,故归属值放在各元素脚本上,枚举统一引用本类)。
+## 类型化接口:[method set_target_pos] / [method reset] 是准星类元件的虚方法,
+## 消费方用具体 class_name(如 [code]HUD_LockReticle[/code])静态调用,不再 `.call()` + Dictionary 鸭子类型。
 ##
-## 职责边界:
-## - 只是"注册结果"的持有者/链式配置器,不含节点生命周期管理。
-## - 需要操作实际节点时用 [member node](PackedScene 实例或调用方传入的节点)。
-## - 废弃的 [code]MyHUD[/code] 由此类取代(统一返回类型,修复四套并行注册 API,见 .memo/.CURRENT.md §4.1)。
+## 注意:register_hud 的返回句柄是 [code]HudHandle[/code](RefCounted),不是本类;
+## 本类是场景里准星/指示器元件的共同基类。Node 根元素的继承统一(准心1/2/血条)属 P5 清理,暂不并入。
 
 enum Slot {
 	STATIC,  ## 静态层 hud_static:普通 UI,不跟随世界(准星、目标框、血条等)
@@ -18,39 +18,10 @@ enum Slot {
 	GROUP,   ## 动态组 hud_container:可挂特效(视差/旋转/加速)的 UI 组
 }
 
-## 被包裹的实际节点(PackedScene 实例或调用方传入的节点)。
-var node: Node
+## 设置目标屏幕位置(视口坐标)。准星类元件子类应覆写。
+func set_target_pos(_pos: Vector2) -> void:
+	pass
 
-## 元素归属。
-var slot: HudElement.Slot
-
-var _manager: HUDManager
-
-func _init(element: Node, slot: HudElement.Slot) -> void:
-	node = element
-	self.slot = slot
-	_manager = GameManager.hud_manager
-
-## 鼠标视差特效。仅对 [constant Slot.GROUP] 生效。
-func set_flow_effect(index: ControlGroup.Index = ControlGroup.Index.GROUP_1) -> HudElement:
-	if slot == Slot.GROUP:
-		_manager.flow_effect.setup(node as Control, index)
-	return self
-
-## 象限旋转特效。仅对 [constant Slot.GROUP] 生效。
-func set_rotation_effect() -> HudElement:
-	if slot == Slot.GROUP:
-		_manager.rotation_effect.setup(node as Control)
-	return self
-
-## 加速扩散特效。仅对 [constant Slot.GROUP] 生效。
-func set_boost_offset_effect() -> HudElement:
-	if slot == Slot.GROUP:
-		_manager.boost_offset_effect.setup(node as Control)
-	return self
-
-## 加速抖动特效。仅对 [constant Slot.GROUP] 生效。
-func set_boost_shake_effect() -> HudElement:
-	if slot == Slot.GROUP:
-		_manager.boost_shake_effect.setup(node as Control)
-	return self
+## 复位(隐藏/回到默认位置)。准星类元件子类应覆写。
+func reset() -> void:
+	pass

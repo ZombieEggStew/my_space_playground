@@ -1,4 +1,5 @@
 extends Node
+class_name HUD_TargetHPBar
 
 ## HUD 归属:静态层(由 HUDManager.register_hud 读取)
 @export var hud_slot: HudElement.Slot = HudElement.Slot.STATIC

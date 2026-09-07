@@ -8,7 +8,7 @@ var cam_main: Camera3D
 @export var distance_label: Label
 @export var velocity_desire_label : Label
 @export var scene_lead_indicator:PackedScene
-var lead_indicator: Node2D #绿色 预判指示
+var lead_indicator: HUD_LeadIndicator #绿色 预判指示
 
 var bullet_speed := 0.0
 
@@ -34,7 +34,7 @@ func _ready() -> void:
 		queue_free()
 	
 func _init_crosshair_4() -> void:
-	lead_indicator = GameManager.hud_manager.register_hud(scene_lead_indicator).node as Node2D
+	lead_indicator = GameManager.hud_manager.register_hud(scene_lead_indicator).node as HUD_LeadIndicator
 
 func _process(_delta: float) -> void:
 	if _locked_enemy_target == null:
@@ -49,10 +49,12 @@ func _process(_delta: float) -> void:
 		if bullet_speed == 0.0:
 			print("cannot get bullet speed")
 
-		lead_indicator.call("set_target_pos", aim_data)
+		# 类型化接口(取代 .call("set_target_pos", aim_data) + Dictionary 鸭子类型)
+		lead_indicator.set_target_pos(aim_data.get("screen_pos", Vector2.ZERO))
+		lead_indicator.set_target_distance(aim_data.get("distance", 0.0))
 		
 	else:
-		lead_indicator.call("reset")
+		lead_indicator.reset()
 
 
 	_update_lead_time_label(aim_data)
@@ -62,7 +64,7 @@ func _process(_delta: float) -> void:
 		_update_desire_velocity_label(target)
 
 func _reset_label() -> void:
-	lead_indicator.call("reset")
+	lead_indicator.reset()
 	lead_time_label.text = "--"
 	distance_label.text = "--"
 

@@ -178,13 +178,13 @@ MoveSM 提供公共机动原语:`rotate_towards / move_forward / set_target_spee
 | `attachment_manager.gd` (`AttachmentManager`) | 按 Slot 把挂件实例化到槽位并 `setup(player_ship)` |
 | `ui_manager.gd` (`UIManager`) | 主 UI 层(空壳,含 Main_Menu/Transition_Rect) |
 
-**准星(`scripts/hud/`)**:`crosshair_1`(目标选择框,悬停信号供锁定判定)、`crosshair_2`(二级锁定框)、`crosshair_3`(机炮十字,限制在死区圆周)、`crosshair_4`(预测圆圈,`_draw` 按距离插值半径)、`dead_zone_indicator`(死区圆);基类 `base/hud_far_base.gd`。
+**准星(`scripts/hud/`)**:`crosshair_1`(目标选择框,悬停信号供锁定判定)、`crosshair_2`(二级锁定框)、`crosshair_3`(机炮十字,限制在死区圆周)、`crosshair_4`(预测圆圈,`_draw` 按距离插值半径)、`dead_zone_indicator`(死区圆);基类 `base/hud_far_base.gd`(→ `HudElement` 元件基类);全部带 class_name(`HUD_TargetSelector`/`HUD_LockReticle`/`HUD_GunReticle`/`HUD_LeadIndicator`/`HUD_DeadZoneIndicator`),消费方类型化静态调用,无 `.call()`/Dictionary 鸭子类型。
 
-**UI 控件(`scripts/ui/`)**:`hp_bar`(缓冲条 tween + 低血闪烁)、`hp_bar_target`(锁定目标血条,掉血发 `on_damage_dealt`)、`damage_number`(飘字动画,对象池复用)、`panel_speed`、`buff_icon`(倒计时/叠层)、`buff_layout`、`shield_ui_container`,以及 4 个 HUD 特效:`ui_float_effect`(鼠标视差)、`ui_rotation_effect`(象限旋转)、`ui_boost_offset_effect`(加速扩散)、`ui_boost_shake_effect`(加速抖动)。
+**UI 控件(`scripts/ui/`)**:`hp_bar`(缓冲条 tween + 低血闪烁)、`hp_bar_target`(锁定目标血条,掉血发 `on_damage_dealt`)、`damage_number`(飘字动画,对象池复用)、`panel_speed`(订阅 `PlayerShip.speed_stat`/`forward_speed_stat`,不轮询)、`buff_icon`(倒计时/叠层)、`buff_layout`、`shield_ui_container`(`bind(stat)` 订阅护盾 FloatStat,显示层 lerp),以及 4 个 HUD 特效:`ui_float_effect`(鼠标视差)、`ui_rotation_effect`(象限旋转)、`ui_boost_offset_effect`(加速扩散)、`ui_boost_shake_effect`(加速抖动)。
 
 ### 4.8 工具类
 
-- `MyClass/`:`BoolStat / IntStat / FloatStat`(带信号的可观察 Resource)、`ControlGroup`(HUD 分组 GROUP_1..3)、`HudElement`(统一注册句柄,取代旧 MyHUD;含归属枚举 `Slot` = STATIC/FAR/GROUP)。
+- `MyClass/`:`BoolStat / IntStat / FloatStat`(带信号的可观察 Resource)、`ControlGroup`(HUD 分组 GROUP_1..3)、`HudElement`(准星/指示器元件基类:归属枚举 `Slot` = STATIC/FAR/GROUP + 虚方法 `set_target_pos`/`reset`)、`HudHandle`(统一注册句柄,取代旧 MyHUD,`.node` 取回实际节点)。
 - `static/team_id.gd`(`TeamID`):阵营枚举 PLAYER / NEUTRAL / ENEMY。
 - `static/component_manager.gd`:`get_health_component(node)`。
 - `static/My_Log.gd`(`Log`):静态日志工具。
