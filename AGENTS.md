@@ -1,4 +1,4 @@
-# AGENTS.md — test-1(Godot 4.6 太空空战原型)
+# AGENTS.md — test-1(Godot 4.7 太空空战原型)
 
 > 架构总览见根目录 [`code-map.md`](code-map.md)。
 > Godot API 问题:使用 `godot-docs` 技能(离线文档在 `godot-docs-md/`),不要凭记忆猜 API 签名。
