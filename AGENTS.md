@@ -24,7 +24,6 @@
 |---|---|
 | `SignalBus` | **事件总线。只声明信号,零逻辑、零状态。** 所有跨模块通信走它。 |
 | `GameManager` | 服务定位器。持有引用(`player_instance`、`hud_manager`、`input_manager`…);通过 `register_*()` 注册,通过字段/`get_current_player()` 读取。 |
-| `Scenes`(`my_scenes.gd`) | **PackedScene 集中注册表。** 运行时实例化的场景必须在这里 preload,禁止在功能脚本里散落 `preload()`。 |
 | `BuffManager` | Buff 工厂,按文件名约定应用 Buff。 |
 | `PlayerInfo` | 玩家共享常量(目前是 `dead_zone_px`)。 |
 
@@ -38,6 +37,8 @@
   `on_player_switch_camera`——不要复制这种写法)。
 - 共享节点引用一律通过 `GameManager` / `ModulesManager` 的 getter 获取
   (`get_camera_module()`、`get_aim_module()`…),不要写 `get_node("../../...")` 相对路径。
+- **场景引用用 `@export var xxx: PackedScene` 在编辑器里绑定**(重命名/移动场景由 Godot 按
+  `uid://` 自动维护引用),禁止散落 `preload("res://...")` 路径字符串(原 `Scenes` 注册表已移除)。
 
 ### 模块系统(`scripts/modules/`)
 
@@ -46,7 +47,8 @@
 - 基类在 `_enter_tree` 缓存 `modules_manager` 与 `root`(飞船)——不要在 `_ready` 里重复解析。
 - 缺依赖的标准处理:`Log.log_missing_component(self, "x")` 然后 `queue_free()`。
   缺失兄弟模块时绝不能硬崩溃。
-- 新增模块 = `scripts/modules/` 下建脚本 + `scenes/modules/` 下建场景 + 在 `Scenes` 中加 preload。
+- 新增模块 = `scripts/modules/` 下建脚本 + `scenes/modules/` 下建场景;消费方用
+  `@export var xxx: PackedScene` 在编辑器里绑定。
 
 ### 组件与战斗
 
@@ -75,6 +77,11 @@
   链式配置特效:`.set_flow_effect(...).set_rotation_effect().set_boost_offset_effect()...`。
 - 屏幕投影("远")HUD 元素继承 `HUDFarBase`,通过 `register_hud_far(_node)` 注册;
   从 `HUDFarManager.nose_pos_2d` / `mouse_pos` 读取数据。
+- **特效不直接改 `position`**:只写 `meta` 里的独立 offset 通道(`hud_flow_offset` / `hud_shake_offset`),
+  由 `HUDManager` 统一合成 `position = 基准 + offset`,避免特效互踩布局。
+- **特效的 boost 状态监听 `SignalBus.on_player_boost`**,不要读父节点属性(`get_parent().is_boosting` 已废弃)。
+- **每个目标 spawn 的目标 UI**(选择框/血条)在 `setup()` 里连 `target.tree_exited → queue_free` 自毁,
+  不要靠 `_process` 轮询(离屏停 process 会泄漏)。
 
 ## 代码风格
 
@@ -84,6 +91,8 @@
 - UI 监听的可观察数值用 `BoolStat` / `IntStat` / `FloatStat` 资源(set 时发信号),不要轮询。
 - 返回 `self` 的链式 setup 方法是首选配置风格。
 - 诊断信息用 `Log.log_error` / `Log.log_missing_component` / `Log.log_info`,不要裸 `print`。
+- 脚本/类/成员用 Godot 官方 `##` 文档注释(置于 `extends`/`class_name` 之后),不用 `===` 分隔线;
+  规范见 `godot-docs-md/tutorials/scripting/gdscript/gdscript_documentation_comments.md`。
 - 长期意图写入文件顶部的 `# TO DO :` / `# FIX ME :` 注释块(现有惯例,见 `character_body_3d.gd`)。
 
 ## Godot 坑点(本项目实测)
