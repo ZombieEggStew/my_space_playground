@@ -9,6 +9,8 @@ godot-docs-html-stable/
 .vscode/
 
 godot-docs-md/
+docs_tools/
 
 .TODO.md
 .FIXME.md
+
