@@ -2,13 +2,16 @@ extends ModuleComponent
 class_name LaserGunHudSystem
 
 
-var crosshair_3: Crosshair3
+var crosshair_3: HUD_GunReticle
 var indicator: Node2D
 
+@export var scene_gun_reticle:PackedScene
+@export var scene_dead_zone_indicator:PackedScene
+
 func setup(dead_zone:float) -> void:
-	indicator = GameManager.hud_manager.register_hud_far(Scenes.dead_zone_indicator_scene)
+	indicator = GameManager.hud_manager.register_hud_far(scene_dead_zone_indicator)
 	indicator.setup(dead_zone)
-	crosshair_3 = GameManager.hud_manager.register_hud_far(Scenes.crosshair_3)
+	crosshair_3 = GameManager.hud_manager.register_hud_far(scene_gun_reticle)
 	crosshair_3.setup(dead_zone)
 
 func get_aim_point_screen_pos() -> Vector2:

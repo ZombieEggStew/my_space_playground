@@ -8,15 +8,25 @@ var cam_main: Camera3D
 var cam_main_pivot: Node3D
 var cam_pivot: Node3D
 
+@export_group("test")
+@export var scene_module_move_controller:PackedScene
+@export var scene_module_third_camera:PackedScene
+@export var scene_module_player_aim:PackedScene
+@export var scene_module_screen:PackedScene
+@export var scene_module_basic_info_ui:PackedScene
+@export var scene_module_booster:PackedScene
+@export var scene_module_radar:PackedScene
+@export var scene_module_laser_gun:PackedScene
+@export var scene_module_predict_aim:PackedScene
+@export var scene_module_missile_launcher:PackedScene
 
-
+@export_group("")
 @export var model_node: Node3D	
 
 @onready var health : HealthComponent = $HealthComponent
-
 @onready var move_component : MoveComponent = $MoveComponent
-
 @onready var attachment_manager : AttachmentManager = $AttachmentManager
+
 var fov_smooth := 8.0         # FOV 平滑插值速度
 
 
@@ -26,25 +36,20 @@ func _ready() -> void:
 	
 	health.setup(team_id,100, 100)
 	health.on_death.connect(die)
-	var engine_module =  modules_manager.install_module_3d(Scenes.module_move_controller_scene) as EngineModule
-	engine_module.install_booster_module(Scenes.module_booster_scene)
+	var engine_module =  modules_manager.install_module_3d(scene_module_move_controller) as EngineModule
+	engine_module.install_booster_module(scene_module_booster)
 
 	
-	modules_manager.install_module_3d(Scenes.module_third_camera_scene)
+	modules_manager.install_module_3d(scene_module_third_camera)
 
+	modules_manager.install_module(scene_module_radar)
+	modules_manager.install_module(scene_module_basic_info_ui)
+	modules_manager.install_module(scene_module_player_aim)
 
-	# modules_manager.install_module(Scenes.module_screen_scene)
+	var laser := modules_manager.install_module_3d(scene_module_laser_gun)
+	modules_manager.install_module(scene_module_predict_aim).init_module(laser)
 
-	modules_manager.install_module(Scenes.module_radar_scene)
-	modules_manager.install_module(Scenes.module_basic_info_ui_scene)
-	modules_manager.install_module(Scenes.module_player_aim_scene)
-	modules_manager.install_module(Scenes.test_module_scene)
-
-	var laser := modules_manager.install_module_3d(Scenes.module_laser_gun_scene)
-	var laser_predict := modules_manager.install_module(Scenes.module_predict_aim_scene)
-	laser_predict.init_module(laser)
-
-	attachment_manager.attach_to(Slot.SLOT_1, Scenes.attachment_missile_launcher_scene)
+	attachment_manager.attach_to(Slot.SLOT_1, scene_module_missile_launcher)
 
 	GameManager.register_player(self)
 

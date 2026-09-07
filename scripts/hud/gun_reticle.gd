@@ -1,5 +1,16 @@
 extends HUDFarBase
-class_name Crosshair3
+class_name HUD_GunReticle
+## 绿色机炮十字准心(准心3):指示开火(子弹)瞄准方向,限制在机头 deadzone 圆周内。
+##
+## 鼠标在 deadzone 内 → 跟随鼠标;移出圆周 → 卡在圆周边缘;为瞄准系统提供屏幕瞄准点。
+## 大小固定。
+##
+## 职责边界:
+## - 数据来源:[code]HUDFarManager.nose_pos_2d[/code] / [code]mouse_pos[/code] / [code]is_on_screen[/code]。
+## - 对外接口:[method setup]、[method set_target_pos]。
+## - 注册方式:由 [code]LaserGunHudSystem[/code] 经 [code]HUDManager.register_hud_far[/code] 注册。
+## - 坐标约定:父节点 hud_far_manager 定位到机头投影,本元素 position 为机头局部坐标,
+##   消费方需 + hud.position 转回视口坐标。
 
 
 @export var half_size := 32.0

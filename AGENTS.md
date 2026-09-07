@@ -2,7 +2,7 @@
 
 > 架构总览见根目录 [`code-map.md`](code-map.md)。
 > Godot API 问题:使用 `godot-docs` 技能(离线文档在 `godot-docs-md/`),不要凭记忆猜 API 签名。
-> godot位置：D:/.godot/Godot_v4.7.2-stable_win64.exe
+> godot位置：D:\.godot\Godot_v4.7.2-stable_win64.exe\Godot_v4.7.2-stable_win64.exe
 
 ## 项目概述
 

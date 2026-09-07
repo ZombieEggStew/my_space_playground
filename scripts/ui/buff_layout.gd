@@ -1,7 +1,7 @@
 extends HFlowContainer
 class_name BuffLayout
 
-@export var buff_icon_scene: PackedScene = preload("res://scenes/ui/buff_icon.tscn")
+@export var buff_icon_scene: PackedScene
 
 var buff_component: BuffComponent
 

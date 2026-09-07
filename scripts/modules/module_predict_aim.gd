@@ -7,8 +7,8 @@ var cam_main: Camera3D
 @export var lead_time_label: Label
 @export var distance_label: Label
 @export var velocity_desire_label : Label
-
-var crosshair_4: Node2D #绿色 预判指示
+@export var scene_lead_indicator:PackedScene
+var lead_indicator: Node2D #绿色 预判指示
 
 var bullet_speed := 0.0
 
@@ -34,7 +34,7 @@ func _ready() -> void:
 		queue_free()
 	
 func _init_crosshair_4() -> void:
-	crosshair_4 = GameManager.hud_manager.register_hud_static(Scenes.crosshair_4)
+	lead_indicator = GameManager.hud_manager.register_hud_static(scene_lead_indicator)
 
 func _process(_delta: float) -> void:
 	if _locked_enemy_target == null:
@@ -49,10 +49,10 @@ func _process(_delta: float) -> void:
 		if bullet_speed == 0.0:
 			print("cannot get bullet speed")
 
-		crosshair_4.call("set_target_pos", aim_data)
+		lead_indicator.call("set_target_pos", aim_data)
 		
 	else:
-		crosshair_4.call("reset")
+		lead_indicator.call("reset")
 
 
 	_update_lead_time_label(aim_data)
@@ -62,7 +62,7 @@ func _process(_delta: float) -> void:
 		_update_desire_velocity_label(target)
 
 func _reset_label() -> void:
-	crosshair_4.call("reset")
+	lead_indicator.call("reset")
 	lead_time_label.text = "--"
 	distance_label.text = "--"
 

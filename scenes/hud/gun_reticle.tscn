@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://i3ahdmmvnly8"]
+
+[ext_resource type="Script" uid="uid://42lbnj8v4kyx" path="res://scripts/hud/gun_reticle.gd" id="1_dlcon"]
+
+[node name="crosshair_3" type="Node2D" unique_id=1668287668]
+script = ExtResource("1_dlcon")

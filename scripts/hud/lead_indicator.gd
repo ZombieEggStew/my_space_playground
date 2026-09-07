@@ -1,4 +1,16 @@
 extends Node2D
+class_name HUD_LeadIndicator
+## 绿色预测射击点圆环(准心4):指示预测射击命中点(对移动目标的提前量)。
+##
+## 圆环大小随与目标的距离变化(越近越大、越远越小,有下限)。
+##
+## 职责边界:
+## - 数据来源:由 [code]PredictAimModule[/code](module_predict_aim) 每帧传入 aim_data 驱动。
+## - 对外接口:[method set_target_pos]、[method reset]。
+##   aim_data 键:[code]screen_pos: Vector2[/code]、[code]distance: float[/code] 等。
+## - 注册方式:[code]HUDManager.register_hud_static[/code]。
+## - 注意:目前经 [code].call("set_target_pos", aim_data)[/code] + Dictionary 鸭子类型驱动,
+##   建议后续统一为类型化接口(见 .memo/.CURRENT.md §5)。
 
 @export var circle_diameter := 16.0
 @export var line_width := 2.0

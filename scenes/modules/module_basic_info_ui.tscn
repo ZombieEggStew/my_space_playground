@@ -6,6 +6,7 @@
 [ext_resource type="Script" uid="uid://d2273mfy65uh3" path="res://scripts/ui/buff_layout.gd" id="4_1fqis"]
 [ext_resource type="Material" uid="uid://k4ms5r7ptj5g" path="res://material/canvasItem/new_canvas_item_material.tres" id="4_eq387"]
 [ext_resource type="Script" uid="uid://gptjye17aeil" path="res://scripts/ui/hp_bar.gd" id="4_p4vrk"]
+[ext_resource type="PackedScene" uid="uid://bfl0lgvhor0ha" path="res://scenes/ui/buff_icon.tscn" id="5_evxb0"]
 [ext_resource type="Texture2D" uid="uid://35piuouavkat" path="res://textures/white_1x1px.png" id="5_qbege"]
 [ext_resource type="Texture2D" uid="uid://c8bhpxdqfp07i" path="res://textures/white_100x100px.png" id="5_w1gke"]
 
@@ -161,6 +162,7 @@ offset_right = -207.0
 offset_bottom = 346.0
 grow_horizontal = 0
 script = ExtResource("4_1fqis")
+buff_icon_scene = ExtResource("5_evxb0")
 
 [node name="hp_bar_and_label" type="VBoxContainer" parent="basic_info" unique_id=5052555 node_paths=PackedStringArray("hp_bar", "hp_label", "health_down_effect", "health_change_effect", "hp_bar_catch")]
 layout_mode = 1

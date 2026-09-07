@@ -1,0 +1,2 @@
+- 注释规范godot-docs-md\tutorials\scripting\gdscript\gdscript_documentation_comments.md
+- 代码风格godot-docs-md\tutorials\scripting\gdscript\gdscript_styleguide.md

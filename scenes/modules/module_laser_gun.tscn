@@ -4,8 +4,10 @@
 [ext_resource type="PackedScene" uid="uid://cuxcy0osx6biu" path="res://scenes/bullet_1.tscn" id="2_a2p8t"]
 [ext_resource type="AudioStream" uid="uid://hiopqv2kqb0d" path="res://audio/laser.mp3" id="3_5q5cc"]
 [ext_resource type="Script" uid="uid://drvrjrppgqs3a" path="res://scripts/modules/module_component/heat_manager.gd" id="4_660ev"]
+[ext_resource type="PackedScene" uid="uid://i3ahdmmvnly8" path="res://scenes/hud/gun_reticle.tscn" id="4_mglqa"]
 [ext_resource type="Script" uid="uid://buhdvs7dw32k3" path="res://scripts/modules/module_component/laser_gun_hud_system.gd" id="4_pcc1v"]
 [ext_resource type="Texture2D" uid="uid://c8bhpxdqfp07i" path="res://textures/white_100x100px.png" id="5_67tsh"]
+[ext_resource type="PackedScene" uid="uid://bxxkpontk1uym" path="res://scenes/hud/dead_zone_indicator.tscn" id="5_lblfk"]
 [ext_resource type="AudioStream" uid="uid://d68riyvl2b67" path="res://audio/power_down.wav" id="6_rg41u"]
 [ext_resource type="Material" uid="uid://b2ypfyebn18tb" path="res://material/color/white.tres" id="8_2u2c3"]
 
@@ -71,6 +73,8 @@ wait_time = 0.1
 
 [node name="laser_gun_hud_system" type="Node" parent="." unique_id=2143537013]
 script = ExtResource("4_pcc1v")
+scene_gun_reticle = ExtResource("4_mglqa")
+scene_dead_zone_indicator = ExtResource("5_lblfk")
 
 [node name="heat_manager" type="Node" parent="." unique_id=1017704668 node_paths=PackedStringArray("cool_down_timer", "heat_bar", "heat_bar_container", "overheat_audio", "hud_container")]
 script = ExtResource("4_660ev")

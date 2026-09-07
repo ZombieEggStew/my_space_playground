@@ -8,7 +8,6 @@ func _init() -> void:
 	add_new_stack_method = ADD.NEW_STACK
 	expire_method = EXPIRE.ONE_STACK
 	expire_duration = 0.5
-	# particle_path = "res://scenes/particles/healing_particle.tscn" 
 
 func on_tick() -> void:
 	if not target: return

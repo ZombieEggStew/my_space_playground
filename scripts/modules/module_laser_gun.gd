@@ -25,7 +25,7 @@ var bullet_spread_deg := 0  # 子弹随机散布角度（度）
 var default_bullet_speed := 500
 
 var is_shooting := false
-var crosshair_3: Crosshair3 #绿色 十字准心
+var crosshair_3: HUD_GunReticle #绿色 十字准心
 
 # 机炮最大转向角度
 const aim_dead_zone_px: float = 64.0

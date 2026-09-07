@@ -1,6 +1,12 @@
 [gd_scene format=3 uid="uid://cc1r6mss3o2ds"]
 
 [ext_resource type="Script" uid="uid://da6jmvtr64hva" path="res://scripts/modules/module_player_aim.gd" id="1_gvq42"]
+[ext_resource type="PackedScene" uid="uid://o5rr3ev5psqc" path="res://scenes/hud/target_selector.tscn" id="2_s0s52"]
+[ext_resource type="PackedScene" uid="uid://cdlapu2jn5572" path="res://scenes/hud/lock_reticle.tscn" id="3_jae7w"]
+[ext_resource type="PackedScene" uid="uid://bul2d5gykq6ee" path="res://scenes/hud/hp_bar_target.tscn" id="4_srujn"]
 
 [node name="module_player_aim" type="Node" unique_id=1372324135]
 script = ExtResource("1_gvq42")
+scene_target_selector = ExtResource("2_s0s52")
+scene_lock_reticle = ExtResource("3_jae7w")
+scene_hp_bar_target = ExtResource("4_srujn")

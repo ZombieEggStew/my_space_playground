@@ -3,11 +3,21 @@
 [ext_resource type="Script" uid="uid://byfpdbxqcd48k" path="res://scripts/character_body_3d.gd" id="1_o7tup"]
 [ext_resource type="Script" uid="uid://c7j2ovuur8rdk" path="res://scripts/attachment/slot/attachment_slot_1.gd" id="2_6k07c"]
 [ext_resource type="Script" uid="uid://me6ishfefgm6" path="res://scripts/component/buff_component.gd" id="2_86qqj"]
+[ext_resource type="PackedScene" uid="uid://b4wmsv8bsyw60" path="res://scenes/modules/module_move_controller.tscn" id="2_ls2h8"]
 [ext_resource type="Script" uid="uid://durtpqo3gh0s3" path="res://scripts/modules/modules_manager.gd" id="2_lxkhp"]
 [ext_resource type="Script" uid="uid://6h5bud30f0vq" path="res://scripts/Manager/attachment_manager.gd" id="2_ov54e"]
+[ext_resource type="PackedScene" uid="uid://bap1uk0wacqru" path="res://scenes/modules/module_third_camera.tscn" id="3_ix3jf"]
 [ext_resource type="Script" uid="uid://cduj7aj1uywad" path="res://scripts/component/move_component.gd" id="4_1u7qd"]
 [ext_resource type="PackedScene" uid="uid://clbmhved44n61" path="res://scenes/component/health_component.tscn" id="4_6k07c"]
 [ext_resource type="Material" uid="uid://dvifks8sp3xdg" path="res://material/rocket_mat_1.tres" id="4_86qqj"]
+[ext_resource type="PackedScene" uid="uid://cc1r6mss3o2ds" path="res://scenes/modules/module_player_aim.tscn" id="4_wgwu6"]
+[ext_resource type="PackedScene" uid="uid://ctoco7y53upyw" path="res://scenes/modules/module_screen.tscn" id="5_gvn1x"]
+[ext_resource type="PackedScene" uid="uid://dldi60ppqknmu" path="res://scenes/modules/module_basic_info_ui.tscn" id="6_agthx"]
+[ext_resource type="PackedScene" uid="uid://b5mnunoxq7tad" path="res://scenes/modules/module_booster.tscn" id="7_o05n0"]
+[ext_resource type="PackedScene" uid="uid://brgpgqvf2a5v" path="res://scenes/modules/module_radar.tscn" id="8_weg1c"]
+[ext_resource type="PackedScene" uid="uid://cwxsl3xxh0vg" path="res://scenes/modules/module_laser_gun.tscn" id="9_mqk7l"]
+[ext_resource type="PackedScene" uid="uid://cnbvvxebbcvph" path="res://scenes/modules/module_predict_aim.tscn" id="10_evl4y"]
+[ext_resource type="PackedScene" uid="uid://qiukoyjomao7" path="res://scenes/attachment/attachment_missile_launcher.tscn" id="11_fy6bm"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_ov54e"]
 size = Vector3(2.574463, 1, 6.0946655)
@@ -53,6 +63,16 @@ shadow_mesh = SubResource("ArrayMesh_xgd8d")
 [node name="CharacterBody3D" type="CharacterBody3D" unique_id=150363559 node_paths=PackedStringArray("model_node")]
 collision_mask = 134
 script = ExtResource("1_o7tup")
+scene_module_move_controller = ExtResource("2_ls2h8")
+scene_module_third_camera = ExtResource("3_ix3jf")
+scene_module_player_aim = ExtResource("4_wgwu6")
+scene_module_screen = ExtResource("5_gvn1x")
+scene_module_basic_info_ui = ExtResource("6_agthx")
+scene_module_booster = ExtResource("7_o05n0")
+scene_module_radar = ExtResource("8_weg1c")
+scene_module_laser_gun = ExtResource("9_mqk7l")
+scene_module_predict_aim = ExtResource("10_evl4y")
+scene_module_missile_launcher = ExtResource("11_fy6bm")
 model_node = NodePath("rocket")
 
 [node name="AttachmentManager" type="Node3D" parent="." unique_id=674351]

@@ -3,6 +3,9 @@
 extends Module
 class_name BasicAimModule
 
+@export var scene_target_selector:PackedScene
+@export var scene_lock_reticle:PackedScene
+@export var scene_hp_bar_target:PackedScene
 
 var cam_main: Camera3D
 var use_occlusion_check := true
@@ -16,8 +19,6 @@ var crosshair_2: Node #绿色 二级锁定
 var indicator_margin := 32.0
 
 var rader_module: RadarModule
-
-
 
 
 var aim_ray_length := 5000.0 #非锁定时使用，预测射击点
@@ -42,7 +43,7 @@ func _ready() -> void:
 	rader_module.on_target_found.connect(_spawn_ui_for_target)
 
 func init_crosshair_2() -> void:
-	crosshair_2 = GameManager.hud_manager.register_hud_static(Scenes.crosshair_2)
+	crosshair_2 = GameManager.hud_manager.register_hud_static(scene_lock_reticle)
 
 func _spawn_ui_for_target(target:AbleToBeLocked) -> void:
 	init_crosshair_1_for_target(target)
@@ -51,14 +52,14 @@ func _spawn_ui_for_target(target:AbleToBeLocked) -> void:
 
 
 func init_crosshair_1_for_target(target:AbleToBeLocked) -> void:
-	var crosshair_1 = GameManager.hud_manager.register_hud_static(Scenes.crosshair_1)
+	var crosshair_1 = GameManager.hud_manager.register_hud_static(scene_target_selector)
 	crosshair_1.mouse_entered.connect(_on_mouse_enter_target)
 	crosshair_1.mouse_exited.connect(_on_mouse_exit_target)
 
 	crosshair_1.setup(target, root , cam_main) # 完成绑定
 
 func init_locked_target_hp_bar(target:AbleToBeLocked) -> void:
-	var hp_bar_target = GameManager.hud_manager.register_hud_static(Scenes.hp_bar_target_scene)
+	var hp_bar_target = GameManager.hud_manager.register_hud_static(scene_hp_bar_target)
 	hp_bar_target.setup(target , cam_main)
 	
 

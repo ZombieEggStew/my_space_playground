@@ -1,4 +1,18 @@
 extends Node
+class_name HUD_TargetSelector
+## 白色方形目标选择框(准心1):框住屏幕中每个可见的可锁定目标。
+##
+## 每目标一个实例,由 [code]BasicAimModule[/code](module_player_aim) 生成;
+## 框大小随玩家与目标的距离变化(越远越小,有下限)。鼠标悬停进框内发
+## [signal mouse_entered],移出发 [signal mouse_exited],供锁定模块判定悬停目标。
+##
+## 职责边界:
+## - 只负责"目标选择框"的显示与悬停事件,不含锁定判定(判定在 [code]BasicAimModule[/code])。
+## - 数据来源:目标的 [code]screen_entered/screen_exited[/code]、玩家位置、主相机。
+## - 对外接口:[method setup]、[method set_active]、[method get_size_factor]。
+## - 注册方式:[code]HUDManager.register_hud_static[/code]。
+## - 注意:目标离屏时停用 [method _process];目标销毁后在 [method _process] 内自毁
+##   (生命周期可靠性见 .memo/.CURRENT.md Bug 4)。
 
 signal mouse_entered(target: AbleToBeLocked)
 signal mouse_exited()
