@@ -25,6 +25,7 @@
 [ext_resource type="PackedScene" uid="uid://cveradmg4aeue" path="res://scenes/test_box.tscn" id="19_103ce"]
 [ext_resource type="Texture2D" uid="uid://m0qblxpi071g" path="res://gradient_tex/rad.tres" id="19_xgstd"]
 [ext_resource type="PackedScene" uid="uid://chkhb5jx5xyp2" path="res://scenes/node.tscn" id="24_85lt4"]
+[ext_resource type="PackedScene" uid="uid://cwpyhl0u3nnjo" path="res://blender_export/enemy_1.glb" id="26_ttvoq"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_103ce"]
 shader = ExtResource("16_103ce")
@@ -808,3 +809,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -50.442734, 0, -258.17926)
 
 [node name="棱角球" type="MeshInstance3D" parent="3D_ViewportDistortion/MainSubViewport/World_Container/planet_1" unique_id=1845122724]
 mesh = SubResource("ArrayMesh_ttvoq")
+
+[node name="enemy_1" parent="3D_ViewportDistortion/MainSubViewport/World_Container" unique_id=234821382 instance=ExtResource("26_ttvoq")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 11.952418, -12.128218, 6.723827)

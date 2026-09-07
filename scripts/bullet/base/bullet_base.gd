@@ -12,6 +12,8 @@ const MASK_ENEMY_HURT := 1 << 10   # 第11层
 var move_dir: Vector3 = Vector3.ZERO
 var _shooter: Node = null
 
+var _shooter_health_component: HealthComponent = null
+
 var damage := 10
 var speed :int = 500
 var max_lifetime := 10.0
@@ -36,6 +38,7 @@ func setup(pos: Vector3, dir: Vector3, _team_id: int , shooter: Node = null) -> 
 	move_dir = dir.normalized()
 	team_id = _team_id
 	_shooter = shooter
+	_shooter_health_component = ComponentManager.get_health_component(shooter)
 	timer = Timer.new()
 	add_child(timer)
 	timer.one_shot = true
@@ -75,11 +78,26 @@ func _check_ray_collision(move_step: Vector3) -> void:
 	var query := PhysicsRayQueryParameters3D.create(global_position, global_position + move_step, collision_mask)
 	
 	# 排除自身和发射者
-	query.exclude = [get_rid()]
-	if is_instance_valid(_shooter):
-		# 如果 _shooter 是 CollisionObject3D，则排除其 RID
-		if _shooter is CollisionObject3D:
-			query.exclude.append(_shooter.get_rid())
+	# 创建一个数组来存放需要排除的 RID
+	var exclude_list: Array[RID] = []
+
+	# 排除子弹自身
+	exclude_list.append(get_rid())
+
+	if is_instance_valid(_shooter_health_component):
+		exclude_list.append(_shooter_health_component.get_rid())
+
+	query.exclude = exclude_list
+
+	# query.exclude = [get_rid()]
+	# if is_instance_valid(_shooter):
+	# 	var t := ComponentManager.get_health_component(_shooter)
+	# 	if t:
+	# 		print("!")
+	# 		query.exclude.append(t.get_rid())
+	# 	# 如果 _shooter 是 CollisionObject3D，则排除其 RID
+	# 	# if _shooter is CollisionObject3D:
+	# 	# 	query.exclude.append(_shooter.get_rid())
 	
 	# 启用区域检测（因为子弹可能需要击中 Area3D）
 	query.collide_with_areas = true
@@ -93,6 +111,8 @@ func _check_ray_collision(move_step: Vector3) -> void:
 
 
 func _on_area_entered(area: Area3D) -> void:
+	if area == _shooter_health_component:
+		return # 忽略与发射者的碰撞
 	_try_handle_hit(area)
 
 
@@ -134,7 +154,8 @@ func _handle_hit(collider_team: int, collider: Node) -> void:
 	elif team_id == TeamID.PLAYER and collider_team == TeamID.ENEMY:
 		GameManager.audio_manager.play_hit_sound()
 	elif team_id == TeamID.ENEMY and collider_team == TeamID.ENEMY:
-		print("Enemy friendly fire: ", collider.name)
+		# print("Enemy friendly fire: ", collider.name)
+		pass
 
 	var health = collider as HealthComponent
 

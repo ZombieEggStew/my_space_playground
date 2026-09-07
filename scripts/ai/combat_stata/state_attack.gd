@@ -27,7 +27,7 @@ func spawn_bullet( pos: Vector3, dir: Vector3, team_id: int, shooter: Node = nul
 	get_tree().root.add_child(bullet)
 
 	if bullet.has_method("setup"):
-		bullet.call("setup", damage ,pos, dir, team_id, shooter)
+		bullet.setup(pos, dir, team_id , shooter).set_damage(damage).set_speed(bullet_speed)
 
 func physics_update(delta: float) -> void:
 	if player == null or ship == null: 
@@ -55,4 +55,3 @@ func physics_update(delta: float) -> void:
 	# 3. 退出条件：如果玩家太远或角度偏差太大
 	if dist > stop_attack_dist or current_dot < 0.7:
 		parent_sm.transition_to(CombatSM.IDLE)
-

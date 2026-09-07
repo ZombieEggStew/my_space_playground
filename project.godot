@@ -12,7 +12,7 @@ config_version=5
 
 config/name="test1"
 run/main_scene="uid://cvft2wh5fxiw3"
-config/features=PackedStringArray("4.6", "Forward Plus")
+config/features=PackedStringArray("4.7", "Forward Plus")
 run/max_fps=144
 config/icon="res://icon.svg"
 
