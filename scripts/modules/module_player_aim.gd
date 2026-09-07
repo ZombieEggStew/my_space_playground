@@ -3,9 +3,7 @@
 extends Module
 class_name BasicAimModule
 
-@export var scene_target_selector:PackedScene
 @export var scene_lock_reticle:PackedScene
-@export var scene_hp_bar_target:PackedScene
 
 var cam_main: Camera3D
 var use_occlusion_check := true
@@ -18,8 +16,6 @@ var crosshair_2: HUD_LockReticle #绿色 二级锁定
 
 var indicator_margin := 32.0
 
-var rader_module: RadarModule
-
 
 var aim_ray_length := 5000.0 #非锁定时使用，预测射击点
 
@@ -28,42 +24,20 @@ func _ready() -> void:
 	init_crosshair_2()
 
 	SignalBus.on_player_try_lock.connect(_handle_lock_action)
-	cam_main = root.get_main_camera()
+	# P3:悬停事件经 SignalBus 从 TargetReticle 转发,本模块不再直接持有/生成目标 UI
+	SignalBus.on_target_hovered.connect(_on_mouse_enter_target)
+	SignalBus.on_target_unhovered.connect(_on_mouse_exit_target)
+	# Bug 4:目标死亡/离开场景树时清掉悬挂引用
+	SignalBus.on_lockable_target_died.connect(_on_target_died)
 
+	cam_main = root.get_main_camera()
 	if cam_main == null:
 		Log.log_missing_component(self,"main camera")
 		queue_free()
 
-	rader_module = modules_manager.get_radar_module()
-
-	if rader_module == null:
-		Log.log_missing_component(self,"RadarModule")
-		queue_free()
-	
-	rader_module.on_target_found.connect(_spawn_ui_for_target)
-	# Bug 4:目标死亡/离开场景树时清掉悬挂引用
-	SignalBus.on_lockable_target_died.connect(_on_target_died)
-
 func init_crosshair_2() -> void:
 	crosshair_2 = GameManager.hud_manager.register_hud(scene_lock_reticle).node as HUD_LockReticle
 
-func _spawn_ui_for_target(target:AbleToBeLocked) -> void:
-	init_crosshair_1_for_target(target)
-
-	init_locked_target_hp_bar(target)
-
-
-func init_crosshair_1_for_target(target:AbleToBeLocked) -> void:
-	var crosshair_1: HUD_TargetSelector = GameManager.hud_manager.register_hud(scene_target_selector).node as HUD_TargetSelector
-	crosshair_1.mouse_entered.connect(_on_mouse_enter_target)
-	crosshair_1.mouse_exited.connect(_on_mouse_exit_target)
-
-	crosshair_1.setup(target, root , cam_main) # 完成绑定
-
-func init_locked_target_hp_bar(target:AbleToBeLocked) -> void:
-	var hp_bar_target: HUD_TargetHPBar = GameManager.hud_manager.register_hud(scene_hp_bar_target).node as HUD_TargetHPBar
-	hp_bar_target.setup(target , cam_main)
-	
 
 func _process(_delta: float) -> void:
 	# handle_targets()
@@ -131,14 +105,6 @@ func _is_enemy_visible_from_camera(target: Node3D) -> bool:
 	if collider == null:
 		return false
 	return collider == target or target.is_ancestor_of(collider)
-
-# func handle_targets():
-# 	for target in targets_found:
-# 		var target_node := target.target_node3d
-# 		target.world_pos = target_node.global_transform.origin + target.get_pivot_offset() as Vector3
-# 		target.distance_to_player = root.global_position.distance_to(target.world_pos)
-# 		var is_visible := _is_enemy_visible_from_camera(target_node)
-# 		target.is_visible = is_visible
 
 
 func handle_locked_target():

@@ -117,7 +117,7 @@ test-1/
 | `module_booster.gd` | `Booster_1` | 推进器:能量条消耗/恢复(Timer tick)、粒子、发 `on_player_boost` |
 | `module_third_camera.gd` | `ThirdCameraModule` | 第三人称相机:鼠标跟随/自由视角、回头看、锁定目标平滑转向、加速 FOV/抖动/尾焰 |
 | `module_laser_gun.gd` | — | 激光机炮:左右炮口交替、射速 Timer、过热停火、按热量加伤、`spawn_bullet()` |
-| `module_player_aim.gd` | `BasicAimModule` | 锁定系统:准星悬停检测、RMB 锁定、为目标生成血条,发 `on_player_lock_target` |
+| `module_player_aim.gd` | `BasicAimModule` | 锁定系统(纯玩法,P3 后不造 UI):准星悬停检测(经 `SignalBus.on_target_hovered`)、RMB 锁定、发 `on_player_lock_target`;持有 crosshair_2 锁定准星 |
 | `module_predict_aim.gd` | `PredictAimModule` | 预测射击:二次方程解析拦截时间 `solve_intercept_time`,驱动 crosshair_4 与提前量标签 |
 | `module_radar.gd` | `RadarModule` | 雷达:监听可锁定目标出生/死亡,维护目标列表 |
 | `module_shield.gd` | `ShieldModule` | 护盾:受击球体淡入淡出、数值同步 UI、每秒回充 |
@@ -178,7 +178,8 @@ MoveSM 提供公共机动原语:`rotate_towards / move_forward / set_target_spee
 | `attachment_manager.gd` (`AttachmentManager`) | 按 Slot 把挂件实例化到槽位并 `setup(player_ship)` |
 | `ui_manager.gd` (`UIManager`) | 主 UI 层(空壳,含 Main_Menu/Transition_Rect) |
 
-**准星(`scripts/hud/`)**:`crosshair_1`(目标选择框,悬停信号供锁定判定)、`crosshair_2`(二级锁定框)、`crosshair_3`(机炮十字,限制在死区圆周)、`crosshair_4`(预测圆圈,`_draw` 按距离插值半径)、`dead_zone_indicator`(死区圆);基类 `base/hud_far_base.gd`(→ `HudElement` 元件基类);全部带 class_name(`HUD_TargetSelector`/`HUD_LockReticle`/`HUD_GunReticle`/`HUD_LeadIndicator`/`HUD_DeadZoneIndicator`),消费方类型化静态调用,无 `.call()`/Dictionary 鸭子类型。
+**准星(`scripts/hud/`)**:`target_selector`(白色目标选择框,悬停信号供锁定判定)、`lock_reticle`(绿色二级锁定框)、`gun_reticle`(绿色机炮十字,限制在死区圆周)、`lead_indicator`(绿色预测圆圈,`_draw` 按距离插值半径)、`dead_zone_indicator`(死区圆);基类 `base/hud_far_base.gd`(→ `HudElement` 元件基类);全部带 class_name(`HUD_TargetSelector`/`HUD_LockReticle`/`HUD_GunReticle`/`HUD_LeadIndicator`/`HUD_DeadZoneIndicator`),消费方类型化静态调用,无 `.call()`/Dictionary 鸭子类型。
+**目标 UI 簇(P3)**:`target_reticle.gd`(`TargetReticle`,一个目标 = 一个组件,持有选择框+目标血条并统一生命周期)、`target_reticle_controller.gd`(`TargetReticleController`,挂 HUD_Manager 下,监听 `on_lockable_target_spawned/died` 按目标 spawn/回收);悬停经 `SignalBus.on_target_hovered/unhovered` 转发,`module_player_aim` 不再造 UI。
 
 **UI 控件(`scripts/ui/`)**:`hp_bar`(缓冲条 tween + 低血闪烁)、`hp_bar_target`(锁定目标血条,掉血发 `on_damage_dealt`)、`damage_number`(飘字动画,对象池复用)、`panel_speed`(订阅 `PlayerShip.speed_stat`/`forward_speed_stat`,不轮询)、`buff_icon`(倒计时/叠层)、`buff_layout`、`shield_ui_container`(`bind(stat)` 订阅护盾 FloatStat,显示层 lerp),以及 4 个 HUD 特效:`ui_float_effect`(鼠标视差)、`ui_rotation_effect`(象限旋转)、`ui_boost_offset_effect`(加速扩散)、`ui_boost_shake_effect`(加速抖动)。
 

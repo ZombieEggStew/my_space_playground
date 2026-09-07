@@ -25,6 +25,9 @@
 [ext_resource type="Texture2D" uid="uid://m0qblxpi071g" path="res://gradient_tex/rad.tres" id="19_xgstd"]
 [ext_resource type="PackedScene" uid="uid://chkhb5jx5xyp2" path="res://scenes/node.tscn" id="24_85lt4"]
 [ext_resource type="PackedScene" uid="uid://cwpyhl0u3nnjo" path="res://blender_export/enemy_1.glb" id="26_ttvoq"]
+[ext_resource type="PackedScene" uid="uid://o5rr3ev5psqc" path="res://scenes/hud/target_selector.tscn" id="27_sel"]
+[ext_resource type="PackedScene" uid="uid://bul2d5gykq6ee" path="res://scenes/hud/hp_bar_target.tscn" id="27_hp"]
+[ext_resource type="Script" uid="uid://bw2y41cv3mu4o" path="res://scripts/hud/target_reticle_controller.gd" id="27_ctrl"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_103ce"]
 shader = ExtResource("16_103ce")
@@ -635,6 +638,11 @@ script = ExtResource("7_103ce")
 [node name="damage_number_pool" type="Node" parent="HUD_Manager/hud_static" unique_id=759892552]
 script = ExtResource("8_xgstd")
 damage_number_scene = ExtResource("9_ttvoq")
+
+[node name="TargetReticleController" type="Node" parent="HUD_Manager" unique_id=335577881]
+script = ExtResource("27_ctrl")
+target_selector_scene = ExtResource("27_sel")
+hp_bar_scene = ExtResource("27_hp")
 
 [node name="EffectManager" type="Node" parent="HUD_Manager" unique_id=2110931767]
 

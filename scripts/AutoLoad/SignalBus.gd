@@ -30,6 +30,11 @@ signal on_lockable_target_spawned(target: AbleToBeLocked)
 
 signal on_lockable_target_died(target: AbleToBeLocked)
 
+## 目标 UI 悬停(由 TargetReticle 转发选择框事件,供瞄准模块判定悬停目标,P3)
+signal on_target_hovered(target: AbleToBeLocked)
+
+signal on_target_unhovered()
+
 
 
 signal on_damage_dealt(amount: int, pos: Vector2)
