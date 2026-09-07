@@ -18,21 +18,26 @@ func _get_return_icon_type():
 func _get_input_port_count():
 	return 5
 
-func _get_input_port_name(port):
+# 定义输入端口名称:既显示在编辑器输入槽上,也作为着色器代码中的标识符,
+# 在 _get_code 的 input_vars 数组中按端口序号传入。未覆盖时默认命名为 "in" + str(port)。
+func _get_input_port_name(port: int) -> String:
 	match port:
 		0: return "pos"
 		1: return "scale"
 		2: return "detail"
 		3: return "roughness"
 		4: return "seed"
+	return "in" + str(port)
 
-func _get_input_port_type(port):
+# 定义每个输入端口的类型。未覆盖时所有输入端口默认为 PORT_TYPE_SCALAR。
+func _get_input_port_type(port: int) -> int:
 	match port:
 		0: return VisualShaderNode.PORT_TYPE_VECTOR_3D
 		1: return VisualShaderNode.PORT_TYPE_SCALAR
 		2: return VisualShaderNode.PORT_TYPE_SCALAR
 		3: return VisualShaderNode.PORT_TYPE_SCALAR
 		4: return VisualShaderNode.PORT_TYPE_SCALAR
+	return VisualShaderNode.PORT_TYPE_SCALAR
 
 func _get_output_port_count():
 	return 1
