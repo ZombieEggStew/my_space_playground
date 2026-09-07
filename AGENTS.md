@@ -9,12 +9,10 @@
 单人太空空战原型:模块化玩家飞船 + AI 状态机敌机 + 激光/导弹武器 + HUD/Buff 系统。
 主场景:`scenes/game_scene.tscn`。
 
-## 工作原则：实践是检验真理的唯一标准（最高优先级，必须遵守）
-- **DEBUG**：证据不足时，不要根据代码埋头推理，先写最小调试代码，请用户进游戏做针对性测试和信息收集（例如「请进游戏验证 X，并告诉我 Y」），再根据结果定位问题。
-- **成本意识**：每轮思考前问自己「这一步真的必要吗？还是我其实可以直接问用户」。宁可多问一句，也不要让用户为一次长考买单。
-- **动手前先判断**：这个问题我现在就能定位或给出方案吗？不能 → 立即用 `ask_user_question` 提问（复现步骤、具体表现、期望行为），禁止先埋头搜索。
-- **禁止长考**：禁止在缺少关键信息或证据不足时，继续长时间自主推理、反复读证据而不向用户提问。如果遇到遇到矛盾信息，陷入自我怀疑，立即停止空转。
+## 工作原则(最高优先级,必须遵守)
 
+- **实测优先**:证据不足时不要埋头推理,先写最小调试代码,请用户进游戏做针对性测试并反馈结果,再定位问题。
+- **少思考多提问**:每轮先问「这步真的必要吗」;缺关键信息或能直接问用户时,立即用 `ask_user_question` 提问(复现步骤、具体表现、期望行为),禁止在证据不足时长时间自主推理或空转。
 
 ## 架构规则(必须遵守)
 
@@ -29,44 +27,36 @@
 
 ### 通信模式
 
-- 模块/组件之间**禁止直接互相调用**。通过 `SignalBus` 信号收发
-  (`on_player_shoot`、`on_player_lock_target`、`on_player_boost`…)。
-- 信号命名:前缀 `on_`(如 `on_player_registered`、`on_lockable_target_died`)。
-- 新功能需要新事件时:先在 `SignalBus.gd` 声明信号,再 emit/connect。
-  **所有 emit 的信号必须已声明**(已知 bug:`input_manager.gd` 发射了未声明的
-  `on_player_switch_camera`——不要复制这种写法)。
+- 模块/组件之间**禁止直接互相调用**,通过 `SignalBus` 信号收发;信号命名前缀 `on_`,
+  **所有 emit 的信号必须先在 `SignalBus.gd` 声明**,再 emit/connect。
 - 共享节点引用一律通过 `GameManager` / `ModulesManager` 的 getter 获取
   (`get_camera_module()`、`get_aim_module()`…),不要写 `get_node("../../...")` 相对路径。
-- **场景引用用 `@export var xxx: PackedScene` 在编辑器里绑定**(重命名/移动场景由 Godot 按
-  `uid://` 自动维护引用),禁止散落 `preload("res://...")` 路径字符串(原 `Scenes` 注册表已移除)。
+- 场景引用用 `@export var xxx: PackedScene` 在编辑器里绑定(重命名/移动场景由 Godot 按
+  `uid://` 自动维护引用),禁止散落 `preload("res://...")` 路径字符串。
 
 ### 模块系统(`scripts/modules/`)
 
 - 飞船功能是 `Module`/`Module3D` 节点,安装进 `ModulesManager`
   (`install_module()` / `install_module_3d()`),通常在 `PlayerShip._ready` 中完成。
-- 基类在 `_enter_tree` 缓存 `modules_manager` 与 `root`(飞船)——不要在 `_ready` 里重复解析。
-- 缺依赖的标准处理:`Log.log_missing_component(self, "x")` 然后 `queue_free()`。
-  缺失兄弟模块时绝不能硬崩溃。
-- 新增模块 = `scripts/modules/` 下建脚本 + `scenes/modules/` 下建场景;消费方用
-  `@export var xxx: PackedScene` 在编辑器里绑定。
+- 基类在 `_enter_tree` 缓存 `modules_manager` 与 `root`(飞船),不要在 `_ready` 里重复解析。
+- 缺依赖标准处理:`Log.log_missing_component(self, "x")` 然后 `queue_free()`,绝不硬崩溃。
+- 新增模块 = `scripts/modules/` 下建脚本 + `scenes/modules/` 下建场景;消费方用 `@export` 在编辑器绑定。
 
 ### 组件与战斗
 
-- `HealthComponent`(Area3D hurtbox)持有血量;载具对外暴露 `hit(damage)` /
-  `get_team_id()` / `get_health_component()` 作为战斗接口。伤害流向:
-  `Bullet` → `HealthComponent.take_damage()` → `changed` 信号 → UI。
-- 阵营:`TeamID` 枚举(PLAYER/NEUTRAL/ENEMY)+ 物理层 9/10/11(hurtbox)。
-  投射物在 `Bullet.setup()` 中按 `team_id` 计算 `collision_mask`——友军伤害规则集中在那里,
-  不要在别处硬编码掩码。
-- 投射物继承 `Bullet`(`scripts/bullet/base/bullet_base.gd`):使用链式
+- 载具战斗接口:`hit(damage)` / `get_team_id()` / `get_health_component()`;伤害流向
+  `Bullet → HealthComponent.take_damage() → changed 信号 → UI`。
+- 阵营:`TeamID` 枚举(PLAYER/NEUTRAL/ENEMY)+ 物理层 9/10/11(hurtbox)。投射物在 `Bullet.setup()`
+  中按 `team_id` 计算 `collision_mask`——友军伤害规则集中在那里,不要在别处硬编码掩码。
+- 投射物继承 `Bullet`(`scripts/bullet/base/bullet_base.gd`):链式
   `setup(pos, dir, team, shooter).set_damage().set_speed()` API。保留双命中通道
-  (逐帧射线步进 + `area_entered`)和寿命 `Timer`——它们防止高速穿透和子弹泄漏。
+  (逐帧射线步进 + `area_entered`)和寿命 `Timer`,防止高速穿透和子弹泄漏。
 - Buff:在 `scripts/buff/buff_<id>.gd` 新建继承 `Buff` 的脚本;图标放
   `textures/icon/icon_buff_<id>.png`;通过 `BuffManager.apply_buff_by_name()` 应用。
 
 ### AI(`scripts/ai/`)
 
-- 状态是 `StateMachine` 的子节点;用 `transition_to(index)` 切换。
+- 状态是 `StateMachine` 的子节点,用 `transition_to(index)` 切换。
   **场景树中状态的顺序就是 index**——不要随意调整子节点顺序。
 - 新行为:继承 `State`,实现 `enter()`/`exit()`/`physics_update()`。
   机动动作优先用 `MoveSM` 的公共原语(`rotate_towards`、`move_forward`、`set_target_speed`)。
@@ -79,15 +69,14 @@
   从 `HUDFarManager.nose_pos_2d` / `mouse_pos` 读取数据。
 - **特效不直接改 `position`**:只写 `meta` 里的独立 offset 通道(`hud_flow_offset` / `hud_shake_offset`),
   由 `HUDManager` 统一合成 `position = 基准 + offset`,避免特效互踩布局。
-- **特效的 boost 状态监听 `SignalBus.on_player_boost`**,不要读父节点属性(`get_parent().is_boosting` 已废弃)。
+- 特效的 boost 状态监听 `SignalBus.on_player_boost`,不要读父节点属性。
 - **每个目标 spawn 的目标 UI**(选择框/血条)在 `setup()` 里连 `target.tree_exited → queue_free` 自毁,
   不要靠 `_process` 轮询(离屏停 process 会泄漏)。
 
 ## 代码风格
 
-- GDScript,Godot 4.7 语法。缩进用 **Tab**(Godot 默认);部分旧文件用空格——跟随所编辑文件的现状。
-- 命名:`class_name` 用 PascalCase;文件/函数/变量用 snake_case;私有成员加 `_` 前缀
-  (`_locked_target`、`_is_destroyed`);信号用 `on_*`。
+- GDScript,Godot 4.7。缩进用 **Tab**(Godot 默认);部分旧文件用空格——跟随所编辑文件的现状。
+- 命名:`class_name` 用 PascalCase;文件/函数/变量用 snake_case;私有成员加 `_` 前缀;信号用 `on_*`。
 - UI 监听的可观察数值用 `BoolStat` / `IntStat` / `FloatStat` 资源(set 时发信号),不要轮询。
 - 返回 `self` 的链式 setup 方法是首选配置风格。
 - 诊断信息用 `Log.log_error` / `Log.log_missing_component` / `Log.log_info`,不要裸 `print`。
