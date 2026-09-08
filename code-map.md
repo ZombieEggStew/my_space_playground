@@ -131,7 +131,7 @@ test-1/
 | `module_component/laser_gun_hud_system.gd` | `LaserGunHudSystem` | 机炮 HUD:注册 crosshair_3 与死区指示器 |
 | `module_screen.gd` / `module_test.gd` | — | 空壳/占位 |
 
-**基类**:`base/module.gd`(`Module extends Node3D`,`_enter_tree` 兜底缓存 `modules_manager`/`root`/`ship_bus`,正常由 install 显式注入)、`base/module_engine.gd`、`base/module_booster.gd`(链式子模块 `_enter_tree` 兜底从父模块取 `modules_manager`/`root`/`ship_bus`)、`base/module_weapon.gd`(bullet_speed + `on_bullet_speed_change`)、`base/module_UI.gd`、`base/module_component.gd`。
+**基类**:`base/module.gd`(`Module extends Node3D`,`_enter_tree` 兜底缓存 `modules_manager`/`root`/`ship_bus`,正常由 install 显式注入;决策 #32 起含 `watch_modules(types)` 辅助——声明关心的模块类型,装卸事件触发自动调子类覆写的 `_resolve_module_refs()` 重取引用,`_exit_tree` 自动断连)、`base/module_engine.gd`、`base/module_booster.gd`(链式子模块 `_enter_tree` 兜底从父模块取 `modules_manager`/`root`/`ship_bus`)、`base/module_weapon.gd`(bullet_speed + `on_bullet_speed_change`)、`base/module_UI.gd`、`base/module_component.gd`。
 
 ### 4.2 组件(`scripts/component/`)
 

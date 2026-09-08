@@ -37,11 +37,14 @@ func _ready() -> void:
 	_base_cam_pivot_offset = cam_pivot.position
 	_base_cam_pivot_rotation = cam_pivot.rotation
 
-	move_controller = modules_manager.get_move_module()
+	# 决策 #32:move 装卸事件驱动重取(move 缺失时 _physics_process 守卫,不崩)
+	watch_modules([MoveControllerModule])
+	_resolve_module_refs()
 
 	if move_controller == null:
 		Log.log_missing_component(self,"move controller")
 		queue_free()
+		return
 
 	# 初始化抖动器
 	shaker = CameraShaker.new()
@@ -49,6 +52,10 @@ func _ready() -> void:
 	shaker.setup(cam_main)
 
 	cam_main.current = true
+
+## 决策 #32:move 装卸事件触发时重取引用(幂等;move 卸载 → null,_physics_process 跳过)。
+func _resolve_module_refs() -> void:
+	move_controller = modules_manager.get_move_module() if modules_manager else null
 
 func _on_lock_target(_target : AbleToBeLocked) -> void:
 	_lock_target = _target
@@ -80,6 +87,9 @@ func _handle_mouse_move(event: InputEventMouseMotion) -> void:
 
 
 func _physics_process(_delta: float) -> void:
+	# move 卸载后跳过(决策 #32:引用事件驱动,缺失即降级,不硬崩)
+	if move_controller == null:
+		return
 	var rotation_speed = move_controller.get_rotation_speed()
 
 	if is_cam_move:

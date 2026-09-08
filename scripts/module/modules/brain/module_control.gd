@@ -11,14 +11,20 @@ var _booster: BoosterModule
 var _laser: LaserModule
 
 func _ready() -> void:
-	_move = modules_manager.get_move_module() if modules_manager else null
+	watch_modules([MoveControllerModule, LaserModule])
+	_resolve_module_refs()
 	if _move == null:
 		Log.log_missing_component(self, "move module")
 		queue_free()
 		return
-	_booster = _move.get_booster_module()
-	_laser = modules_manager.get_laser_module() if modules_manager else null
 	# laser/booster 缺失 → 对应命令不发(降级不硬崩)
+
+## 决策 #32:move/laser 装卸事件触发时重取(重装立即生效,无需重启);
+## booster 是 move 的链式子模块(不经 install_module,无独立装卸信号),随 move 一起解析。
+func _resolve_module_refs() -> void:
+	_move = modules_manager.get_move_module() if modules_manager else null
+	_booster = _move.get_booster_module() if _move else null
+	_laser = modules_manager.get_laser_module() if modules_manager else null
 
 func _physics_process(_delta: float) -> void:
 	if _move == null:

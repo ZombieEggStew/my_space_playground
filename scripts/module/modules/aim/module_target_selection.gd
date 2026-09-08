@@ -27,13 +27,10 @@ func _ready() -> void:
 	# 决策 #27:hover 由本模块(selection)自判;无 radar 时 _radar_view 为 null → 降级。
 	# 目标死亡/离开场景树时清掉悬挂引用(防 _process 访问已释放目标)。
 	SignalBus.on_lockable_target_died.connect(_on_target_died)
-	_mechanics = modules_manager.get_aim_mechanics_module() if modules_manager else null
-	# 方案 A:radar_view 一次性解析 + 订阅雷达装卸事件,替代 _update_hover 每帧 get_radar_view
-	# (radar 先于 selection 安装,此刻可拉到;中途装卸经信号自动重取/降级)。
-	if modules_manager:
-		_resolve_radar_view()
-		modules_manager.module_installed.connect(_on_module_installed)
-		modules_manager.module_uninstalled.connect(_on_module_uninstalled)
+	# 决策 #32:radar_view + mechanics 引用统一事件驱动(radar 先于 selection 安装,此刻可拉到;
+	# 中途装卸经 watch_modules 自动重取/降级,不再手写 _on_module_installed)。
+	watch_modules([RadarModule, AimMechanicsModule])
+	_resolve_module_refs()
 
 
 func _process(_delta: float) -> void:
@@ -56,16 +53,13 @@ func _update_hover() -> void:
 func _resolve_radar_view() -> void:
 	_radar_view = modules_manager.get_radar_view() if modules_manager else null
 
-
-func _on_module_installed(module: Module) -> void:
-	if module is RadarModule:
-		_resolve_radar_view()
-
-
-func _on_module_uninstalled(module: Module) -> void:
-	if module is RadarModule:
-		_radar_view = null
-		# radar 卸载 → 无 rects 数据源 → 立即清 hover,防 _process 访问已释放对象
+## 决策 #32:radar_view/mechanics 装卸事件触发时重取(幂等)。
+## radar 缺失 → _radar_view=null → 立即清 hover(无 rects 数据源,防 _process 访问已释放对象);
+## mechanics 缺失 → _mechanics=null → 预测降级(_on_target_died / 锁定推送处有 null 守卫)。
+func _resolve_module_refs() -> void:
+	_mechanics = modules_manager.get_aim_mechanics_module() if modules_manager else null
+	_resolve_radar_view()
+	if _radar_view == null:
 		_set_hovered(null)
 
 

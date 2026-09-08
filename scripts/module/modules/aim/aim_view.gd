@@ -37,8 +37,7 @@ var _bullet_speed := 0.0
 
 func _ready() -> void:
 	_parent_module = get_parent() as Module
-	if _parent_module != null and _parent_module.root != null:
-		cam_main = _parent_module.modules_manager.get_camera_module().get_main_camera()
+	_refresh_camera()
 	init_lock_reticle()
 	init_lead_indicator()
 	# 面板注册延后一帧:register_hud(GROUP) 会 reparent 节点,不能在模块 add_child 的
@@ -105,6 +104,8 @@ func _on_module_installed(module: Module) -> void:
 		_bind_laser(module as LaserModule)
 	elif module is AimMechanicsModule:
 		_mechanics = module as AimMechanicsModule
+	elif module is ThirdCameraModule:
+		_refresh_camera()
 
 
 func _on_module_uninstalled(module: Module) -> void:
@@ -112,6 +113,15 @@ func _on_module_uninstalled(module: Module) -> void:
 		_unbind_laser()
 	elif module is AimMechanicsModule:
 		_mechanics = null
+	elif module is ThirdCameraModule:
+		_refresh_camera()
+
+
+## 决策 #32:camera 装卸事件驱动刷新(重装立即生效;缺相机 → cam_main=null,_process 整体跳过)。
+func _refresh_camera() -> void:
+	var mm: ModulesManager = _parent_module.modules_manager if _parent_module else null
+	var cam_mod: ThirdCameraModule = mm.get_camera_module() if mm else null
+	cam_main = cam_mod.get_main_camera() if cam_mod else null
 
 
 ## 绑定激光:缓存弹速 + 订阅弹速变化(幂等:同一实例不重复绑)。

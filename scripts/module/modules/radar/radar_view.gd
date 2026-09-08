@@ -35,24 +35,44 @@ func _enter_tree() -> void:
 	if _radar_module:
 		_root = _radar_module.root
 		_ship_bus = _radar_module.ship_bus
-		# 决策 #30:相机走 camera 模块,不再用 _root.has_method("get_main_camera") 判断"是否玩家";
-		# 敌人复用 radar 无 camera 模块 → null,呈现层禁用。
-		_cam_mod = _radar_module.modules_manager.get_camera_module() if _radar_module.modules_manager else null
 
 func _ready() -> void:
-	# 只有装了 camera 模块的船(玩家)需要 2D 呈现;敌人复用 radar 无 camera → 禁用
-	if _cam_mod == null:
-		set_process(false)
-		return
-	_cam = _cam_mod.get_main_camera()
-	if _cam == null:
-		set_process(false)
-		return
+	# 总连接(相机有无都连;相机缺失时 _process/_on_target_spawned 内部守卫,
+	# 敌人复用 radar 无 camera 模块 → 呈现层自禁用,不影响雷达身体)。
 	SignalBus.on_lockable_target_spawned.connect(_on_target_spawned)
 	SignalBus.on_lockable_target_died.connect(_on_target_died)
 	if _ship_bus:
 		_ship_bus.on_target_hovered.connect(_on_target_hovered)
 		_ship_bus.on_target_unhovered.connect(_on_target_unhovered)
+	# 决策 #32:camera 装卸事件驱动刷新(重装立即恢复呈现,不再一次性解析)
+	if _radar_module and _radar_module.modules_manager:
+		_radar_module.modules_manager.module_installed.connect(_on_module_installed)
+		_radar_module.modules_manager.module_uninstalled.connect(_on_module_uninstalled)
+	_refresh_camera()
+
+func _on_module_installed(module: Module) -> void:
+	if module is ThirdCameraModule:
+		_refresh_camera()
+
+func _on_module_uninstalled(module: Module) -> void:
+	if module is ThirdCameraModule:
+		_refresh_camera()
+
+## 决策 #32:解析 camera 模块(决策 #30 注册表 getter,null 安全)。
+## 缺失 → 禁用呈现 + 清掉依赖相机的目标簇(幂等);到位 → 恢复呈现。
+func _refresh_camera() -> void:
+	var mm: ModulesManager = _radar_module.modules_manager if _radar_module else null
+	_cam_mod = mm.get_camera_module() if mm else null
+	_cam = _cam_mod.get_main_camera() if _cam_mod else null
+	if _cam == null:
+		for reticle in _reticles.values():
+			if is_instance_valid(reticle):
+				reticle.cleanup()
+		_reticles.clear()
+		_rect_cache.clear()
+		set_process(false)
+	else:
+		set_process(true)
 
 func _on_target_spawned(target: AbleToBeLocked) -> void:
 	if target in _reticles:
@@ -116,8 +136,7 @@ func _on_target_unhovered() -> void:
 		if is_instance_valid(reticle):
 			reticle.set_hovered(false)
 
-## 兜底清理(§4.2-5):断开总线 + 回收全部目标 UI 簇(幂等;用 is_connected 判定,
-## 不再依赖 _root 是否有 get_main_camera——无相机时本就未连接)。
+## 兜底清理(§4.2-5):断开总线 + 回收全部目标 UI 簇(幂等;用 is_connected 判定)。
 func _exit_tree() -> void:
 	if _ship_bus != null and is_instance_valid(_ship_bus):
 		if _ship_bus.on_target_hovered.is_connected(_on_target_hovered):
@@ -128,6 +147,11 @@ func _exit_tree() -> void:
 		SignalBus.on_lockable_target_spawned.disconnect(_on_target_spawned)
 	if SignalBus.on_lockable_target_died.is_connected(_on_target_died):
 		SignalBus.on_lockable_target_died.disconnect(_on_target_died)
+	if _radar_module and _radar_module.modules_manager and is_instance_valid(_radar_module.modules_manager):
+		if _radar_module.modules_manager.module_installed.is_connected(_on_module_installed):
+			_radar_module.modules_manager.module_installed.disconnect(_on_module_installed)
+		if _radar_module.modules_manager.module_uninstalled.is_connected(_on_module_uninstalled):
+			_radar_module.modules_manager.module_uninstalled.disconnect(_on_module_uninstalled)
 	for reticle in _reticles.values():
 		if is_instance_valid(reticle):
 			reticle.cleanup()

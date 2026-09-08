@@ -37,18 +37,26 @@ func _ready() -> void:
 	aim_system.setup(aim_dead_zone_px)
 	set_bullet_speed(default_bullet_speed)
 
-	cam_main = modules_manager.get_camera_module().get_main_camera()
+	# 决策 #32:mechanics/camera 装卸事件驱动重取(重装立即生效)
+	watch_modules([AimMechanicsModule, ThirdCameraModule])
+	_resolve_module_refs()
 
 	if cam_main == null:
 		Log.log_error(self,"Main camera not found in CharacterBody3D.")
 		queue_free()
-	aim_modrule = modules_manager.get_aim_mechanics_module()
+		return
 	if aim_modrule == null:
 		# P5 装配矩阵:缺 aim_mechanics 不硬崩 —— 机炮直射降级(shoot 里回退机头朝向)
 		Log.log_missing_component(self, "aim mechanics module")
-	
+
 	if heat_manager:
 		heat_manager.overheated.connect(_on_overheated)
+
+## 决策 #32:mechanics/camera 装卸事件触发时重取(null 安全;缺 mechanics → 机炮直射降级)。
+func _resolve_module_refs() -> void:
+	var cam_mod: ThirdCameraModule = modules_manager.get_camera_module() if modules_manager else null
+	cam_main = cam_mod.get_main_camera() if cam_mod else null
+	aim_modrule = modules_manager.get_aim_mechanics_module() if modules_manager else null
 
 	
 

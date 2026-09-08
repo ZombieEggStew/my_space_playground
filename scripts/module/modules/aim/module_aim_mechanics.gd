@@ -21,10 +21,18 @@ var aim_ray_length := 5000.0  # 非锁定时使用,预测射击点
 
 
 func _ready() -> void:
-	cam_main = modules_manager.get_camera_module().get_main_camera()
+	# 决策 #32:camera 装卸事件驱动重取(敌人复用无 camera 模块 → null,预测数学照常,
+	# 仅 get_aim_direction_from_crosshair 降级为机头朝向)
+	watch_modules([ThirdCameraModule])
+	_resolve_module_refs()
 	if cam_main == null:
 		Log.log_missing_component(self, "main camera")
 		# 不 queue_free:预测数学不依赖相机,仅 get_aim_direction_from_crosshair 降级
+
+## 决策 #32:camera 装卸事件触发时重取(null 安全,重装立即生效)。
+func _resolve_module_refs() -> void:
+	var cam_mod: ThirdCameraModule = modules_manager.get_camera_module() if modules_manager else null
+	cam_main = cam_mod.get_main_camera() if cam_mod else null
 
 
 ## selection 锁定变化时推入"当前值"(决策 #12:连续量直接方法)。
