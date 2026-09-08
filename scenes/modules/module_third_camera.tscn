@@ -1,6 +1,6 @@
 [gd_scene format=4 uid="uid://bap1uk0wacqru"]
 
-[ext_resource type="Script" uid="uid://b5pkcalcuklvq" path="res://scripts/modules/module_third_camera.gd" id="1_66rgt"]
+[ext_resource type="Script" uid="uid://b5pkcalcuklvq" path="res://scripts/module/modules/camera/module_third_camera.gd" id="1_66rgt"]
 [ext_resource type="Script" uid="uid://djlf0twc8wjom" path="res://scripts/spring_arm_3d.gd" id="2_ibrut"]
 [ext_resource type="Material" uid="uid://dmqmjaurrd0qm" path="res://material/cam_material.tres" id="3_tpxcn"]
 

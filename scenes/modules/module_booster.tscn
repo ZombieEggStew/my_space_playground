@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://b5mnunoxq7tad"]
 
-[ext_resource type="Script" uid="uid://bsm8xp5d2fb1c" path="res://scripts/modules/module_booster.gd" id="1_hwryj"]
+[ext_resource type="Script" uid="uid://bsm8xp5d2fb1c" path="res://scripts/module/modules/booster/module_booster.gd" id="1_hwryj"]
 [ext_resource type="Texture2D" uid="uid://35piuouavkat" path="res://textures/white_1x1px.png" id="2_d6521"]
 
 [sub_resource type="Gradient" id="Gradient_ffmcp"]

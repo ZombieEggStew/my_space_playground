@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://b4wmsv8bsyw60"]
 
-[ext_resource type="Script" uid="uid://twyon1v3vlvv" path="res://scripts/modules/module_move_controller.gd" id="1_kws0a"]
+[ext_resource type="Script" uid="uid://twyon1v3vlvv" path="res://scripts/module/modules/move/module_move_controller.gd" id="1_kws0a"]
 
 [sub_resource type="Curve" id="Curve_lue6l"]
 _data = [Vector2(0.0044998974, 1), 0.0, -1.0119793, 0, 0, Vector2(0.22540398, 0.8802569), -2.1365848, -2.1365848, 0, 0, Vector2(0.44630802, 0.28241515), -0.9872288, -0.9872288, 0, 0, Vector2(1, 0), -0.23150405, 0.0, 0, 0]
