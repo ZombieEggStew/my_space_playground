@@ -18,3 +18,4 @@ func _enter_tree() -> void:
 	if engine_module:
 		modules_manager = engine_module.modules_manager
 		root = engine_module.root
+		ship_bus = engine_module.ship_bus

@@ -29,10 +29,10 @@ var _lock_target: AbleToBeLocked = null
 
 func _ready() -> void:
 
-	SignalBus.on_player_boost.connect(on_player_boost)
-	SignalBus.on_player_look_backward.connect(_handle_look_backward)
-	SignalBus.on_player_look_around.connect(_on_look_around_change)
-	SignalBus.on_player_lock_target.connect(_on_lock_target)
+	ship_bus.on_player_boost.connect(on_player_boost)
+	ship_bus.on_player_look_backward.connect(_handle_look_backward)
+	ship_bus.on_player_look_around.connect(_on_look_around_change)
+	ship_bus.on_player_lock_target.connect(_on_lock_target)
 	GameManager.input_manager.mouse_movtion.connect(_handle_mouse_move)
 	_base_cam_pivot_offset = cam_pivot.position
 	_base_cam_pivot_rotation = cam_pivot.rotation
@@ -55,7 +55,7 @@ func _on_lock_target(_target : AbleToBeLocked) -> void:
 
 func _on_look_around_change(enable: bool) -> void:
 	is_looking_around = enable
-	SignalBus.on_toggle_track_mouse.emit(not enable)
+	ship_bus.on_toggle_track_mouse.emit(not enable)
 	if enable:
 		Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 	else:
@@ -101,7 +101,7 @@ func _physics_process(_delta: float) -> void:
 	
 func _handle_look_backward(enable:bool) -> void:
 	cam_spring_arm.on_look_backward(enable)
-	SignalBus.on_toggle_track_mouse.emit(not enable)
+	ship_bus.on_toggle_track_mouse.emit(not enable)
 func on_player_boost(enable: bool) -> void:
 	cam_spring_arm.on_boosting(enable)
 	boost_effect.emitting = enable

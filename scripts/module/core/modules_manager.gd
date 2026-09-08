@@ -6,6 +6,7 @@ var movement_module: MoveControllerModule
 var third_camera_module: ThirdCameraModule
 var player_aim_module: BasicAimModule
 var rader_module: RadarModule
+var laser_module: LaserModule
 
 ## 安装模块:显式注入 root/modules_manager(不再靠 _enter_tree 猜树结构,见 .memo 讨论)。
 ## [param module_scene] 实例化后立即注入,再挂到树上;注入失败(父不是 CharacterBody3D)也照常挂载,
@@ -26,14 +27,19 @@ func install_module(module_scene:PackedScene) -> Module:
 	if module is ThirdCameraModule:
 		third_camera_module = module
 
+	if module is LaserModule:
+		laser_module = module
+
 	add_child(module)
 	return module
 
-## 注入基类依赖:模块脚本里 `root`/`modules_manager` 在 _enter_tree 前就被赋值。
+## 注入基类依赖:模块脚本里 `root`/`modules_manager`/`ship_bus` 在 _enter_tree 前就被赋值。
 ## 模块统一继承 Module(Node3D),故参数不写死类型,靠字段注入(兼容 booster 等链式子模块)。
 func _inject_module_deps(module) -> void:
 	module.modules_manager = self
 	module.root = get_parent() as CharacterBody3D
+	var player := get_parent() as PlayerShip
+	module.ship_bus = player.ship_bus if player else null
 
 func get_camera_module() -> ThirdCameraModule:
 	return third_camera_module
@@ -46,6 +52,15 @@ func get_move_module() -> EngineModule:
 
 func get_radar_module() -> RadarModule:
 	return rader_module
+
+func get_laser_module() -> LaserModule:
+	return laser_module
+
+## 决策 #27:aim(selection)拉取 hover 几何数据的入口(radar 模块场景内子节点)。
+func get_radar_view() -> RadarView:
+	if rader_module == null or not is_instance_valid(rader_module):
+		return null
+	return rader_module.get_node_or_null("radar_view") as RadarView
 
 ## 卸载模块(幂等,§4.2-5):
 ## 1. 调模块的 on_uninstall() 钩子清理 reparent 出去的 2D 节点 / 手动断连
@@ -66,4 +81,6 @@ func uninstall_module(module: Module) -> void:
 		movement_module = null
 	if module == third_camera_module:
 		third_camera_module = null
+	if module == laser_module:
+		laser_module = null
 	module.queue_free()

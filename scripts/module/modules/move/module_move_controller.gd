@@ -37,12 +37,27 @@ var is_ship_rolling := true
 
 var model_node: Node3D
 
+# --- 归一化命令(决策 #13:由 ControlModule / AIModule 写入;本模块变纯执行器,不读输入) ---
+var _throttle := 0.0        # -1..1:1=前进, -1=刹车, 0=滑行
+var _steer := Vector2.ZERO  # 归一化转向(yaw, pitch)
+var _roll_input := 0.0      # -1..1
+
+func set_throttle(t: float) -> void:
+	_throttle = clampf(t, -1.0, 1.0)
+
+func set_steer(steer: Vector2) -> void:
+	_steer.x = clampf(steer.x, -1.0, 1.0)
+	_steer.y = clampf(steer.y, -1.0, 1.0)
+
+func set_roll(roll: float) -> void:
+	_roll_input = clampf(roll, -1.0, 1.0)
+
 
 func _ready() -> void:
 
-	SignalBus.on_toggle_track_mouse.connect(_on_track_mouse_change)
+	ship_bus.on_toggle_track_mouse.connect(_on_track_mouse_change)
 
-	SignalBus.on_toggle_engine.connect(_on_engine_toggle)
+	ship_bus.on_toggle_engine.connect(_on_engine_toggle)
 
 	model_node = root.get_model_node()
 	if model_node == null:
@@ -64,9 +79,6 @@ func _on_engine_toggle() -> void:
 @export var turn_curve: Curve
 
 func handle_move(delta: float) -> void:
-	var is_forward_pressed := Input.is_action_pressed("forward")
-	var is_backward_pressed := Input.is_action_pressed("backward")
-	
 	var is_boosting :bool = booster_module.is_boosting if booster_module else false
 	var direction := -root.global_transform.basis.z.normalized()
 
@@ -78,9 +90,9 @@ func handle_move(delta: float) -> void:
 		var target_max_speed := boost_speed if is_boosting else max_speed
 		var accel_rate := boost_accel if is_boosting else forward_accel as float
 
-		if is_backward_pressed:
+		if _throttle < 0.0:
 			forward_speed = move_toward(forward_speed, 0.0, forward_brake * delta)
-		elif is_forward_pressed:
+		elif _throttle > 0.0:
 			forward_speed = move_toward(forward_speed, target_max_speed, accel_rate * delta)
 		elif is_boosting and forward_speed > 0.0:
 			forward_speed = move_toward(forward_speed, boost_speed, boost_accel * delta)
@@ -113,10 +125,9 @@ func handle_move(delta: float) -> void:
 	_handle_particle(is_boosting)
 
 func _handle_rotation(delta: float) -> void:
-	var roll_input := Input.get_axis("left", "right")
-	# 飞船正面朝向改为 -Z
-	var target_roll_rate := roll_input * roll_speed
-	var roll_change_rate := roll_accel if abs(roll_input) > 0.001 else roll_decel
+	# 滚转输入已归一化为命令(_roll_input,-1..1)
+	var target_roll_rate := _roll_input * roll_speed
+	var roll_change_rate := roll_accel if abs(_roll_input) > 0.001 else roll_decel
 	roll_rate = move_toward(roll_rate, target_roll_rate, roll_change_rate * delta)
 
 	if abs(roll_rate) > 0.0001:
@@ -136,40 +147,17 @@ func _handle_particle(is_boosting : bool) -> void:
 		else:
 			particle_speed.emitting = false
 
-func track_mouse(delta: float) -> void:
-	# if Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
-	# 	target_pitch = 0.0
-	# 	target_yaw = 0.0
-	# 	return
-	
+## 应用归一化转向命令(auto_track 关闭时忽略,决策 #13;鼠标死区/归一化已在 ControlModule)
+func _apply_steer() -> void:
 	if auto_track_enabled:
-		var viewport_size = get_viewport().get_visible_rect().size
-		var center = viewport_size * 0.5
-		
-		var mouse_pos = get_viewport().get_mouse_position()
-
-		var offset = mouse_pos - center
-
-		# 死区：鼠标接近中心时不转，避免抖动
-		if offset.length() <= PlayerInfo.dead_zone_px:
-			var t_stop = 1.0 - exp(-smooth_factor * delta)
-			_yaw_speed = lerp(_yaw_speed, 0.0, t_stop)
-			_pitch_speed = lerp(_pitch_speed, 0.0, t_stop)
-		else:
-			# 归一化到 [-1, 1]
-			var nx = clamp(offset.x / max(center.x, 1.0), -1.0, 1.0)
-			var ny = clamp(offset.y / max(center.y, 1.0), -1.0, 1.0)
-
-			target_yaw = -nx * max_yaw_speed
-			target_pitch = -ny * max_pitch_speed
-
-
+		target_yaw = _steer.x * max_yaw_speed
+		target_pitch = _steer.y * max_pitch_speed
 	else:
 		target_pitch = 0.0
 		target_yaw = 0.0
 
 func _physics_process(delta: float) -> void:
-	track_mouse(delta)
+	_apply_steer()
 	handle_move(delta)
 
 	var t := 1.0 - exp(-smooth_factor * delta)

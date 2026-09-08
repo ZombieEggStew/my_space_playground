@@ -5,6 +5,10 @@ var booster_module: BoosterModule
 var is_engine_on := true
 
 
+func get_booster_module() -> BoosterModule:
+	return booster_module
+
+
 func install_booster_module(module_scene: PackedScene) -> void:
 	var module = module_scene.instantiate()
 	if module is BoosterModule:

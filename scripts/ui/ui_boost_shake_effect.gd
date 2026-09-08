@@ -9,11 +9,16 @@ var _groups: Array[Control] = []
 # 由 HUDManager 统一合成。
 var _offsets: Dictionary = {}
 
-# boost 状态:直接监听 SignalBus.on_player_boost,不再读父节点(消除硬父节点耦合)
+# boost 状态:经 on_player_registered 连玩家船 ShipBus(②),不再读全局/父节点
 var _is_boosting := false
 
 func _ready() -> void:
-	SignalBus.on_player_boost.connect(_on_player_boost)
+	SignalBus.on_player_registered.connect(_on_player_registered)
+
+func _on_player_registered(player: PlayerShip) -> void:
+	if player and player.ship_bus:
+		if not player.ship_bus.on_player_boost.is_connected(_on_player_boost):
+			player.ship_bus.on_player_boost.connect(_on_player_boost)
 
 func _on_player_boost(enable: bool) -> void:
 	_is_boosting = enable

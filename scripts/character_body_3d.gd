@@ -24,6 +24,7 @@ var cam_pivot: Node3D
 @export var scene_module_laser_gun:PackedScene
 @export var scene_module_predict_aim:PackedScene
 @export var scene_module_missile_launcher:PackedScene
+@export var scene_module_control:PackedScene
 
 @export_group("")
 @export var model_node: Node3D	
@@ -36,6 +37,10 @@ var fov_smooth := 8.0         # FOV 平滑插值速度
 
 
 @onready var modules_manager: ModulesManager = $ModulesManager
+
+## ② 飞船级事件总线(见 .memo/.CURRENT.md §2.2);模块经 ModulesManager 注入,
+## 船外节点(InputManager/HUD 特效)经 on_player_registered 取此引用。
+@onready var ship_bus: ShipBus = $ShipBus
 
 func _ready() -> void:
 	
@@ -53,6 +58,9 @@ func _ready() -> void:
 
 	var laser := modules_manager.install_module(scene_module_laser_gun)
 	modules_manager.install_module(scene_module_predict_aim).init_module(laser)
+
+	# P3:玩家大脑(键鼠 → 归一化命令);依赖 move/booster/laser,须在其后安装
+	modules_manager.install_module(scene_module_control)
 
 	attachment_manager.attach_to(Slot.SLOT_1, scene_module_missile_launcher)
 

@@ -8,9 +8,9 @@
 [ext_resource type="Script" uid="uid://buhdvs7dw32k3" path="res://scripts/module/modules/laser/laser_gun_hud_system.gd" id="4_pcc1v"]
 [ext_resource type="Texture2D" uid="uid://c8bhpxdqfp07i" path="res://textures/white_100x100px.png" id="5_67tsh"]
 [ext_resource type="PackedScene" uid="uid://bxxkpontk1uym" path="res://scenes/hud/dead_zone_indicator.tscn" id="5_lblfk"]
-[ext_resource type="Script" uid="uid://cnjyaqdbs02tj" path="res://scripts/hud/hud_far_anchor.gd" id="9_anchor"]
 [ext_resource type="AudioStream" uid="uid://d68riyvl2b67" path="res://audio/power_down.wav" id="6_rg41u"]
 [ext_resource type="Material" uid="uid://b2ypfyebn18tb" path="res://material/color/white.tres" id="8_2u2c3"]
+[ext_resource type="Script" uid="uid://cnjyaqdbs02tj" path="res://scripts/hud/hud_far_anchor.gd" id="9_anchor"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_67tsh"]
 content_margin_left = 3.0

@@ -1,4 +1,5 @@
 extends WeaponModule
+class_name LaserModule
 
 var cam_main: Camera3D
 
@@ -31,7 +32,6 @@ var crosshair_3: HUD_GunReticle #绿色 十字准心
 const aim_dead_zone_px: float = 64.0
 
 func _ready() -> void:
-	SignalBus.on_player_shoot.connect(handle_shooting)
 	shoot_timer.timeout.connect(_on_shoot_timer_timeout)
 
 	aim_system.setup(aim_dead_zone_px)
@@ -96,8 +96,14 @@ func spawn_bullet( pos: Vector3, dir: Vector3) -> void:
 	bullet.setup(pos, dir, TeamID.PLAYER , root).set_damage(_damage).set_speed(bullet_speed)
 
 
-func handle_shooting(enable: bool) -> void:
-	if enable:
+## 决策 #13/P3:连续量命令,由 ControlModule / AIModule 每帧调用。
+## 必须做变化检测:仅在射击状态翻转时 shoot()+启停 Timer,否则每帧重置 Timer 且每帧发弹
+## (修复:射速回归 wait_time 控制)。
+func set_firing(firing: bool) -> void:
+	if firing == is_shooting:
+		return
+	is_shooting = firing
+	if firing:
 		if heat_manager and heat_manager.is_overheated:
 			return
 		shoot()

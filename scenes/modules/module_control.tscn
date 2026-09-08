@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://dd3h52upglosw"]
+
+[ext_resource type="Script" uid="uid://cvt2fubksd7b1" path="res://scripts/module/modules/brain/module_control.gd" id="1_ameji"]
+
+[node name="ModuleControl" type="Node3D" unique_id=1670988015]
+script = ExtResource("1_ameji")

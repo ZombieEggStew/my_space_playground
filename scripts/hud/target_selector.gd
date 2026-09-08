@@ -1,90 +1,53 @@
 extends Node
 class_name HUD_TargetSelector
 
-## 白色方形目标选择框(准心1):框住屏幕中每个可见的可锁定目标。
-##
-## 每目标一个实例,由 [code]BasicAimModule[/code](module_player_aim) 生成;
-## 框大小随玩家与目标的距离变化(越远越小,有下限)。鼠标悬停进框内发
-## [signal mouse_entered],移出发 [signal mouse_exited],供锁定模块判定悬停目标。
+## 白色方形目标选择框(准心1):纯显示,由 radar_view(方案 A + 决策 #27)喂入屏幕数据。
 ##
 ## 职责边界:
-## - 只负责"目标选择框"的显示与悬停事件,不含锁定判定(判定在 [code]BasicAimModule[/code])。
-## - 数据来源:目标的 [code]screen_entered/screen_exited[/code]、玩家位置、主相机。
-## - 对外接口:[method setup]、[method set_active]、[method get_size_factor]。
+## - 只负责"目标选择框"的显示与高亮外观;不含投影/尺寸计算(在 radar_view)与
+##   悬停检测(在 aim/selection,决策 #27)。
+## - 数据来源:[method set_target_pos](radar_view 每帧投影喂入)、
+##   [method set_hovered](radar_view 订阅 ② hover 事件后转发)。
 ## - 注册方式:由 [code]HUDManager.register_hud[/code] 读取本脚本的
 ##   [member hud_slot](STATIC)自动挂到静态层。
-
-signal mouse_entered(target: AbleToBeLocked)
-signal mouse_exited()
 
 ## HUD 归属:静态层(由 HUDManager.register_hud 读取)
 @export var hud_slot: HudElement.Slot = HudElement.Slot.STATIC
 
-@export var base_size := Vector2(64, 64)
-@export var size_scale_numerator := 100.0
-@export var min_size_factor := 0.5
-
 @export var rect := NinePatchRect
-
-var _size_factor := 1.0
 
 var target: AbleToBeLocked
 
-var player: PlayerShip
-var cam: Camera3D
+var _base_modulate := Color(1, 1, 1, 0.5137)
+const HOVERED_MODULATE := Color(0.6, 1.0, 0.6, 0.9)
 
-func setup(_target: AbleToBeLocked, _player:PlayerShip, _cam:Camera3D) -> void:
-	self.target = _target
-	self.player = _player
-	self.cam = _cam
-	target.screen_entered.connect(_on_enter_screen)
-	target.screen_exited.connect(_on_exit_screen)
-	# Bug 4:目标销毁/离开场景树时立即自毁(不依赖 _process 轮询,避免离屏泄漏)
+func setup(_target: AbleToBeLocked) -> void:
+	target = _target
+	if rect:
+		_base_modulate = rect.modulate
+	# 目标销毁/离开场景树时立即自毁(双保险,queue_free 幂等)
 	if not target.tree_exited.is_connected(queue_free):
 		target.tree_exited.connect(queue_free)
-
-func _ready() -> void:
 	reset()
 
-func _on_enter_screen():
-	set_process(true)
-	
-func _on_exit_screen():
-	set_process(false)
-	set_active(false)
-
-
-func _process(_delta):
-	update_visuals()
-
-
 func reset() -> void:
-	set_process(false)
-	rect.visible = false
-	rect.size = base_size
-	_size_factor = 1.0
-	rect.position = get_viewport().get_visible_rect().size / 2.0 - rect.size / 2.0
+	if rect:
+		rect.visible = false
+		rect.modulate = _base_modulate
 
-func set_active(t:bool) -> void:
-	rect.visible = t
-
-
-func update_visuals() -> void:
-	if not is_instance_valid(target): 
-		queue_free()
+## radar_view 每帧喂入:选择框中心屏幕坐标 + 尺寸(方案 A,单一数据源)
+func set_target_pos(center: Vector2, size: Vector2) -> void:
+	if rect == null:
 		return
-	set_active(true)
-	var safe_distance := max(target.global_position.distance_to(player.global_position), 0.001) as float
-	_size_factor = max(size_scale_numerator / safe_distance, min_size_factor)
-	rect.size = base_size * _size_factor
-	rect.position = cam.unproject_position(target.global_position) - rect.size / 2.0
+	rect.size = size
+	rect.position = center - size / 2.0
+	rect.visible = true
 
+func set_active(visible: bool) -> void:
+	if rect:
+		rect.visible = visible
 
-func get_size_factor() -> float:
-	return _size_factor
-
-func _on_crosshair_1_mouse_exited() -> void:
-	mouse_exited.emit()
-
-func _on_crosshair_1_mouse_entered() -> void:
-	mouse_entered.emit(target)
+func set_hovered(hovered: bool) -> void:
+	if rect == null:
+		return
+	rect.modulate = HOVERED_MODULATE if hovered else _base_modulate

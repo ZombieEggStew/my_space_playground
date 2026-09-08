@@ -8,7 +8,12 @@ class_name MissileLauncherModule
 var _locked_target: AbleToBeLocked = null
 
 func _ready():
-	SignalBus.on_player_lock_target.connect(_on_player_lock_target)
+	SignalBus.on_player_registered.connect(_on_player_registered)
+
+func _on_player_registered(player: PlayerShip) -> void:
+	if player.ship_bus:
+		if not player.ship_bus.on_player_lock_target.is_connected(_on_player_lock_target):
+			player.ship_bus.on_player_lock_target.connect(_on_player_lock_target)
 
 func active() -> void:
 	_launch_missile()
