@@ -1,40 +1,4 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 #TO DO: area改为healthcomponent，动态分配layer和teamid
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 extends Module
 class_name ShieldModule
@@ -56,7 +20,7 @@ var is_shield_active := true
 @export var ui_container: ShieldUIContainer
 
 func _ready():
-	team_id = _root.get_team_id()
+	team_id = root.get_team_id()
 	shield_stat = FloatStat.new(max_shield_value, max_shield_value)
 	if ui_container:
 		ui_container.bind(shield_stat)
