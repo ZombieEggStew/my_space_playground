@@ -12,7 +12,7 @@ func _ready():
 
 func _on_player_registered(_player:PlayerShip):
 	player = _player
-	cam = player.get_main_camera()
+	cam = player.get_module_manager().get_camera_module().get_main_camera()
 
 func _process(_delta):
 	mouse_pos = get_viewport().get_mouse_position()

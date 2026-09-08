@@ -59,7 +59,7 @@ func _ready() -> void:
 	modules_manager.install_module(scene_module_aim_mechanics)
 	modules_manager.install_module(scene_module_target_selection)
 
-	var laser := modules_manager.install_module(scene_module_laser_gun)
+	modules_manager.install_module(scene_module_laser_gun)
 
 	# P3:玩家大脑(键鼠 → 归一化命令);依赖 move/booster/laser,须在其后安装
 	modules_manager.install_module(scene_module_control)
@@ -71,9 +71,6 @@ func _ready() -> void:
 
 func take_damage(damage: int) -> void:
 	health.take_damage(damage)
-
-func get_main_camera() -> Camera3D:
-	return modules_manager.get_camera_module().get_main_camera()
 
 func get_model_node() -> Node3D:
 	return model_node

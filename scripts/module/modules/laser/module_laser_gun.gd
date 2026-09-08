@@ -37,7 +37,7 @@ func _ready() -> void:
 	aim_system.setup(aim_dead_zone_px)
 	set_bullet_speed(default_bullet_speed)
 
-	cam_main = root.get_main_camera()
+	cam_main = modules_manager.get_camera_module().get_main_camera()
 
 	if cam_main == null:
 		Log.log_error(self,"Main camera not found in CharacterBody3D.")

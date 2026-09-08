@@ -114,15 +114,15 @@ test-1/
 
 | 模块 | class_name | 职责 |
 |---|---|---|
-| `modules_manager.gd` | `ModulesManager` | 模块容器:`install_module` 实例化并注入依赖、按类型缓存;`get_camera_module / get_aim_mechanics_module / get_target_selection_module / get_move_module / get_radar_module / get_radar_view`(决策 #27)查询 |
+| `modules_manager.gd` | `ModulesManager` | 模块容器(决策 #30 注册表化):`_modules: Array[Module]` 按实例注册——`install_module` 注入依赖 + append,`uninstall_module` 擦除(自动,无需逐类型清槽);广播 `module_installed/module_uninstalled` 信号(方案 A,装卸事件驱动,替代消费方每帧 `get_*()` 轮询);类型化 getter 保留签名、内部 `is_instance_of` 扫描(`get_camera_module / get_aim_mechanics_module / get_target_selection_module / get_move_module(基类查子类)/ get_radar_module / get_laser_module`)+ 通用 `get_module(type)`;`get_radar_view`(决策 #27)特例返回 radar 模块子节点 |
 | `core/ship_bus.gd` | `ShipBus` | ② 船级事件总线(PlayerShip 子节点):只声明 10 条信号、零逻辑零状态(见 §6.1);模块经 install 注入,船外节点经 `on_player_registered` 取 `player.ship_bus` |
 | `module_move_controller.gd` | `MoveControllerModule` | 飞行执行器(决策 #13):收归一化命令 `set_throttle(-1..1)`/`set_steer(Vector2)`/`set_roll(-1..1)`,做加减速/平滑转向/滚转/引擎开关;不读输入 |
 | `module_booster.gd` | `Booster_1` | 推进器:能量条消耗/恢复(Timer tick)、粒子、`set_boosting(bool)` 命令(P3)、发 ② `ship_bus.on_player_boost` |
 | `module_third_camera.gd` | `ThirdCameraModule` | 第三人称相机:鼠标跟随/自由视角、回头看、锁定目标平滑转向、加速 FOV/抖动/尾焰;反向发 ② `on_toggle_track_mouse` |
 | `module_laser_gun.gd` | `LaserModule` | 激光机炮(P3 补 class_name):左右炮口交替、射速 Timer、过热停火、按热量加伤、`set_firing(bool)` 命令、`spawn_bullet()`;ModulesManager 缓存 `get_laser_module()` |
 | `aim/module_aim_mechanics.gd` | `AimMechanicsModule` | **共享瞄准力学(P5,决策 #11/#20)**:吸收原 predict——`solve_intercept_time` + `get_predicted_aim_data(target, bullet_speed)`(只算 3D 预测点/拦截时间,投影归 aim_view,决策 #18)+ `get_aim_direction_from_crosshair`(激光用,缺相机降级机头朝向);`locked_target` 为"当前值",由 selection 推入 |
-| `aim/module_target_selection.gd` | `TargetSelectionModule` | **大脑侧目标选择(P5,替代 BasicAimModule)**:悬停**自判**(每帧拉 radar_view 缓存 `screen_rect` 命中测试,决策 #27)、RMB 锁定、发 ② `ship_bus.on_player_lock_target` / `on_target_hovered / on_target_unhovered`;缺 radar_view 降级禁选择 |
-| `aim/aim_view.gd` | `AimView` | aim 的 2D 呈现层(归 selection,P5):拥有锁定准星 `lock_reticle` + 预测圈 `lead_indicator` + 预测信息面板(原 predict 三 Label);锁定目标时经 mechanics 取 3D 预测点并投影 |
+| `aim/module_target_selection.gd` | `TargetSelectionModule` | **大脑侧目标选择(P5,替代 BasicAimModule)**:悬停**自判**(每帧用 radar_view 缓存的 `screen_rect` 命中测试,决策 #27;radar_view 引用经 `module_installed/uninstalled` 装卸事件驱动,方案 A)、RMB 锁定、发 ② `ship_bus.on_player_lock_target` / `on_target_hovered / on_target_unhovered`;缺 radar_view 降级禁选择 |
+| `aim/aim_view.gd` | `AimView` | aim 的 2D 呈现层(归 selection,P5):拥有锁定准星 `lock_reticle` + 预测圈 `lead_indicator` + 预测信息面板(原 predict 三 Label);锁定目标时经 mechanics 取 3D 预测点并投影;mechanics/laser 依赖经 `module_installed/uninstalled` 事件驱动一次性拉取(方案 A,替代原每帧 `_ensure_refs` 轮询) |
 | `module_radar.gd` | `RadarModule` | 雷达:监听③可锁定目标出生/死亡,维护目标列表(全量含自身,消费方按阵营过滤);`radar_view` 集中投影(方案 A) |
 | `module_shield.gd` | `ShieldModule` | 护盾:受击球体淡入淡出、数值同步 UI、每秒回充 |
 | `modules/brain/module_control.gd` | `ControlModule` | 玩家大脑(P3,决策 #28):每帧读 Input → 归一化命令(`set_throttle`/`set_steer`/`set_roll`/`set_boosting`/`set_firing`);鼠标死区/归一化在此;离散事件仍走 ② ShipBus |

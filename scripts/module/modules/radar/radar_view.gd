@@ -23,6 +23,7 @@ var _radar_module: RadarModule
 var _root: Node3D
 var _ship_bus: ShipBus
 var _cam: Camera3D
+var _cam_mod: ThirdCameraModule
 
 # target -> TargetReticle
 var _reticles: Dictionary = {}
@@ -34,13 +35,16 @@ func _enter_tree() -> void:
 	if _radar_module:
 		_root = _radar_module.root
 		_ship_bus = _radar_module.ship_bus
+		# 决策 #30:相机走 camera 模块,不再用 _root.has_method("get_main_camera") 判断"是否玩家";
+		# 敌人复用 radar 无 camera 模块 → null,呈现层禁用。
+		_cam_mod = _radar_module.modules_manager.get_camera_module() if _radar_module.modules_manager else null
 
 func _ready() -> void:
-	# 只有带相机的船(玩家)需要 2D 呈现;敌人雷达无相机 → 禁用
-	if _root == null or not _root.has_method("get_main_camera"):
+	# 只有装了 camera 模块的船(玩家)需要 2D 呈现;敌人复用 radar 无 camera → 禁用
+	if _cam_mod == null:
 		set_process(false)
 		return
-	_cam = _root.get_main_camera()
+	_cam = _cam_mod.get_main_camera()
 	if _cam == null:
 		set_process(false)
 		return
@@ -53,20 +57,17 @@ func _ready() -> void:
 func _on_target_spawned(target: AbleToBeLocked) -> void:
 	if target in _reticles:
 		return
-	if _root == null or not _root.has_method("get_main_camera"):
-		return
 	# P5 对称性(§4.1):玩家已挂 AbleToBeLocked,自身/同阵营目标不建选择框、不进 rect 缓存
 	# (hover 自然 miss)。阵营过滤归消费方做(radar 身体给全量,决策 #23)。
 	if _root.has_method("get_team_id") and target.get_team_id() == _root.get_team_id():
 		return
-	var cam: Camera3D = _root.get_main_camera()
-	if cam == null:
+	if _cam == null or not is_instance_valid(_cam):
 		return
 
 	var reticle := TargetReticle.new()
 	reticle.name = "TargetReticle_" + target.name
 	add_child(reticle)
-	reticle.setup(target, cam, target_selector_scene, hp_bar_scene)
+	reticle.setup(target, _cam, target_selector_scene, hp_bar_scene)
 	_reticles[target] = reticle
 
 func _on_target_died(target: AbleToBeLocked) -> void:
@@ -115,18 +116,18 @@ func _on_target_unhovered() -> void:
 		if is_instance_valid(reticle):
 			reticle.set_hovered(false)
 
-## 兜底清理(§4.2-5):断开总线 + 回收全部目标 UI 簇(幂等)
+## 兜底清理(§4.2-5):断开总线 + 回收全部目标 UI 簇(幂等;用 is_connected 判定,
+## 不再依赖 _root 是否有 get_main_camera——无相机时本就未连接)。
 func _exit_tree() -> void:
 	if _ship_bus != null and is_instance_valid(_ship_bus):
 		if _ship_bus.on_target_hovered.is_connected(_on_target_hovered):
 			_ship_bus.on_target_hovered.disconnect(_on_target_hovered)
 		if _ship_bus.on_target_unhovered.is_connected(_on_target_unhovered):
 			_ship_bus.on_target_unhovered.disconnect(_on_target_unhovered)
-	if _root != null and _root.has_method("get_main_camera"):
-		if SignalBus.on_lockable_target_spawned.is_connected(_on_target_spawned):
-			SignalBus.on_lockable_target_spawned.disconnect(_on_target_spawned)
-		if SignalBus.on_lockable_target_died.is_connected(_on_target_died):
-			SignalBus.on_lockable_target_died.disconnect(_on_target_died)
+	if SignalBus.on_lockable_target_spawned.is_connected(_on_target_spawned):
+		SignalBus.on_lockable_target_spawned.disconnect(_on_target_spawned)
+	if SignalBus.on_lockable_target_died.is_connected(_on_target_died):
+		SignalBus.on_lockable_target_died.disconnect(_on_target_died)
 	for reticle in _reticles.values():
 		if is_instance_valid(reticle):
 			reticle.cleanup()

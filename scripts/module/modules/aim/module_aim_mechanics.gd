@@ -21,7 +21,7 @@ var aim_ray_length := 5000.0  # 非锁定时使用,预测射击点
 
 
 func _ready() -> void:
-	cam_main = root.get_main_camera() if root else null
+	cam_main = modules_manager.get_camera_module().get_main_camera()
 	if cam_main == null:
 		Log.log_missing_component(self, "main camera")
 		# 不 queue_free:预测数学不依赖相机,仅 get_aim_direction_from_crosshair 降级

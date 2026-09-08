@@ -37,13 +37,15 @@ var _bullet_speed := 0.0
 
 func _ready() -> void:
 	_parent_module = get_parent() as Module
-	if _parent_module != null and _parent_module.get("root") != null:
-		cam_main = _parent_module.root.get_main_camera()
+	if _parent_module != null and _parent_module.root != null:
+		cam_main = _parent_module.modules_manager.get_camera_module().get_main_camera()
 	init_lock_reticle()
 	init_lead_indicator()
 	# 面板注册延后一帧:register_hud(GROUP) 会 reparent 节点,不能在模块 add_child 的
 	# _ready 窗口内执行(Godot 禁止"忙时 remove_child/add_child")。
 	register_info_panel.call_deferred()
+	# 方案 A:一次性拉取已装依赖 + 订阅模块装卸事件,替代原每帧 _ensure_refs 轮询。
+	_bind_refs()
 
 
 func init_lock_reticle() -> void:
@@ -70,7 +72,6 @@ func set_hovered_target(target: AbleToBeLocked) -> void:
 
 
 func _process(_delta: float) -> void:
-	_ensure_refs()
 	if cam_main == null:
 		return
 	if is_instance_valid(_locked_target):
@@ -83,21 +84,52 @@ func _process(_delta: float) -> void:
 		_reset_prediction_ui()
 
 
-## 懒取依赖(install 顺序不保证 mechanics/laser 先于本 view):每帧补拉,支持动态装卸。
-func _ensure_refs() -> void:
-	if _parent_module == null:
-		return
-	var mm: ModulesManager = _parent_module.get("modules_manager") as ModulesManager
+## 方案 A:一次性拉取已装依赖并订阅模块装卸事件(替代原每帧 _ensure_refs 轮询)。
+## 时序:mechanics 先于 selection 安装(character_body_3d._ready 顺序),此刻可直接拉到;
+## laser 晚于 selection 安装,经 module_installed 信号在登场瞬间补绑;卸载经
+## module_uninstalled 信号置 null 降级(动态装卸全自动,不再每帧碰运气)。
+func _bind_refs() -> void:
+	var mm: ModulesManager = _parent_module.modules_manager if _parent_module else null
 	if mm == null:
 		return
-	if _mechanics == null:
-		_mechanics = mm.get_aim_mechanics_module()
-	if _laser == null or not is_instance_valid(_laser):
-		_laser = mm.get_laser_module()
-		if _laser:
-			_bullet_speed = _laser.get_bullet_speed()
-			if not _laser.on_bullet_speed_change.is_connected(_on_bullet_speed_change):
-				_laser.on_bullet_speed_change.connect(_on_bullet_speed_change)
+	_mechanics = mm.get_aim_mechanics_module()
+	var laser := mm.get_laser_module()
+	if laser:
+		_bind_laser(laser)
+	mm.module_installed.connect(_on_module_installed)
+	mm.module_uninstalled.connect(_on_module_uninstalled)
+
+
+func _on_module_installed(module: Module) -> void:
+	if module is LaserModule:
+		_bind_laser(module as LaserModule)
+	elif module is AimMechanicsModule:
+		_mechanics = module as AimMechanicsModule
+
+
+func _on_module_uninstalled(module: Module) -> void:
+	if module is LaserModule:
+		_unbind_laser()
+	elif module is AimMechanicsModule:
+		_mechanics = null
+
+
+## 绑定激光:缓存弹速 + 订阅弹速变化(幂等:同一实例不重复绑)。
+func _bind_laser(laser: LaserModule) -> void:
+	if _laser == laser:
+		return
+	_laser = laser
+	_bullet_speed = laser.get_bullet_speed()
+	if not laser.on_bullet_speed_change.is_connected(_on_bullet_speed_change):
+		laser.on_bullet_speed_change.connect(_on_bullet_speed_change)
+
+
+## 解绑激光:断开弹速订阅并置 null(幂等;模块卸载/本 view 退出共用)。
+func _unbind_laser() -> void:
+	if _laser != null and is_instance_valid(_laser):
+		if _laser.on_bullet_speed_change.is_connected(_on_bullet_speed_change):
+			_laser.on_bullet_speed_change.disconnect(_on_bullet_speed_change)
+	_laser = null
 
 
 func _on_bullet_speed_change(new_speed: float) -> void:
@@ -167,8 +199,16 @@ func _reset_prediction_ui() -> void:
 		velocity_desire_label.text = "--"
 
 
-## 兜底清理(§4.2-5):卸载时回收注册到 HUD 层的准星/预测圈/面板 + 断开激光速度订阅(幂等)
+## 兜底清理(§4.2-5):卸载时回收注册到 HUD 层的准星/预测圈/面板 + 断开模块装卸订阅与激光弹速订阅(幂等)
 func _exit_tree() -> void:
+	_unbind_laser()
+	var mm: ModulesManager = _parent_module.modules_manager if _parent_module else null
+	if mm != null and is_instance_valid(mm):
+		if mm.module_installed.is_connected(_on_module_installed):
+			mm.module_installed.disconnect(_on_module_installed)
+		if mm.module_uninstalled.is_connected(_on_module_uninstalled):
+			mm.module_uninstalled.disconnect(_on_module_uninstalled)
+	_mechanics = null
 	if is_instance_valid(lock_reticle):
 		lock_reticle.queue_free()
 	lock_reticle = null
@@ -178,8 +218,3 @@ func _exit_tree() -> void:
 	if is_instance_valid(hud_container):
 		hud_container.queue_free()
 	hud_container = null
-	if _laser != null and is_instance_valid(_laser):
-		if _laser.on_bullet_speed_change.is_connected(_on_bullet_speed_change):
-			_laser.on_bullet_speed_change.disconnect(_on_bullet_speed_change)
-	_laser = null
-	_mechanics = null
