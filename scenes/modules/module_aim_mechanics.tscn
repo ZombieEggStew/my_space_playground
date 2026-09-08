@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://bpcmj0wad856n"]
+
+[ext_resource type="Script" uid="uid://wtbvqlxe12vx" path="res://scripts/module/modules/aim/module_aim_mechanics.gd" id="1_mec"]
+
+[node name="module_aim_mechanics" type="Node3D"]
+script = ExtResource("1_mec")

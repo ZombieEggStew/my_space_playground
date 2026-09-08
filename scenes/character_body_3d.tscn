@@ -10,15 +10,16 @@
 [ext_resource type="Script" uid="uid://cduj7aj1uywad" path="res://scripts/component/move_component.gd" id="4_1u7qd"]
 [ext_resource type="PackedScene" uid="uid://clbmhved44n61" path="res://scenes/component/health_component.tscn" id="4_6k07c"]
 [ext_resource type="Material" uid="uid://dvifks8sp3xdg" path="res://material/rocket_mat_1.tres" id="4_86qqj"]
-[ext_resource type="PackedScene" uid="uid://cc1r6mss3o2ds" path="res://scenes/modules/module_player_aim.tscn" id="4_wgwu6"]
+[ext_resource type="PackedScene" uid="uid://bpcmj0wad856n" path="res://scenes/modules/module_aim_mechanics.tscn" id="4_mec"]
+[ext_resource type="PackedScene" uid="uid://vxrywfsp738j" path="res://scenes/modules/module_target_selection.tscn" id="4_sel"]
 [ext_resource type="PackedScene" uid="uid://dldi60ppqknmu" path="res://scenes/modules/module_hud.tscn" id="6_agthx"]
 [ext_resource type="PackedScene" uid="uid://b5mnunoxq7tad" path="res://scenes/modules/module_booster.tscn" id="7_o05n0"]
 [ext_resource type="PackedScene" uid="uid://brgpgqvf2a5v" path="res://scenes/modules/module_radar.tscn" id="8_weg1c"]
 [ext_resource type="PackedScene" uid="uid://cwxsl3xxh0vg" path="res://scenes/modules/module_laser_gun.tscn" id="9_mqk7l"]
-[ext_resource type="PackedScene" uid="uid://cnbvvxebbcvph" path="res://scenes/modules/module_predict_aim.tscn" id="10_evl4y"]
 [ext_resource type="PackedScene" uid="uid://qiukoyjomao7" path="res://scenes/attachment/attachment_missile_launcher.tscn" id="11_fy6bm"]
 [ext_resource type="Script" uid="uid://cwi1vp6d0ywp2" path="res://scripts/module/core/ship_bus.gd" id="12_shipbus"]
 [ext_resource type="PackedScene" uid="uid://dd3h52upglosw" path="res://scenes/modules/module_control.tscn" id="13_ctl"]
+[ext_resource type="PackedScene" uid="uid://c2vpnamuf2w8x" path="res://scenes/component/able_to_be_locked.tscn" id="14_abl"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_ov54e"]
 size = Vector3(2.574463, 1, 6.0946655)
@@ -66,12 +67,12 @@ collision_mask = 134
 script = ExtResource("1_o7tup")
 scene_module_move_controller = ExtResource("2_ls2h8")
 scene_module_third_camera = ExtResource("3_ix3jf")
-scene_module_player_aim = ExtResource("4_wgwu6")
+scene_module_aim_mechanics = ExtResource("4_mec")
+scene_module_target_selection = ExtResource("4_sel")
 scene_module_basic_info_ui = ExtResource("6_agthx")
 scene_module_booster = ExtResource("7_o05n0")
 scene_module_radar = ExtResource("8_weg1c")
 scene_module_laser_gun = ExtResource("9_mqk7l")
-scene_module_predict_aim = ExtResource("10_evl4y")
 scene_module_missile_launcher = ExtResource("11_fy6bm")
 scene_module_control = ExtResource("13_ctl")
 model_node = NodePath("rocket")
@@ -92,6 +93,8 @@ shape = SubResource("BoxShape3D_ov54e")
 [node name="BuffComponent" type="Node" parent="." unique_id=1612809462]
 script = ExtResource("2_86qqj")
 metadata/_custom_type_script = "uid://me6ishfefgm6"
+
+[node name="AbleToBeLocked" parent="." unique_id=1973863081 instance=ExtResource("14_abl")]
 
 [node name="MoveComponent" type="Node" parent="." unique_id=2092586860]
 script = ExtResource("4_1u7qd")

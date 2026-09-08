@@ -1,0 +1,101 @@
+[gd_scene format=3 uid="uid://vxrywfsp738j"]
+
+[ext_resource type="Script" uid="uid://bvfeiig38txgt" path="res://scripts/module/modules/aim/module_target_selection.gd" id="1_sel"]
+[ext_resource type="Script" uid="uid://b1qxbk4oogpa5" path="res://scripts/module/modules/aim/aim_view.gd" id="2_aview"]
+[ext_resource type="PackedScene" uid="uid://cdlapu2jn5572" path="res://scenes/hud/lock_reticle.tscn" id="3_lock"]
+[ext_resource type="PackedScene" uid="uid://d0fhr823xyi38" path="res://scenes/hud/lead_indicator.tscn" id="4_lead"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_info"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+bg_color = Color(0.101960786, 0.101960786, 0.101960786, 0)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(1, 1, 1, 1)
+corner_detail = 1
+
+[node name="module_target_selection" type="Node3D" node_paths=PackedStringArray("aim_view")]
+script = ExtResource("1_sel")
+aim_view = NodePath("aim_view")
+
+[node name="aim_view" type="Node" parent="." node_paths=PackedStringArray("hud_container", "lead_time_label", "distance_label", "velocity_desire_label")]
+script = ExtResource("2_aview")
+scene_lock_reticle = ExtResource("3_lock")
+scene_lead_indicator = ExtResource("4_lead")
+hud_container = NodePath("../predict_aim")
+lead_time_label = NodePath("../predict_aim/panel_predict_aim_info/MarginContainer/VBoxContainer/lead_time/lead_time_value")
+distance_label = NodePath("../predict_aim/panel_predict_aim_info/MarginContainer/VBoxContainer/distance/distance_value")
+velocity_desire_label = NodePath("../predict_aim/panel_predict_aim_info/MarginContainer/VBoxContainer/desire_velocity/velocity_desire_value")
+
+[node name="predict_aim" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="panel_predict_aim_info" type="PanelContainer" parent="predict_aim"]
+texture_filter = 2
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -474.0
+offset_top = -406.0
+offset_right = -169.0
+offset_bottom = -292.0
+grow_horizontal = 0
+grow_vertical = 0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_info")
+
+[node name="MarginContainer" type="MarginContainer" parent="predict_aim/panel_predict_aim_info"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="VBoxContainer" type="VBoxContainer" parent="predict_aim/panel_predict_aim_info/MarginContainer"]
+layout_mode = 2
+
+[node name="lead_time" type="HBoxContainer" parent="predict_aim/panel_predict_aim_info/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="predict_aim/panel_predict_aim_info/MarginContainer/VBoxContainer/lead_time"]
+layout_mode = 2
+text = "lead time : "
+
+[node name="lead_time_value" type="Label" parent="predict_aim/panel_predict_aim_info/MarginContainer/VBoxContainer/lead_time"]
+layout_mode = 2
+text = "--"
+
+[node name="distance" type="HBoxContainer" parent="predict_aim/panel_predict_aim_info/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="predict_aim/panel_predict_aim_info/MarginContainer/VBoxContainer/distance"]
+layout_mode = 2
+text = "distance : "
+
+[node name="distance_value" type="Label" parent="predict_aim/panel_predict_aim_info/MarginContainer/VBoxContainer/distance"]
+layout_mode = 2
+text = "--"
+
+[node name="desire_velocity" type="HBoxContainer" parent="predict_aim/panel_predict_aim_info/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="predict_aim/panel_predict_aim_info/MarginContainer/VBoxContainer/desire_velocity"]
+layout_mode = 2
+text = "speed/desire : "
+
+[node name="velocity_desire_value" type="Label" parent="predict_aim/panel_predict_aim_info/MarginContainer/VBoxContainer/desire_velocity"]
+layout_mode = 2
+text = "--"

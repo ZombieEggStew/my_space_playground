@@ -6,8 +6,8 @@ class_name HUD_LockReticle
 ## 目标不在屏幕时把位置限制在屏幕边缘以指示相对方位。大小固定(64x64)。
 ##
 ## 职责边界:
-## - 只负责视觉跟随与平滑,不含锁定判定(判定在 [code]BasicAimModule[/code])。
-## - 数据来源:由 [code]BasicAimModule[/code] 每帧调用 [method set_target_pos] / [method reset] 驱动。
+## - 只负责视觉跟随与平滑,不含锁定判定(判定在 [code]TargetSelectionModule[/code])。
+## - 数据来源:由 [code]AimView[/code](aim_view,归 selection)每帧调用 [method set_target_pos] / [method reset] 驱动。
 ## - 对外接口:[method set_target_pos]、[method reset]、[method get_position_center]。
 ## - 注册方式:由 [code]HUDManager.register_hud[/code] 读取本脚本的
 ##   [member hud_slot](STATIC)自动挂到静态层。

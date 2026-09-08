@@ -5,8 +5,8 @@ class_name HUD_LeadIndicator
 ## 圆环大小随与目标的距离变化(越近越大、越远越小,有下限)。
 ##
 ## 职责边界:
-## - 数据来源:由 [code]PredictAimModule[/code](module_predict_aim) 每帧传入
-##   [method set_target_pos](视口坐标) + [method set_target_distance] 驱动。
+## - 数据来源:由 [code]AimView[/code](aim_view,归 selection;预测点由 AimMechanicsModule 计算)
+##   每帧传入 [method set_target_pos](视口坐标) + [method set_target_distance] 驱动。
 ## - 对外接口:[method set_target_pos]、[method set_target_distance]、[method reset](继承自基类)。
 ## - 注册方式:由 [code]HUDManager.register_hud[/code] 读取本元素的
 ##   [member hud_slot](继承基类默认 STATIC)自动挂到静态层。

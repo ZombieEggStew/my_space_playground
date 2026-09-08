@@ -4,7 +4,8 @@ class_name ModulesManager
 # basic modules
 var movement_module: MoveControllerModule
 var third_camera_module: ThirdCameraModule
-var player_aim_module: BasicAimModule
+var aim_mechanics_module: AimMechanicsModule
+var target_selection_module: TargetSelectionModule
 var rader_module: RadarModule
 var laser_module: LaserModule
 
@@ -15,8 +16,11 @@ func install_module(module_scene:PackedScene) -> Module:
 	var module = module_scene.instantiate()
 	_inject_module_deps(module)
 
-	if module is BasicAimModule:
-		player_aim_module = module
+	if module is AimMechanicsModule:
+		aim_mechanics_module = module
+
+	if module is TargetSelectionModule:
+		target_selection_module = module
 
 	if module is RadarModule:
 		rader_module = module
@@ -44,8 +48,13 @@ func _inject_module_deps(module) -> void:
 func get_camera_module() -> ThirdCameraModule:
 	return third_camera_module
 
-func get_aim_module() -> BasicAimModule:
-	return player_aim_module
+## P5(决策 #11):aim 拆两层 —— mechanics(共享,算 3D 预测/准星方向)与
+## selection(大脑侧,选目标)。激光/敌人 AI 用 mechanics;悬停/锁定用 selection。
+func get_aim_mechanics_module() -> AimMechanicsModule:
+	return aim_mechanics_module
+
+func get_target_selection_module() -> TargetSelectionModule:
+	return target_selection_module
 
 func get_move_module() -> EngineModule:
 	return movement_module
@@ -73,8 +82,10 @@ func uninstall_module(module: Module) -> void:
 	if module.get_parent() != self:
 		push_warning("ModulesManager.uninstall_module: %s 不是本管理器的直接子节点" % module.name)
 	module.on_uninstall()
-	if module == player_aim_module:
-		player_aim_module = null
+	if module == aim_mechanics_module:
+		aim_mechanics_module = null
+	if module == target_selection_module:
+		target_selection_module = null
 	if module == rader_module:
 		rader_module = null
 	if module == movement_module:

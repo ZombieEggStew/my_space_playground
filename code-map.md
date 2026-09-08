@@ -35,7 +35,7 @@ flowchart LR
         M1[MoveControllerModule]
         M2[ThirdCameraModule]
         M3[LaserGunModule]
-        M4[PlayerAim / PredictAim]
+        M4[AimMechanics / TargetSelection]
         M5[Radar / Shield / Booster]
         AM[AttachmentManager<br>导弹挂架]
         HC[HealthComponent]
@@ -114,15 +114,16 @@ test-1/
 
 | 模块 | class_name | 职责 |
 |---|---|---|
-| `modules_manager.gd` | `ModulesManager` | 模块容器:`install_module` 实例化并注入依赖、按类型缓存;`get_camera_module / get_aim_module / get_move_module / get_radar_module / get_radar_view`(决策 #27)查询 |
+| `modules_manager.gd` | `ModulesManager` | 模块容器:`install_module` 实例化并注入依赖、按类型缓存;`get_camera_module / get_aim_mechanics_module / get_target_selection_module / get_move_module / get_radar_module / get_radar_view`(决策 #27)查询 |
 | `core/ship_bus.gd` | `ShipBus` | ② 船级事件总线(PlayerShip 子节点):只声明 10 条信号、零逻辑零状态(见 §6.1);模块经 install 注入,船外节点经 `on_player_registered` 取 `player.ship_bus` |
 | `module_move_controller.gd` | `MoveControllerModule` | 飞行执行器(决策 #13):收归一化命令 `set_throttle(-1..1)`/`set_steer(Vector2)`/`set_roll(-1..1)`,做加减速/平滑转向/滚转/引擎开关;不读输入 |
 | `module_booster.gd` | `Booster_1` | 推进器:能量条消耗/恢复(Timer tick)、粒子、`set_boosting(bool)` 命令(P3)、发 ② `ship_bus.on_player_boost` |
 | `module_third_camera.gd` | `ThirdCameraModule` | 第三人称相机:鼠标跟随/自由视角、回头看、锁定目标平滑转向、加速 FOV/抖动/尾焰;反向发 ② `on_toggle_track_mouse` |
 | `module_laser_gun.gd` | `LaserModule` | 激光机炮(P3 补 class_name):左右炮口交替、射速 Timer、过热停火、按热量加伤、`set_firing(bool)` 命令、`spawn_bullet()`;ModulesManager 缓存 `get_laser_module()` |
-| `module_player_aim.gd` | `BasicAimModule` | 锁定系统:悬停**自判**(每帧拉 radar_view 缓存 `screen_rect` 命中测试,决策 #27)、RMB 锁定、发 ② `ship_bus.on_player_lock_target`;`aim_view` 持有锁定准星 |
-| `module_predict_aim.gd` | `PredictAimModule` | 预测射击:二次方程解析拦截时间 `solve_intercept_time`,驱动 crosshair_4 与提前量标签 |
-| `module_radar.gd` | `RadarModule` | 雷达:监听③可锁定目标出生/死亡,维护目标列表;`radar_view` 集中投影(方案 A) |
+| `aim/module_aim_mechanics.gd` | `AimMechanicsModule` | **共享瞄准力学(P5,决策 #11/#20)**:吸收原 predict——`solve_intercept_time` + `get_predicted_aim_data(target, bullet_speed)`(只算 3D 预测点/拦截时间,投影归 aim_view,决策 #18)+ `get_aim_direction_from_crosshair`(激光用,缺相机降级机头朝向);`locked_target` 为"当前值",由 selection 推入 |
+| `aim/module_target_selection.gd` | `TargetSelectionModule` | **大脑侧目标选择(P5,替代 BasicAimModule)**:悬停**自判**(每帧拉 radar_view 缓存 `screen_rect` 命中测试,决策 #27)、RMB 锁定、发 ② `ship_bus.on_player_lock_target` / `on_target_hovered / on_target_unhovered`;缺 radar_view 降级禁选择 |
+| `aim/aim_view.gd` | `AimView` | aim 的 2D 呈现层(归 selection,P5):拥有锁定准星 `lock_reticle` + 预测圈 `lead_indicator` + 预测信息面板(原 predict 三 Label);锁定目标时经 mechanics 取 3D 预测点并投影 |
+| `module_radar.gd` | `RadarModule` | 雷达:监听③可锁定目标出生/死亡,维护目标列表(全量含自身,消费方按阵营过滤);`radar_view` 集中投影(方案 A) |
 | `module_shield.gd` | `ShieldModule` | 护盾:受击球体淡入淡出、数值同步 UI、每秒回充 |
 | `modules/brain/module_control.gd` | `ControlModule` | 玩家大脑(P3,决策 #28):每帧读 Input → 归一化命令(`set_throttle`/`set_steer`/`set_roll`/`set_boosting`/`set_firing`);鼠标死区/归一化在此;离散事件仍走 ② ShipBus |
 | `module_hud.gd`(门面模块) | `HUDModule` | 集中管理所有模块 HUD 注册→转发 HUDManager(决策 #19);玩家固有面板 = `player_stats_view`;不做投影/悬停检测 |
@@ -183,7 +184,7 @@ MoveSM 提供公共机动原语:`rotate_towards / move_forward / set_target_spee
 | `ui_manager.gd` (`UIManager`) | 主 UI 层(空壳,含 Main_Menu/Transition_Rect) |
 
 **准星(`scripts/hud/`)**:`target_selector`(白色目标选择框,**纯显示**——radar_view 每帧喂入屏幕位置/尺寸,方案 A)、`lock_reticle`(绿色二级锁定框)、`gun_reticle`(绿色机炮十字,限制在死区圆周)、`lead_indicator`(绿色预测圆圈,`_draw` 按距离插值半径)、`dead_zone_indicator`(死区圆);基类 `base/hud_far_base.gd`(→ `HudElement` 元件基类);全部带 class_name(`HUD_TargetSelector`/`HUD_LockReticle`/`HUD_GunReticle`/`HUD_LeadIndicator`/`HUD_DeadZoneIndicator`),消费方类型化静态调用,无 `.call()`/Dictionary 鸭子类型。
-**目标 UI 簇(P1/P2)**:`target_reticle.gd`(`TargetReticle`,一个目标 = 一个组件,持有选择框+目标血条并统一生命周期);由 `radar_view.gd`(`RadarView`,radar 模块场景内子节点)监听③ `on_lockable_target_spawned/died` 按目标 spawn/回收;**每帧集中投影缓存 `_rect_cache: {target: Rect2}`**(单一数据源:喂 selector 显示 + 供 aim 命中判定,决策 #27);悬停检测在 `module_player_aim`(每帧拉 rects 自判,变化才发脉冲),高亮经 ② `ship_bus.on_target_hovered/unhovered` 回传 radar_view。旧 `target_reticle_controller.gd` 已删除。
+**目标 UI 簇(P1/P2)**:`target_reticle.gd`(`TargetReticle`,一个目标 = 一个组件,持有选择框+目标血条并统一生命周期);由 `radar_view.gd`(`RadarView`,radar 模块场景内子节点)监听③ `on_lockable_target_spawned/died` 按目标 spawn/回收;**每帧集中投影缓存 `_rect_cache: {target: Rect2}`**(单一数据源:喂 selector 显示 + 供 aim 命中判定,决策 #27);悬停检测在 `module_target_selection`(P5 起;每帧拉 rects 自判,变化才发脉冲),高亮经 ② `ship_bus.on_target_hovered/unhovered` 回传 radar_view。**P5 对称性**:玩家船挂 `AbleToBeLocked`,radar 身体收录全量(含自身),radar_view 按同阵营过滤——自身不建选择框/不进 rect 缓存(hover 天然 miss)。旧 `target_reticle_controller.gd` 已删除。
 
 **UI 控件(`scripts/ui/`)**:`hp_bar`(缓冲条 tween + 低血闪烁)、`hp_bar_target`(锁定目标血条,掉血发 `on_damage_dealt`)、`damage_number`(飘字动画,对象池复用)、`panel_speed`(订阅 `PlayerShip.speed_stat`/`forward_speed_stat`,不轮询)、`buff_icon`(倒计时/叠层)、`buff_layout`、`shield_ui_container`(`bind(stat)` 订阅护盾 FloatStat,显示层 lerp),以及 4 个 HUD 特效:`ui_float_effect`(鼠标视差)、`ui_rotation_effect`(象限旋转)、`ui_boost_offset_effect`(加速扩散)、`ui_boost_shake_effect`(加速抖动)。
 
@@ -206,7 +207,7 @@ MoveSM 提供公共机动原语:`rotate_towards / move_forward / set_target_spee
 | 场景 | 根节点 | 脚本 | 用途 |
 |---|---|---|---|
 | `game_scene.tscn` | Node | `Main.gd` | **主场景**(结构见 §7) |
-| `character_body_3d.tscn` | CharacterBody3D | `PlayerShip` | **玩家飞船**:AttachmentManager(slot_1)、HealthComponent(layer 256)、BuffComponent、ModulesManager、ShipBus(② 船级总线)、rocket 网格 |
+| `character_body_3d.tscn` | CharacterBody3D | `PlayerShip` | **玩家飞船**:AttachmentManager(slot_1)、HealthComponent(layer 256)、BuffComponent、AbleToBeLocked(P5 对称性)、ModulesManager、ShipBus(② 船级总线)、rocket 网格 |
 | `space_craft_1.tscn` | CharacterBody3D | `space_craft_1.gd` | 旧版敌机(硬编码 team_id=2,外部状态机驱动) |
 | `space_craft_5.tscn` | CharacterBody3D | `space_craft_5.gd` | 敌机:HealthComponent + AI_Brain + 可锁定组件,1000 血 |
 | `space_craft_6.tscn` | CharacterBody3D | `space_craft_6.gd` | 敌机简化版,100 血,无 AI |
@@ -221,7 +222,7 @@ MoveSM 提供公共机动原语:`rotate_towards / move_forward / set_target_spee
 
 ### 子目录场景
 
-- `modules/`:module_move_controller / module_third_camera / module_laser_gun / module_booster / module_player_aim / module_predict_aim / module_radar / module_shield / module_hud / module_screen / module_test
+- `modules/`:module_move_controller / module_third_camera / module_laser_gun / module_booster / module_aim_mechanics / module_target_selection / module_radar / module_shield / module_hud / module_screen / module_test
 - `component/`:able_to_be_locked(VisibleOnScreenNotifier3D)、health_component
 - `attachment/`:attachment_missile_launcher
 - `state_machine/AI_Brain.tscn`:CombatSM(idle/attack)+ MoveSM(六状态全挂)
@@ -240,22 +241,22 @@ MoveSM 提供公共机动原语:`rotate_towards / move_forward / set_target_spee
 | 信号 | 发射方 | 消费方 |
 |---|---|---|
 | `on_player_registered(player)` | GameManager.register_player | hud_far_manager、test/hud_container、input_manager(缓存船 bus)、attachment_slot_1、attachment_missile_launcher、ui_boost_* 特效 |
-| `on_lockable_target_spawned/died(target)` | able_to_be_locked | module_radar、radar_view、module_player_aim(died) |
+| `on_lockable_target_spawned/died(target)` | able_to_be_locked(玩家 P5 起也挂) | module_radar、radar_view、module_target_selection(died) |
 | `on_damage_dealt(amount, pos)` | hp_bar_target | damage_number_pool(飘字) |
 
 **② 船级 ShipBus(PlayerShip 子节点,10 条;模块经注入的 `ship_bus` 访问,船外节点经 `player.ship_bus`;P3 修订:`on_player_shoot`/`on_player_boost_input` 已删——连发/持续加速改连续量命令,经 ControlModule 方法调用)**:
 
 | 信号 | 发射方 | 消费方 |
 |---|---|---|
-| `on_player_try_lock()` | InputManager(鼠标右键) | module_player_aim |
+| `on_player_try_lock()` | InputManager(鼠标右键) | module_target_selection |
 | `on_player_boost(enable)` | module_booster | module_third_camera、ui_boost_offset_effect、ui_boost_shake_effect |
 | `on_toggle_track_mouse(enable)` | InputManager(Tab)、module_third_camera(反向发) | module_move_controller |
 | `on_player_look_backward(enable)` | InputManager(Esc) | module_third_camera → spring_arm_3d |
 | `on_player_look_around(enable)` | InputManager | module_third_camera |
 | `on_player_try_use_item_1()` | InputManager(数字 1) | attachment_slot_1 → 导弹发射 |
 | `on_toggle_engine()` | InputManager(Q) | module_move_controller |
-| `on_player_lock_target(target)` | module_player_aim | module_third_camera、module_predict_aim、attachment_missile_launcher |
-| `on_target_hovered(target)` / `on_target_unhovered()` | module_player_aim(自判,决策 #27) | radar_view(选择框高亮) |
+| `on_player_lock_target(target)` | module_target_selection(P5) | module_third_camera、attachment_missile_launcher(mechanics 的 locked_target 由 selection 直接方法推送,决策 #12) |
+| `on_target_hovered(target)` / `on_target_unhovered()` | module_target_selection(自判,决策 #27) | radar_view(选择框高亮) |
 
 ### 6.2 输入映射(project.godot `[input]`)
 
@@ -280,7 +281,7 @@ flowchart TD
     end
     B -->|on_player_shoot| C[module_laser_gun<br>shoot + HeatManager 过热检查]
     B -->|on_player_boost_input| D[module_booster<br>能量消耗] -->|on_player_boost| D1[相机拉远/抖动/尾焰]
-    B -->|on_player_try_lock| E[module_player_aim<br>hovered_target 锁定]
+    B -->|on_player_try_lock| E[module_target_selection<br>hovered_target 锁定]
     B -->|on_player_try_use_item_1| F[attachment_slot_1<br>→ MissileLauncherModule]
     E -->|on_player_lock_target| F2[挂架记录 _locked_target]
     F -->|spawn Missile_1 比例导引| G
@@ -367,4 +368,5 @@ Main (Node, Main.gd)                     ← _enter_tree 注册各管理器到 G
 4. `script_templates/Node/state_template.gd` 引用了不存在的 `GameManager.default_state_name`(模板未更新)。
 5. 敌机子弹直接挂 `get_tree().root`,与玩家子弹挂 `bullets_parent` 不一致,清理策略需注意。
 6. ⚠️ 准星场景统一在 `scenes/hud/`;旧名 crosshair_1..4 对应 target_selector / lock_reticle / gun_reticle / lead_indicator,旧 `scenes/ui/crosshair_1.tscn` 已不存在。
-7. ✅ 无头冒烟测试(P2/P3,参考工具):`scripts/test/p2_signal_smoke_test.gd`(`--script` 运行)可验证输入→ShipBus 离散信号路由 + ControlModule→laser/booster 命令链路;headless 环境下 Timer/鼠标语义有偏差(hover 端到端、射速回归两项需编辑器手动核对),以手动验证为准。
+7. ✅ 无头冒烟测试(P2/P3/P5,参考工具):`scripts/test/p2_signal_smoke_test.gd`(`--script` 运行)可验证输入→ShipBus 离散信号路由 + ControlModule→laser/booster 命令链路;`scripts/test/p5_aim_split_smoke_test.gd` 验证 P5 aim 拆两层(mechanics/selection 装配接线、锁定→推送、预测函数 3D 有效性)。headless 环境下 Timer/鼠标语义有偏差(hover 端到端、射速回归两项需编辑器手动核对),以手动验证为准。
+8. ✅ 已修复(2026-09-07 P5):GROUP 层 HUD 元素在模块 `_ready` 里 `register_hud` 会触发"Parent node is busy"reparent 报错——aim_view 的预测面板注册已改 `call_deferred`(见 `aim_view.gd`);若 booster/heat 等同样在 `_ready` 注册 GROUP 元素的模块日后出现该报错,套用同一模式。

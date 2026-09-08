@@ -55,6 +55,10 @@ func _on_target_spawned(target: AbleToBeLocked) -> void:
 		return
 	if _root == null or not _root.has_method("get_main_camera"):
 		return
+	# P5 对称性(§4.1):玩家已挂 AbleToBeLocked,自身/同阵营目标不建选择框、不进 rect 缓存
+	# (hover 自然 miss)。阵营过滤归消费方做(radar 身体给全量,决策 #23)。
+	if _root.has_method("get_team_id") and target.get_team_id() == _root.get_team_id():
+		return
 	var cam: Camera3D = _root.get_main_camera()
 	if cam == null:
 		return

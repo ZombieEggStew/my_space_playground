@@ -17,12 +17,12 @@ var cam_pivot: Node3D
 @export_group("test")
 @export var scene_module_move_controller:PackedScene
 @export var scene_module_third_camera:PackedScene
-@export var scene_module_player_aim:PackedScene
+@export var scene_module_aim_mechanics:PackedScene
+@export var scene_module_target_selection:PackedScene
 @export var scene_module_basic_info_ui:PackedScene
 @export var scene_module_booster:PackedScene
 @export var scene_module_radar:PackedScene
 @export var scene_module_laser_gun:PackedScene
-@export var scene_module_predict_aim:PackedScene
 @export var scene_module_missile_launcher:PackedScene
 @export var scene_module_control:PackedScene
 
@@ -54,10 +54,12 @@ func _ready() -> void:
 
 	modules_manager.install_module(scene_module_radar)
 	modules_manager.install_module(scene_module_basic_info_ui)
-	modules_manager.install_module(scene_module_player_aim)
+	# P5(决策 #11/#20):aim 拆两层 —— mechanics(共享预测力学)先装,selection(大脑侧)后装;
+	# 独立 predict 模块已删,预测并入 aim_mechanics + aim_view。
+	modules_manager.install_module(scene_module_aim_mechanics)
+	modules_manager.install_module(scene_module_target_selection)
 
 	var laser := modules_manager.install_module(scene_module_laser_gun)
-	modules_manager.install_module(scene_module_predict_aim).init_module(laser)
 
 	# P3:玩家大脑(键鼠 → 归一化命令);依赖 move/booster/laser,须在其后安装
 	modules_manager.install_module(scene_module_control)

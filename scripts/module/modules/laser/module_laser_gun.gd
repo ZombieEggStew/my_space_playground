@@ -18,7 +18,7 @@ var damage := 10.0
 
 @export var gun_pivot_left : Node3D
 
-var aim_modrule: BasicAimModule
+var aim_modrule: AimMechanicsModule
 
 var _fire_from_left := true
 var bullet_spread_deg := 0  # 子弹随机散布角度（度）
@@ -42,10 +42,10 @@ func _ready() -> void:
 	if cam_main == null:
 		Log.log_error(self,"Main camera not found in CharacterBody3D.")
 		queue_free()
-	aim_modrule = modules_manager.get_aim_module()
+	aim_modrule = modules_manager.get_aim_mechanics_module()
 	if aim_modrule == null:
-		Log.log_error(self,"Aim module not found in ModulesManager.")
-		queue_free()
+		# P5 装配矩阵:缺 aim_mechanics 不硬崩 —— 机炮直射降级(shoot 里回退机头朝向)
+		Log.log_missing_component(self, "aim mechanics module")
 	
 	if heat_manager:
 		heat_manager.overheated.connect(_on_overheated)
@@ -130,8 +130,11 @@ func shoot() -> void:
 
 	var aim_screen_pos = aim_system.get_aim_point_screen_pos()
 	
-	if aim_screen_pos != Vector2.INF:
+	if aim_screen_pos != Vector2.INF and aim_modrule != null:
 		forward = aim_modrule.get_aim_direction_from_crosshair(aim_screen_pos)
+	elif aim_modrule == null:
+		# 缺瞄准力学:机头朝向直射(世界系),避免沿用旧的船体系 Vector3.FORWARD
+		forward = -root.global_transform.basis.z.normalized()
 	
 	var right := cam_main.global_transform.basis.x.normalized() if cam_main else root.global_transform.basis.x.normalized()
 	var up := cam_main.global_transform.basis.y.normalized() if cam_main else root.global_transform.basis.y.normalized()
