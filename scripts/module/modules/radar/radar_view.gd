@@ -34,17 +34,18 @@ func _ready() -> void:
 func _on_target_spawned(target: AbleToBeLocked) -> void:
 	if target in _reticles:
 		return
-	var player := GameManager.get_current_player()
-	if player == null:
+	# 用自己所属的船(_root,由 radar 模块注入),不绕全局 GameManager;
+	# 敌人雷达(无相机)在 _ready 已禁用,不会走到这里。
+	if _root == null or not _root.has_method("get_main_camera"):
 		return
-	var cam := player.get_main_camera()
+	var cam: Camera3D = _root.get_main_camera()
 	if cam == null:
 		return
 
 	var reticle := TargetReticle.new()
 	reticle.name = "TargetReticle_" + target.name
 	add_child(reticle)
-	reticle.setup(target, player, cam, target_selector_scene, hp_bar_scene)
+	reticle.setup(target, _root as PlayerShip, cam, target_selector_scene, hp_bar_scene)
 	_reticles[target] = reticle
 
 func _on_target_died(target: AbleToBeLocked) -> void:
