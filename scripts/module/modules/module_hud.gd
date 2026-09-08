@@ -1,4 +1,4 @@
-extends UIModule
+extends Module
 class_name HUDModule
 
 ## 门面模块(决策 #19):集中管理本船所有模块 HUD 的注册,转发包装给 HUDManager。

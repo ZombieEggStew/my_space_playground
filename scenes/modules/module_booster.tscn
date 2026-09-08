@@ -56,7 +56,7 @@ border_width_right = 2
 border_width_bottom = 2
 border_color = Color(1, 1, 1, 1)
 
-[node name="module_boost" type="Node3D" unique_id=1679191940 node_paths=PackedStringArray("boost_progress_bar", "boost_particle", "energy_tick", "recover_delay_timer", "hud_container")]
+[node name="module_boost" type="Node3D" unique_id=386434713 node_paths=PackedStringArray("boost_progress_bar", "boost_particle", "energy_tick", "recover_delay_timer", "hud_container")]
 script = ExtResource("1_hwryj")
 boost_progress_bar = NodePath("boost/PanelContainer/VBoxContainer/PanelContainer/TextureProgressBar")
 boost_particle = NodePath("GPUParticles3D")

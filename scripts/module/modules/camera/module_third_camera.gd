@@ -1,4 +1,4 @@
-extends Module3D
+extends Module
 class_name ThirdCameraModule
 
 

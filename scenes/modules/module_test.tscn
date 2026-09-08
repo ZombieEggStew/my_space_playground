@@ -2,7 +2,5 @@
 
 [ext_resource type="Script" uid="uid://qmq13sav8mql" path="res://scripts/module/modules/module_test.gd" id="1_dw2jr"]
 
-[node name="module_test" type="Node" unique_id=176709362 node_paths=PackedStringArray("hit_count_label", "hud_container")]
+[node name="module_test" type="Node3D" unique_id=2092999821]
 script = ExtResource("1_dw2jr")
-hit_count_label = NodePath("")
-hud_container = NodePath("")

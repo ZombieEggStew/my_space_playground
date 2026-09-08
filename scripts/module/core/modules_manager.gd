@@ -7,8 +7,12 @@ var third_camera_module: ThirdCameraModule
 var player_aim_module: BasicAimModule
 var rader_module: RadarModule
 
+## 安装模块:显式注入 root/modules_manager(不再靠 _enter_tree 猜树结构,见 .memo 讨论)。
+## [param module_scene] 实例化后立即注入,再挂到树上;注入失败(父不是 CharacterBody3D)也照常挂载,
+## 由模块 _enter_tree 兜底按旧逻辑推算。
 func install_module(module_scene:PackedScene) -> Module:
 	var module = module_scene.instantiate()
+	_inject_module_deps(module)
 
 	if module is BasicAimModule:
 		player_aim_module = module
@@ -16,19 +20,20 @@ func install_module(module_scene:PackedScene) -> Module:
 	if module is RadarModule:
 		rader_module = module
 
-	add_child(module)
-	return module
-
-func install_module_3d(module_scene:PackedScene) -> Module3D:
-	var module = module_scene.instantiate()
-
 	if module is EngineModule:
 		movement_module = module
+
 	if module is ThirdCameraModule:
 		third_camera_module = module
 
 	add_child(module)
 	return module
+
+## 注入基类依赖:模块脚本里 `root`/`modules_manager` 在 _enter_tree 前就被赋值。
+## 模块统一继承 Module(Node3D),故参数不写死类型,靠字段注入(兼容 booster 等链式子模块)。
+func _inject_module_deps(module) -> void:
+	module.modules_manager = self
+	module.root = get_parent() as CharacterBody3D
 
 func get_camera_module() -> ThirdCameraModule:
 	return third_camera_module
@@ -57,15 +62,6 @@ func uninstall_module(module: Module) -> void:
 		player_aim_module = null
 	if module == rader_module:
 		rader_module = null
-	module.queue_free()
-
-## 卸载 3D 模块(幂等,语义同 uninstall_module)
-func uninstall_module_3d(module: Module3D) -> void:
-	if module == null or not is_instance_valid(module):
-		return
-	if module.get_parent() != self:
-		push_warning("ModulesManager.uninstall_module_3d: %s 不是本管理器的直接子节点" % module.name)
-	module.on_uninstall()
 	if module == movement_module:
 		movement_module = null
 	if module == third_camera_module:

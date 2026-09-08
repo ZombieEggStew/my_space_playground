@@ -41,17 +41,17 @@ func _ready() -> void:
 	
 	health.setup(team_id,100, 100)
 	health.on_death.connect(die)
-	var engine_module =  modules_manager.install_module_3d(scene_module_move_controller) as EngineModule
+	var engine_module =  modules_manager.install_module(scene_module_move_controller) as EngineModule
 	engine_module.install_booster_module(scene_module_booster)
 
 	
-	modules_manager.install_module_3d(scene_module_third_camera)
+	modules_manager.install_module(scene_module_third_camera)
 
 	modules_manager.install_module(scene_module_radar)
 	modules_manager.install_module(scene_module_basic_info_ui)
 	modules_manager.install_module(scene_module_player_aim)
 
-	var laser := modules_manager.install_module_3d(scene_module_laser_gun)
+	var laser := modules_manager.install_module(scene_module_laser_gun)
 	modules_manager.install_module(scene_module_predict_aim).init_module(laser)
 
 	attachment_manager.attach_to(Slot.SLOT_1, scene_module_missile_launcher)

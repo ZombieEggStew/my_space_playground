@@ -1,4 +1,4 @@
-extends Module3D
+extends Module
 class_name BoosterModule
 
 var engine_module : EngineModule
@@ -12,7 +12,9 @@ func setup(_engine) -> void:
 	engine_module = _engine
 
 func _enter_tree() -> void:
-	engine_module = get_parent()
+	engine_module = get_parent() as EngineModule
+	super._enter_tree()
 
-	modules_manager = engine_module.modules_manager
-	root = engine_module.root
+	if engine_module:
+		modules_manager = engine_module.modules_manager
+		root = engine_module.root

@@ -108,11 +108,11 @@ test-1/
 
 ### 4.1 模块化飞船系统(`scripts/modules/`)
 
-**继承体系**:`Module(Node)` / `Module3D(Node3D)` → 各具体模块;`EngineModule` → `MoveControllerModule` / `BoosterModule`;`WeaponModule` → 激光机炮;`UIModule` → 基础信息 UI。模块子组件(`ModuleComponent`)回指 `main_module`。
+**继承体系**:`Module(Node3D)`(决策 #26:统一 Node3D,纯逻辑模块 transform 恒等) → 各具体模块;`EngineModule` → `MoveControllerModule` / `BoosterModule`;`WeaponModule` → 激光机炮;`UIModule` → 基础信息 UI。模块子组件(`ModuleComponent`)回指 `main_module`。
 
 | 模块 | class_name | 职责 |
 |---|---|---|
-| `modules_manager.gd` | `ModulesManager` | 模块容器:`install_module(_3d)` 实例化并按类型缓存;`get_camera_module / get_aim_module / get_move_module / get_radar_module` 查询 |
+| `modules_manager.gd` | `ModulesManager` | 模块容器:`install_module` 实例化并注入依赖、按类型缓存;`get_camera_module / get_aim_module / get_move_module / get_radar_module` 查询 |
 | `module_move_controller.gd` | `MoveControllerModule` | 飞行控制:WASD 加减速、Shift 加速、A/D 滚转、鼠标跟随转向(平滑因子 + 转向曲线 Curve)、引擎开关 |
 | `module_booster.gd` | `Booster_1` | 推进器:能量条消耗/恢复(Timer tick)、粒子、发 `on_player_boost` |
 | `module_third_camera.gd` | `ThirdCameraModule` | 第三人称相机:鼠标跟随/自由视角、回头看、锁定目标平滑转向、加速 FOV/抖动/尾焰 |
@@ -126,7 +126,7 @@ test-1/
 | `module_component/laser_gun_hud_system.gd` | `LaserGunHudSystem` | 机炮 HUD:注册 crosshair_3 与死区指示器 |
 | `module_screen.gd` / `module_test.gd` | — | 空壳/占位 |
 
-**基类**:`base/module.gd`、`base/module_3d.gd`(`_enter_tree` 缓存 `modules_manager` 与飞船 root)、`base/module_engine.gd`、`base/module_booster.gd`、`base/module_weapon.gd`(bullet_speed + `on_bullet_speed_change`)、`base/module_UI.gd`、`base/module_component.gd`。
+**基类**:`base/module.gd`(`Module extends Node3D`,`_enter_tree` 兜底缓存 `modules_manager` 与飞船 root)、`base/module_engine.gd`、`base/module_booster.gd`、`base/module_weapon.gd`(bullet_speed + `on_bullet_speed_change`)、`base/module_UI.gd`、`base/module_component.gd`。
 
 ### 4.2 组件(`scripts/component/`)
 

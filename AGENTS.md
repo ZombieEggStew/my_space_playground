@@ -34,7 +34,7 @@
 
 ### 模块系统(`scripts/modules/`)
 
-- 飞船功能 = `Module`/`Module3D` 节点,装进 `ModulesManager`;基类在 `_enter_tree` 缓存 `modules_manager` 与 `root`,不在 `_ready` 重复解析。
+- 飞船功能 = `Module`(统一 `extends Node3D`,见决策 #25-26)节点,装进 `ModulesManager`;`ModulesManager` 在 `install_module` 时**显式注入** `root`/`modules_manager`(见 code-map §4.1/决策 #25),基类 `_enter_tree` 只是兜底(未注入才推算)——**覆盖 `_enter_tree` 的子类必须调 `super._enter_tree()`**。
 - 缺依赖:`Log.log_missing_component(self, "x")` 后 `queue_free()`,绝不硬崩溃。
 - 新增模块 = `scripts/modules/` 建脚本 + `scenes/modules/` 建场景,消费方 `@export` 绑定。
 
