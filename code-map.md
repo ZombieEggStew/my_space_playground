@@ -367,4 +367,4 @@ Main (Node, Main.gd)                     ← _enter_tree 注册各管理器到 G
 4. `script_templates/Node/state_template.gd` 引用了不存在的 `GameManager.default_state_name`(模板未更新)。
 5. 敌机子弹直接挂 `get_tree().root`,与玩家子弹挂 `bullets_parent` 不一致,清理策略需注意。
 6. ⚠️ 准星场景统一在 `scenes/hud/`;旧名 crosshair_1..4 对应 target_selector / lock_reticle / gun_reticle / lead_indicator,旧 `scenes/ui/crosshair_1.tscn` 已不存在。
-7. ✅ 无头冒烟测试(P2/P3):`scripts/test/p2_signal_smoke_test.gd`(`--script` 运行)验证输入→ShipBus 离散信号路由 + ControlModule→laser/booster 命令链路,15 PASS / 1 SKIP(hover 端到端受 headless 视野限制,需编辑器手动核对)。
+7. ✅ 无头冒烟测试(P2/P3,参考工具):`scripts/test/p2_signal_smoke_test.gd`(`--script` 运行)可验证输入→ShipBus 离散信号路由 + ControlModule→laser/booster 命令链路;headless 环境下 Timer/鼠标语义有偏差(hover 端到端、射速回归两项需编辑器手动核对),以手动验证为准。
