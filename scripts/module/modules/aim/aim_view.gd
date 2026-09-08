@@ -1,7 +1,7 @@
 extends Node
 class_name AimView
 
-## aim 模块的 2D 呈现层(决策 #20):持有锁定准星 crosshair_2,负责其注册与每帧驱动。
+## aim 模块的 2D 呈现层(决策 #20):持有锁定准星 lock_reticle,负责其注册与每帧驱动。
 ## 数据来源:aim 模块(selection)经 [method set_locked_target] / [method set_hovered_target]
 ## 传入目标身份;本 view 用相机投影渲染(投影原语后续收口到 camera,决策 #18)。
 ##
@@ -11,7 +11,7 @@ class_name AimView
 
 @export var scene_lock_reticle: PackedScene
 
-var crosshair_2: HUD_LockReticle  # 绿色 二级锁定准星
+var lock_reticle: HUD_LockReticle  # 绿色 二级锁定准星
 
 var _locked_target: AbleToBeLocked
 var _hovered_target: AbleToBeLocked
@@ -23,10 +23,10 @@ func _ready() -> void:
 	var aim_module := get_parent()
 	if aim_module and aim_module.get("root") != null:
 		cam_main = aim_module.root.get_main_camera()
-	init_crosshair_2()
+	init_lock_reticle()
 
-func init_crosshair_2() -> void:
-	crosshair_2 = GameManager.hud_manager.register_hud(scene_lock_reticle).node as HUD_LockReticle
+func init_lock_reticle() -> void:
+	lock_reticle = GameManager.hud_manager.register_hud(scene_lock_reticle).node as HUD_LockReticle
 
 func set_locked_target(target: AbleToBeLocked) -> void:
 	_locked_target = target
@@ -40,9 +40,9 @@ func _process(_delta: float) -> void:
 	if is_instance_valid(_locked_target):
 		_handle_locked_target()
 	elif is_instance_valid(_hovered_target):
-		crosshair_2.set_target_pos(cam_main.unproject_position(_hovered_target.global_position))
+		lock_reticle.set_target_pos(cam_main.unproject_position(_hovered_target.global_position))
 	else:
-		crosshair_2.reset()
+		lock_reticle.reset()
 
 func _handle_locked_target() -> void:
 	if not is_instance_valid(_locked_target):
@@ -67,10 +67,10 @@ func _handle_locked_target() -> void:
 		clamp(screen_pos.x, indicator_margin, viewport_size.x - indicator_margin),
 		clamp(screen_pos.y, indicator_margin, viewport_size.y - indicator_margin)
 	)
-	crosshair_2.set_target_pos(screen_pos)
+	lock_reticle.set_target_pos(screen_pos)
 
 ## 兜底清理(§4.2-5):卸载时回收注册到 HUD 层的准星节点(幂等)
 func _exit_tree() -> void:
-	if is_instance_valid(crosshair_2):
-		crosshair_2.queue_free()
-	crosshair_2 = null
+	if is_instance_valid(lock_reticle):
+		lock_reticle.queue_free()
+	lock_reticle = null
