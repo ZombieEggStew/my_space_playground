@@ -1,8 +1,13 @@
 [gd_scene format=3 uid="uid://cc1r6mss3o2ds"]
 
 [ext_resource type="Script" uid="uid://da6jmvtr64hva" path="res://scripts/module/modules/aim/module_player_aim.gd" id="1_gvq42"]
+[ext_resource type="Script" path="res://scripts/module/modules/aim/aim_view.gd" id="2_aview"]
 [ext_resource type="PackedScene" uid="uid://cdlapu2jn5572" path="res://scenes/hud/lock_reticle.tscn" id="3_jae7w"]
 
-[node name="module_player_aim" type="Node" unique_id=1372324135]
+[node name="module_player_aim" type="Node" unique_id=1372324135 node_paths=PackedStringArray("aim_view")]
 script = ExtResource("1_gvq42")
+aim_view = NodePath("aim_view")
+
+[node name="aim_view" type="Node" parent="."]
+script = ExtResource("2_aview")
 scene_lock_reticle = ExtResource("3_jae7w")

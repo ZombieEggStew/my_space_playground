@@ -31,8 +31,6 @@ func _input(event: InputEvent) -> void:
 	
 	if event.is_action_pressed("lock_on"):
 		SignalBus.on_player_try_lock.emit()
-	if event.is_action_pressed("switch_cam"):
-		SignalBus.on_player_switch_camera.emit()
 	if event.is_action_pressed("toggle_engine"):
 		SignalBus.on_toggle_engine.emit()
 	if event.is_action_pressed("use_item_1"):

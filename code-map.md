@@ -179,7 +179,7 @@ MoveSM 提供公共机动原语:`rotate_towards / move_forward / set_target_spee
 | `ui_manager.gd` (`UIManager`) | 主 UI 层(空壳,含 Main_Menu/Transition_Rect) |
 
 **准星(`scripts/hud/`)**:`target_selector`(白色目标选择框,悬停信号供锁定判定)、`lock_reticle`(绿色二级锁定框)、`gun_reticle`(绿色机炮十字,限制在死区圆周)、`lead_indicator`(绿色预测圆圈,`_draw` 按距离插值半径)、`dead_zone_indicator`(死区圆);基类 `base/hud_far_base.gd`(→ `HudElement` 元件基类);全部带 class_name(`HUD_TargetSelector`/`HUD_LockReticle`/`HUD_GunReticle`/`HUD_LeadIndicator`/`HUD_DeadZoneIndicator`),消费方类型化静态调用,无 `.call()`/Dictionary 鸭子类型。
-**目标 UI 簇(P3)**:`target_reticle.gd`(`TargetReticle`,一个目标 = 一个组件,持有选择框+目标血条并统一生命周期)、`target_reticle_controller.gd`(`TargetReticleController`,挂 HUD_Manager 下,监听 `on_lockable_target_spawned/died` 按目标 spawn/回收);悬停经 `SignalBus.on_target_hovered/unhovered` 转发,`module_player_aim` 不再造 UI。
+**目标 UI 簇(P1)**:`target_reticle.gd`(`TargetReticle`,一个目标 = 一个组件,持有选择框+目标血条并统一生命周期);由 `radar_view.gd`(`RadarView`,radar 模块场景内子节点,P1 起接管 spawn/回收,原 `target_reticle_controller.gd` 已删除)监听 `on_lockable_target_spawned/died` 按目标 spawn/回收;悬停经 `SignalBus.on_target_hovered/unhovered` 转发,`module_player_aim` 不再造 UI。
 
 **UI 控件(`scripts/ui/`)**:`hp_bar`(缓冲条 tween + 低血闪烁)、`hp_bar_target`(锁定目标血条,掉血发 `on_damage_dealt`)、`damage_number`(飘字动画,对象池复用)、`panel_speed`(订阅 `PlayerShip.speed_stat`/`forward_speed_stat`,不轮询)、`buff_icon`(倒计时/叠层)、`buff_layout`、`shield_ui_container`(`bind(stat)` 订阅护盾 FloatStat,显示层 lerp),以及 4 个 HUD 特效:`ui_float_effect`(鼠标视差)、`ui_rotation_effect`(象限旋转)、`ui_boost_offset_effect`(加速扩散)、`ui_boost_shake_effect`(加速抖动)。
 
@@ -349,7 +349,7 @@ Main (Node, Main.gd)                     ← _enter_tree 注册各管理器到 G
 
 ## 9. 已知问题 / 预留接口
 
-1. ⚠️ `input_manager.gd` 发射了 `on_player_switch_camera`,但 `SignalBus.gd` **未声明**该信号——switch_cam 按键会运行时报错。
+1. ✅ 已修复(2026-09-07 P0):`input_manager.gd` 曾发射未声明的 `on_player_switch_camera`;该信号零消费方,已删除对应 emit。`switch_cam` 输入映射仍保留在 project.godot,未来若接相机切换需补声明信号。
 2. ⚠️ `scenes/able_to_be_locked.tscn` 根节点类型 `Node` 与脚本基类 `VisibleOnScreenNotifier3D` 不匹配(实际使用 `scenes/component/able_to_be_locked.tscn`)。
 3. 预留空壳:`MoveComponent`(全注释)、`PlayerInfo`、`global.gd`、`UIManager`、`module_screen`。
 4. `script_templates/Node/state_template.gd` 引用了不存在的 `GameManager.default_state_name`(模板未更新)。

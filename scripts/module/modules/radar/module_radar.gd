@@ -6,6 +6,7 @@ signal on_target_found(target: AbleToBeLocked)
 var targets : Array[AbleToBeLocked] = []
 
 func _enter_tree() -> void:
+	super._enter_tree()
 	SignalBus.on_lockable_target_spawned.connect(_on_target_found)
 	SignalBus.on_lockable_target_died.connect(_on_target_died)
 

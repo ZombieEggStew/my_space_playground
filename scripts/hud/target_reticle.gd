@@ -3,7 +3,7 @@ class_name TargetReticle
 
 ## 单个可锁定目标的目标 UI 簇(白色选择框 + 目标血条)统一生命周期组件(见 .memo/.CURRENT.md P3)。
 ##
-## 由 [code]TargetReticleController[/code] 按目标 spawn;setup 里经 register_hud 注册两个静态元素,
+## 由 [code]RadarView[/code](radar_view.gd)按目标 spawn;setup 里经 register_hud 注册两个静态元素,
 ## 并把选择框的悬停事件转发到 SignalBus;目标销毁/离开场景树时整簇一起回收,不散落在各元素脚本里。
 ##
 ## 职责边界:
@@ -36,6 +36,10 @@ func _on_selector_mouse_entered(t: AbleToBeLocked) -> void:
 
 func _on_selector_mouse_exited() -> void:
 	SignalBus.on_target_unhovered.emit()
+
+## 整簇回收(目标死亡/离开场景树时由 tree_exited 触发;radar_view 卸载时也可显式调用)
+func cleanup() -> void:
+	_cleanup()
 
 ## 整簇回收(目标死亡/离开场景树时由 tree_exited 触发;controller 也可调用)
 func _cleanup() -> void:
