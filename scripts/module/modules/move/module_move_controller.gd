@@ -55,9 +55,9 @@ func set_roll(roll: float) -> void:
 
 func _ready() -> void:
 
-	ship_bus.on_toggle_track_mouse.connect(_on_track_mouse_change)
-
-	ship_bus.on_toggle_engine.connect(_on_engine_toggle)
+	if ship_bus:
+		ship_bus.on_toggle_track_mouse.connect(_on_track_mouse_change)
+		ship_bus.on_toggle_engine.connect(_on_engine_toggle)
 
 	model_node = root.get_model_node()
 	if model_node == null:

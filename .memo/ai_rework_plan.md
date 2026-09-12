@@ -5,6 +5,15 @@
 > 优先级:**战术多样 > 威胁回避与反击 > 移动自然度**(敌机差异化 profile 列为后期可选)。
 > 与本仓库计划的关系:本方案是 `.memo/.CURRENT.md` §P4(敌人 AIModule 替换)的**决策层规格升级版**;
 > 若采纳,则 P4 按本方案执行,原"状态机内部保留"改为"Utility AI 决策"。
+>
+> **实施进度(2026-09-12)**:
+> - ✅ **Ph0**:敌人接模块系统(ModulesManager + radar 身体 + aim_mechanics),旧 AI 行为不变;已提交。
+> - ✅ **Ph1**:Perception + Utility 决策器 + patrol/orbit/tail_chase + 机动原语;敌人装齐
+>   move/laser(独立纯身体场景 `module_laser_gun_enemy.tscn`,决策 #33 AI 通道)+ AIModule;
+>   **旧 AI_Brain 已退役**(场景移除节点,scripts/ai/ 遗留待 Ph4 删)。无头零错误 + p4 冒烟 21/21。
+>   **实测发现(--script 测试模式坑)**:测试脚本若**静态引用新 class_name**(如 AIModule),
+>   编译时递归编译依赖链,此时 autoload 标识符(SignalBus/GameManager)未注册 → 连锁编译失败;
+>   测试改用 `load("...").new()` + resource_path 匹配避免静态引用(旧类如 TeamID 已缓存不受影响)。
 
 ---
 
@@ -215,13 +224,13 @@ pilot_profile.gd (Resource):
 
 ## 7. 迁移步骤与验证闸门
 
-| 阶段 | 内容 | 验证闸门 |
-|---|---|---|
-| **Ph0** | 敌人接入模块系统(只装不换行为,现有 AI 照跑) | 无头 `--import` + `--quit-after 15` 零 SCRIPT ERROR;敌人行为与接入前一致 |
-| **Ph1** | 建 Perception + Utility 决策器 + 首批行为(patrol/orbit/tail_chase)+ 机动原语 | 决策节流生效;单敌能巡航/绕后/咬尾,无抽搐 |
-| **Ph2** | 威胁回避:evade_fire / evade_missile / disengage 接入 | 被打会躲、导弹接近会闪、低血脱离;旧 EVADE 正式退役 |
-| **Ph3** | 战术多样:kite / joust / intercept;开启 profile 差异化(可后延) | 同场多敌行为分工;玩家难以一招吃遍 |
-| **Ph4** | 删旧 `scripts/ai/` + 子弹 spawn 收口 + 文档 | 全量回归:输入/调试键逐键 × 敌人行为;code-map 更新 |
+| 阶段 | 内容 | 验证闸门 | 状态 |
+|---|---|---|---|
+| **Ph0** | 敌人接入模块系统(只装不换行为,现有 AI 照跑) | 无头 `--import` + `--quit-after 15` 零 SCRIPT ERROR;敌人行为与接入前一致 | ✅ **已完成(2026-09-12)** |
+| **Ph1** | 建 Perception + Utility 决策器 + 首批行为(patrol/orbit/tail_chase)+ 机动原语 | 决策节流生效;单敌能巡航/绕后/咬尾,无抽搐 | ✅ **已完成(2026-09-12)**,p4 冒烟 21/21;编辑器手动待确认 |
+| **Ph2** | 威胁回避:evade_fire / evade_missile / disengage 接入 | 被打会躲、导弹接近会闪、低血脱离;旧 EVADE 正式退役 | 🔶 待做 |
+| **Ph3** | 战术多样:kite / joust / intercept;开启 profile 差异化(可后延) | 同场多敌行为分工;玩家难以一招吃遍 | 🔶 待做 |
+| **Ph4** | 删旧 `scripts/ai/` + 子弹 spawn 收口 + 文档 | 全量回归:输入/调试键逐键 × 敌人行为;code-map 更新 | 🔶 待做 |
 
 每阶段结束跑 §7 无头检查 + 编辑器手动验证对应行为。
 

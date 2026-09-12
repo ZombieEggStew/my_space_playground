@@ -16,6 +16,11 @@ var damage := 10.0
 
 var aim_modrule: AimMechanicsModule
 
+## 决策 #33 + AI 通道(.memo/ai_rework_plan.md §5.2):AI 没有屏幕坐标,由 AIModule
+## 每帧 set_ai_aim_dir() 推入世界射击方向,shoot() 优先使用;Vector3.INF = 未设置
+## (回退准星/机头逻辑)。玩家侧从未设置,行为不变。
+var _ai_aim_dir: Vector3 = Vector3.INF
+
 var _fire_from_left := true
 var bullet_spread_deg := 0  # 子弹随机散布角度（度）
 
@@ -30,7 +35,8 @@ const aim_dead_zone_px: float = 64.0
 func _ready() -> void:
 	shoot_timer.timeout.connect(_on_shoot_timer_timeout)
 
-	aim_system.setup(aim_dead_zone_px)
+	if aim_system:
+		aim_system.setup(aim_dead_zone_px)
 	set_bullet_speed(default_bullet_speed)
 
 	# 决策 #33:laser 不自持相机,射击完全由 aim 模块指导;缺 aim → 机炮直射降级(不硬崩)
@@ -61,6 +67,9 @@ func _get_crosshair3_screen_pos() -> Vector2:
 
 
 func _get_next_muzzle_pos() -> Vector3:
+	if gun_pivot_left == null:
+		# 缺炮口节点(敌人装配):机头前方取炮口
+		return root.global_position - root.global_transform.basis.z * 2.0
 	var left_global_pos := gun_pivot_left.global_transform.origin
 	var muzzle_pos := left_global_pos
 
@@ -69,9 +78,11 @@ func _get_next_muzzle_pos() -> Vector3:
 		var right_local_pos := left_local_pos
 		right_local_pos.x = -right_local_pos.x
 		muzzle_pos = root.to_global(right_local_pos)
-		right_laser_audio.play()
+		if right_laser_audio:
+			right_laser_audio.play()
 	else:
-		left_laser_audio.play()
+		if left_laser_audio:
+			left_laser_audio.play()
 
 	_fire_from_left = not _fire_from_left
 	return muzzle_pos
@@ -89,7 +100,9 @@ func spawn_bullet( pos: Vector3, dir: Vector3) -> void:
 
 	var heat_ratio := heat_manager.get_heat_ratio() if heat_manager else 0.0
 	var _damage :int = round(damage * (1 + heat_ratio))
-	bullet.setup(pos, dir, TeamID.PLAYER , root).set_damage(_damage).set_speed(bullet_speed)
+	# 决策 #28:team 取自 root(玩家/敌人共用同一份 laser 模块,阵营不再硬编码 PLAYER)
+	var team: int = root.get_team_id() if root.has_method("get_team_id") else TeamID.PLAYER
+	bullet.setup(pos, dir, team , root).set_damage(_damage).set_speed(bullet_speed)
 
 
 ## 决策 #13/P3:连续量命令,由 ControlModule / AIModule 每帧调用。
@@ -124,7 +137,7 @@ func shoot() -> void:
 		if not heat_manager.add_heat():
 			return
 
-	var aim_screen_pos := aim_system.get_aim_point_screen_pos()
+	var aim_screen_pos := aim_system.get_aim_point_screen_pos() if aim_system else Vector2.INF
 	var aim_basis := _get_aim_basis(aim_screen_pos)
 	var spread := deg_to_rad(bullet_spread_deg)
 	var offset_x := randf_range(-spread, spread)
@@ -133,12 +146,31 @@ func shoot() -> void:
 	var muzzle_pos := _get_next_muzzle_pos()
 	spawn_bullet(muzzle_pos, shot_dir)
 
+## AI 通道:推入世界射击方向(决策 #33 对齐,AIModule 每帧调用;Vector3.INF = 未设置)
+func set_ai_aim_dir(dir: Vector3) -> void:
+	_ai_aim_dir = dir.normalized() if dir.length() > 0.001 else Vector3.INF
+
+func clear_ai_aim_dir() -> void:
+	_ai_aim_dir = Vector3.INF
+
 ## 决策 #33:laser 不自持相机,射击方向/散布基完全由 aim 模块给出;
-## 缺 aim(或准星无效)→ 机头朝向直射,散布基取机体轴(世界系)。
+## AI 通道优先,其次准星(缺 aim 或准星无效)→ 机头朝向直射,散布基取机体轴(世界系)。
 func _get_aim_basis(aim_screen_pos: Vector2) -> Basis:
+	if _ai_aim_dir != Vector3.INF:
+		return _basis_from_forward(_ai_aim_dir)
 	if aim_screen_pos != Vector2.INF and aim_modrule != null:
 		return aim_modrule.get_aim_basis_from_crosshair(aim_screen_pos)
 	var b := root.global_transform.basis
 	return Basis(b.x, b.y, -b.z)
+
+## 由 forward 造右手正交基(与 AimMechanicsModule.get_aim_basis_from_crosshair 同一套)。
+static func _basis_from_forward(forward: Vector3) -> Basis:
+	var f := forward.normalized()
+	var right := Vector3.UP.cross(f)
+	if right.length() < 0.0001:
+		right = Vector3.RIGHT
+	right = right.normalized()
+	var up := f.cross(right).normalized()
+	return Basis(right, up, f)
 
 

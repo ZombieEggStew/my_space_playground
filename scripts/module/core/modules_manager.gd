@@ -27,11 +27,13 @@ func install_module(module_scene:PackedScene) -> Module:
 
 ## 注入基类依赖:模块脚本里 `root`/`modules_manager`/`ship_bus` 在 _enter_tree 前就被赋值。
 ## 模块统一继承 Module(Node3D),故参数不写死类型,靠字段注入(兼容 booster 等链式子模块)。
+## ship_bus 用 duck typing 取根节点的 `ship_bus` 属性(与 Module._enter_tree 兜底一致):
+## 玩家船 = PlayerShip.ship_bus;敌人船(Ph0/ai_rework_plan)挂同名节点后同样注入,不限于 PlayerShip。
 func _inject_module_deps(module) -> void:
 	module.modules_manager = self
 	module.root = get_parent() as CharacterBody3D
-	var player := get_parent() as PlayerShip
-	module.ship_bus = player.ship_bus if player else null
+	var ship_bus_node: Variant = get_parent().get("ship_bus") if get_parent() != null else null
+	module.ship_bus = ship_bus_node as ShipBus if ship_bus_node is ShipBus else null
 
 ## 通用查询(按 `is` 语义,基类可查到子类;测试/AI/动态场景用)。
 func get_module(module_type) -> Module:

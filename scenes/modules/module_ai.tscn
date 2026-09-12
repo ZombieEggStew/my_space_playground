@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://a7aiemodul000"]
+
+[ext_resource type="Script" uid="uid://7tgqdu0aipr7" path="res://scripts/module/modules/brain/ai_module.gd" id="1_ai"]
+
+[node name="module_ai" type="Node3D"]
+script = ExtResource("1_ai")
