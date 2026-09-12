@@ -8,6 +8,7 @@ const MISSILE_THREAT_RANGE := 250.0
 
 
 var _evade_dir := Vector3.ZERO
+var _roll_dir := 0.0  # §11 二次调整:规避时连续滚转方向(±1)
 
 
 func score(ctx: Dictionary, _profile: PilotProfile) -> float:
@@ -34,6 +35,7 @@ func enter() -> void:
 	if randf() < 0.5:
 		side = -side
 	_evade_dir = (side - to_missile * 0.3).normalized()
+	_roll_dir = 1.0 if randf() < 0.5 else -1.0
 
 
 func execute(_delta: float, _ctx: Dictionary) -> void:
@@ -43,9 +45,12 @@ func execute(_delta: float, _ctx: Dictionary) -> void:
 	var boost := ai.get_booster_module()
 	if boost:
 		boost.set_boosting(true)
+	m.set_roll(_roll_dir)  # §11 二次调整:连续滚转(视觉机动)
 
 
 func exit() -> void:
 	var boost := ai.get_booster_module()
 	if boost:
 		boost.set_boosting(false)
+	var m := ai.maneuvers
+	m.set_roll(0.0)

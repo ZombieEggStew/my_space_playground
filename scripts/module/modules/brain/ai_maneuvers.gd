@@ -14,7 +14,8 @@ func setup(ai_mod: AIModule) -> void:
 
 
 ## 朝世界方向转向:换算成机体坐标的 yaw/pitch 归一化 steer。
-## yaw = atan2(-x, -z)、pitch = atan2(y, -z)(机体 -Z 为前),clamp 到 ±1 满舵。
+## 放水(§11 二次调整):**不满舵**(上限 ±0.7)+ **小角度死区**(<5° 不转向)——
+## 敌机转向"懒惰"、移动规律可预测,不会和玩家对转圈。
 func steer_towards_dir(world_dir: Vector3) -> void:
 	var m: EngineModule = ai.move_mod
 	if m == null:
@@ -25,10 +26,13 @@ func steer_towards_dir(world_dir: Vector3) -> void:
 	var local := ai.root.global_transform.basis.inverse() * dir
 	var yaw := atan2(-local.x, -local.z)
 	var pitch := atan2(local.y, -local.z)
-	m.set_steer(Vector2(
-		clampf(yaw / (PI * 0.5), -1.0, 1.0),
-		clampf(pitch / (PI * 0.5), -1.0, 1.0)
-	))
+	var steer_x := clampf(yaw / (PI * 0.5), -1.0, 1.0) * 0.7
+	var steer_y := clampf(pitch / (PI * 0.5), -1.0, 1.0) * 0.7
+	if abs(yaw) < deg_to_rad(5.0):
+		steer_x = 0.0
+	if abs(pitch) < deg_to_rad(5.0):
+		steer_y = 0.0
+	m.set_steer(Vector2(steer_x, steer_y))
 
 
 ## 朝世界坐标点转向。
@@ -37,6 +41,14 @@ func steer_to_point(point: Vector3) -> void:
 	if dir.length() < 0.001:
 		return
 	steer_towards_dir(dir)
+
+
+## 滚转命令(-1..1;规避机动用,见 §11 二次调整)。
+func set_roll(r: float) -> void:
+	var m := ai.move_mod
+	if m == null:
+		return
+	m.set_roll(clampf(r, -1.0, 1.0))
 
 
 ## 油门 0..1(-1..1:负 = 刹车);0.0 = 滑行。

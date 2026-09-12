@@ -113,6 +113,7 @@ func _run() -> void:
 	booster.set_boosting(false)
 	_passed_or_failed(true, "booster.set_boosting 触发无崩溃")
 	_passed_or_failed(ai.get_node_or_null("ActionEvadeFire") != null and ai.get_node_or_null("ActionEvadeMissile") != null and ai.get_node_or_null("ActionDisengage") == null, "威胁行为库就位(evade_fire/evade_missile,disengage 已按 §11 M7 删除)")
+	_passed_or_failed(ai.get_node_or_null("ActionKeepDistance") != null, "§11 二次调整:近距逃离行为已注册(ActionKeepDistance)")
 	_passed_or_failed(snap.has("health_ratio") and snap.has("last_hit_time") and snap.has("nearest_missile_dist") and snap.has("player"), "感知快照含 Ph2 威胁字段 + §11 玩家引用")
 	_passed_or_failed(snap.get("player") != null, "感知快照 player 非 null(球面巡逻/距离上限球心)")
 
@@ -120,6 +121,7 @@ func _run() -> void:
 	_passed_or_failed(float(move.max_speed) < 60.0, "§11 M1:敌人 move 限速生效(max_speed=%s < 60)" % str(move.max_speed))
 	_passed_or_failed(float(move.max_yaw_speed) < 3.0, "§11 M1:敌人转向率下调(max_yaw_speed=%s < 3.0)" % str(move.max_yaw_speed))
 	_passed_or_failed(abs(float(profile.blunder_probability) - 0.15) < 0.001 and float(profile.orbit_radius) == 500.0 and float(profile.max_engage_range) == 800.0, "§11 profile 放水参数默认值(blunder 0.15 / orbit 500 / range 800)")
+	_passed_or_failed(float(profile.min_engage_range) == 100.0 and abs(float(profile.turn_mult) - 0.55) < 0.001, "§11 二次调整参数默认值(min_engage 100 / turn_mult 0.55)")
 
 	# 8. 被打瞬间 → evade_fire 分数逼近紧急阈值(0.9,可打断进攻)
 	var hit_ctx := {
@@ -130,6 +132,15 @@ func _run() -> void:
 	}
 	var s_evade_fire: float = ai.get_node("ActionEvadeFire").score(hit_ctx, profile)
 	_passed_or_failed(s_evade_fire > 0.8, "被打瞬间 evade_fire 分数 >0.8")
+
+	# 8c. §11 二次调整:近距(<100m)时 keep_distance 分数压过进攻行为
+	var close_ctx: Dictionary = hit_ctx.duplicate()
+	close_ctx["nearest_dist"] = 50.0
+	close_ctx["nearest"] = snap.get("nearest")  # score 需要非 null 目标身份
+	var s_keep: float = ai.get_node("ActionKeepDistance").score(close_ctx, profile)
+	var s_orbit_close: float = ai.get_node("ActionOrbit").score(close_ctx, profile)
+	var s_tail_close: float = ai.get_node("ActionTailChase").score(close_ctx, profile)
+	_passed_or_failed(s_keep > s_orbit_close and s_keep > s_tail_close, "§11 二次调整:近距(50m) keep_distance 压过进攻行为")
 
 	# 8b. §11 M6 轻量化:evade_fire 执行不触发 boost(不再满油门飞离)
 	var evade_fire_action: Node = ai.get_node("ActionEvadeFire")

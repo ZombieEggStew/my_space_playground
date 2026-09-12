@@ -341,3 +341,13 @@ pilot_profile.gd (Resource):
 - 无事时绕玩家 500m 球面规律飞行
 - 失误窗口期间能稳定命中敌机(截击窗口)
 - 导弹接近仍会闪避
+
+### 11.7 二次调整(2026-09-12 用户实测反馈后追加,已实施)
+
+| # | 用户反馈 | 落地 |
+|---|---|---|
+| R1 | 敌机不要离玩家太近(距离 <100m 时尝试逃离) | 新增 `ActionKeepDistance`:score = `0.9*sqrt(1-d/100)`(越近越高,生存约束);orbit/tail_chase 在 d<100m 时降分让位;`pilot_profile.min_engage_range = 100m` |
+| R2 | 转弯太灵敏,锁尾互转圈;要移动更规律、简单、可预测 | ①`turn_mult` 0.75→**0.55**(转向率 1.65/1.1);②`steer_towards_dir` **不满舵**(±0.7)+ **5° 死区**;③tail_chase **转向脉冲**(转 0.8~1.4s → 直飞 0.4~0.8s 交替,锯齿状规律移动) |
+| R3 | 规避时加连续滚转更有意思 | `ai_maneuvers.set_roll()`;evade_fire/evade_missile enter 随机 ±1 滚转方向、execute 持续滚转、exit 复位;`AIModule._transition_to` 兜底 set_roll(0) 防残留 |
+
+> 实施状态:✅ 已提交;无头零错误 + p4 冒烟 39/39 + p5 回归 13/13;编辑器手动待确认。

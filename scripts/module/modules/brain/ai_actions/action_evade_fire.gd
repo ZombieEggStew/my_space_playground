@@ -9,6 +9,7 @@ const HIT_DECAY := 1.2
 
 
 var _evade_dir := Vector3.ZERO
+var _roll_dir := 0.0  # §11 二次调整:规避时连续滚转方向(±1)
 
 
 func score(ctx: Dictionary, _profile: PilotProfile) -> float:
@@ -28,6 +29,7 @@ func enter() -> void:
 	var side := root.global_transform.basis.x * randf_range(-1.0, 1.0)
 	var up := root.global_transform.basis.y * randf_range(0.2, 0.6)
 	_evade_dir = (side + fwd * 0.3 + up * 0.4).normalized()
+	_roll_dir = 1.0 if randf() < 0.5 else -1.0
 	# 削减"远离最近目标(攻击者)"分量:方向明显背离目标时折向侧向,避免飞离战场
 	var body: Node3D = ai.perception.snapshot.get("nearest")
 	if body != null and is_instance_valid(body):
@@ -43,3 +45,9 @@ func execute(_delta: float, _ctx: Dictionary) -> void:
 	var m := ai.maneuvers
 	m.steer_towards_dir(_evade_dir)
 	m.set_speed_ratio(0.7)
+	m.set_roll(_roll_dir)  # §11 二次调整:连续滚转(视觉机动)
+
+
+func exit() -> void:
+	var m := ai.maneuvers
+	m.set_roll(0.0)

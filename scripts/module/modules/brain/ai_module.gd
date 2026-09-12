@@ -85,6 +85,7 @@ func _setup_brain() -> void:
 		[ActionPatrol.new(), "ActionPatrol"],
 		[ActionOrbit.new(), "ActionOrbit"],
 		[ActionTailChase.new(), "ActionTailChase"],
+		[ActionKeepDistance.new(), "ActionKeepDistance"],
 		[ActionEvadeFire.new(), "ActionEvadeFire"],
 		[ActionEvadeMissile.new(), "ActionEvadeMissile"],
 	]:
@@ -192,6 +193,10 @@ func _decide() -> void:
 func _transition_to(action: AIAction, score: float) -> void:
 	if _current_action and _current_action != action:
 		_current_action.exit()
+	# §11 二次调整:切换兜底复位滚转(防 evade 滚转残留到其他行为)
+	var mc := move_mod as MoveControllerModule
+	if mc:
+		mc.set_roll(0.0)
 	_current_action = action
 	_current_score = score
 	_current_action.enter()

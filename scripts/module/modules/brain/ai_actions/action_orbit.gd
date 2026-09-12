@@ -5,7 +5,6 @@ class_name ActionOrbit
 ## 远距直扑目标后方预判点;近距叠加侧向偏移形成螺旋逼近,避免直线撞上去。
 
 const ATTACK_RANGE := 600.0
-const MIN_DIST := 40.0
 const BACK_OFFSET := 10.0
 
 
@@ -16,8 +15,8 @@ func score(ctx: Dictionary, profile: PilotProfile) -> float:
 	var d: float = ctx.get("nearest_dist", INF)
 	if d > ATTACK_RANGE:
 		return 0.15          # 尚远:低分接近,patrol 让位
-	if d < MIN_DIST:
-		return 0.15          # 过近:避让倾向
+	if d < ai.profile.min_engage_range:
+		return 0.05          # 过近(§11 二次调整):让位 keep_distance
 	if _is_tail_aligned(ctx):
 		return 0.1           # 已咬尾:让位 tail_chase
 	return 0.55 * (0.3 + 0.7 * profile.aggression)

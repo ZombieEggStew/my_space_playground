@@ -24,7 +24,10 @@ class_name PilotProfile
 # --- 放水设计(.memo/ai_rework_plan.md §11,2026-09-12 用户审核通过) ---
 ## 敌人 move 限速倍率(相对玩家:max_speed 60 / yaw 3.0 / pitch 2.0)
 @export_range(0.4, 1.0) var max_speed_mult := 0.75
-@export_range(0.4, 1.0) var turn_mult := 0.75
+## 转向率倍率(0.55 = 明显钝于玩家;配合 steer 不满舵 + 转向脉冲,移动规律可预测)
+@export_range(0.4, 1.0) var turn_mult := 0.55
+## 近距逃离阈值(米):距玩家小于此值主动拉开,避免贴脸互转
+@export_range(50.0, 300.0) var min_engage_range := 100.0
 ## 决策失误:选次优的概率
 @export_range(0.0, 0.5) var blunder_probability := 0.15
 ## 失误窗口间隔区间(秒,随机)
