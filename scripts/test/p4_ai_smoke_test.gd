@@ -107,6 +107,11 @@ func _run() -> void:
 	# 7. booster 已装(经 move 链式子模块)+ 威胁行为库 + 快照威胁字段
 	var booster: Node = move.get_booster_module() if move.has_method("get_booster_module") else null
 	_passed_or_failed(booster != null, "敌人已装 booster(move 链式子模块)")
+	_passed_or_failed(booster.ship_bus != null, "booster 已注入 ship_bus(根属性 duck typing,Ph2 实测修复)")
+	# 实际触发 boost 命令不崩(修复前 on_player_boost on Nil 崩溃)
+	booster.set_boosting(true)
+	booster.set_boosting(false)
+	_passed_or_failed(true, "booster.set_boosting 触发无崩溃")
 	_passed_or_failed(ai.get_node_or_null("ActionEvadeFire") != null and ai.get_node_or_null("ActionEvadeMissile") != null and ai.get_node_or_null("ActionDisengage") != null, "威胁行为库就位(evade_fire/evade_missile/disengage)")
 	_passed_or_failed(snap.has("health_ratio") and snap.has("last_hit_time") and snap.has("nearest_missile_dist"), "感知快照含 Ph2 威胁字段")
 

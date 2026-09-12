@@ -3,6 +3,11 @@ extends CharacterBody3D
 var team_id := TeamID.ENEMY
 @onready var health : HealthComponent = $HealthComponent
 
+## ② 飞船级总线(与玩家船一致:ModulesManager 注入经 root.get("ship_bus") duck typing,
+## 见 .memo/ai_rework_plan.md Ph2 实测修复——缺此属性 booster.set_boosting 时
+## ship_bus 为 null,on_player_boost.emit 崩溃)。
+@onready var ship_bus: ShipBus = $ShipBus
+
 ## 敌人 AI 重做方案(.memo/ai_rework_plan.md):
 ## Ph0 接入模块系统(radar 身体 + aim_mechanics,旧 AI 行为不变);
 ## Ph1 装齐执行类模块(move/laser)+ AIModule 大脑,旧 AI_Brain 退役
