@@ -102,7 +102,14 @@ func refresh(time: float) -> void:
 		"last_hit_strength": last_hit_strength,
 		"nearest_missile": missile,
 		"nearest_missile_dist": missile_dist,
+		# §11 放水:玩家引用(球面巡逻/距离上限的球心)
+		"player": _get_player(),
 	}
+
+
+func _get_player() -> Node3D:
+	var p: Variant = GameManager.get_current_player() if GameManager.has_method("get_current_player") else null
+	return p as Node3D if p != null else null
 
 
 func _health_ratio(root: Node3D) -> float:

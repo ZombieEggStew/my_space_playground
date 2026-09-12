@@ -112,8 +112,14 @@ func _run() -> void:
 	booster.set_boosting(true)
 	booster.set_boosting(false)
 	_passed_or_failed(true, "booster.set_boosting 触发无崩溃")
-	_passed_or_failed(ai.get_node_or_null("ActionEvadeFire") != null and ai.get_node_or_null("ActionEvadeMissile") != null and ai.get_node_or_null("ActionDisengage") != null, "威胁行为库就位(evade_fire/evade_missile/disengage)")
-	_passed_or_failed(snap.has("health_ratio") and snap.has("last_hit_time") and snap.has("nearest_missile_dist"), "感知快照含 Ph2 威胁字段")
+	_passed_or_failed(ai.get_node_or_null("ActionEvadeFire") != null and ai.get_node_or_null("ActionEvadeMissile") != null and ai.get_node_or_null("ActionDisengage") == null, "威胁行为库就位(evade_fire/evade_missile,disengage 已按 §11 M7 删除)")
+	_passed_or_failed(snap.has("health_ratio") and snap.has("last_hit_time") and snap.has("nearest_missile_dist") and snap.has("player"), "感知快照含 Ph2 威胁字段 + §11 玩家引用")
+	_passed_or_failed(snap.get("player") != null, "感知快照 player 非 null(球面巡逻/距离上限球心)")
+
+	# 7b. §11 M1:敌人 move 限速生效(相对玩家 60 → 45)
+	_passed_or_failed(float(move.max_speed) < 60.0, "§11 M1:敌人 move 限速生效(max_speed=%s < 60)" % str(move.max_speed))
+	_passed_or_failed(float(move.max_yaw_speed) < 3.0, "§11 M1:敌人转向率下调(max_yaw_speed=%s < 3.0)" % str(move.max_yaw_speed))
+	_passed_or_failed(abs(float(profile.blunder_probability) - 0.15) < 0.001 and float(profile.orbit_radius) == 500.0 and float(profile.max_engage_range) == 800.0, "§11 profile 放水参数默认值(blunder 0.15 / orbit 500 / range 800)")
 
 	# 8. 被打瞬间 → evade_fire 分数逼近紧急阈值(0.9,可打断进攻)
 	var hit_ctx := {
@@ -125,27 +131,31 @@ func _run() -> void:
 	var s_evade_fire: float = ai.get_node("ActionEvadeFire").score(hit_ctx, profile)
 	_passed_or_failed(s_evade_fire > 0.8, "被打瞬间 evade_fire 分数 >0.8")
 
+	# 8b. §11 M6 轻量化:evade_fire 执行不触发 boost(不再满油门飞离)
+	var evade_fire_action: Node = ai.get_node("ActionEvadeFire")
+	evade_fire_action.enter()
+	evade_fire_action.execute(0.016, hit_ctx)
+	_passed_or_failed(booster.is_boosting == false, "§11 M6:evade_fire 轻量化(execute 后不 boost)")
+
 	# 9. 导弹贴脸(50m)→ evade_missile 高分
 	var missile_ctx: Dictionary = hit_ctx.duplicate()
 	missile_ctx["nearest_missile_dist"] = 50.0
 	var s_evade_missile: float = ai.get_node("ActionEvadeMissile").score(missile_ctx, profile)
 	_passed_or_failed(s_evade_missile > 0.7, "导弹贴脸(50m) evade_missile 分数 >0.7")
 
-	# 10. 低血 → disengage 压过进攻行为
-	var low_hp_ctx: Dictionary = hit_ctx.duplicate()
-	low_hp_ctx["health_ratio"] = 0.1
-	var s_disengage: float = ai.get_node("ActionDisengage").score(low_hp_ctx, profile)
-	var s_orbit2: float = ai.get_node("ActionOrbit").score(low_hp_ctx, profile)
-	var s_tail2: float = ai.get_node("ActionTailChase").score(low_hp_ctx, profile)
-	_passed_or_failed(s_disengage > s_orbit2 and s_disengage > s_tail2, "低血时 disengage 压过进攻行为")
+	# 10. §11 M7:低血不脱离(disengage 已删除,敌机战死为止)
+	_passed_or_failed(ai.get_node_or_null("ActionDisengage") == null, "§11 M7:无低血脱离行为(低血继续战斗)")
 
 	# 11. 无威胁时威胁行为分数归零(让位进攻)
 	var no_threat_ctx: Dictionary = hit_ctx.duplicate()
 	no_threat_ctx["last_hit_time"] = -INF
 	var s_ef2: float = ai.get_node("ActionEvadeFire").score(no_threat_ctx, profile)
 	var s_em2: float = ai.get_node("ActionEvadeMissile").score(no_threat_ctx, profile)
-	var s_d2: float = ai.get_node("ActionDisengage").score(no_threat_ctx, profile)
-	_passed_or_failed(s_ef2 < 0.01 and s_em2 < 0.01 and s_d2 < 0.01, "无威胁时威胁行为分数归零")
+	_passed_or_failed(s_ef2 < 0.01 and s_em2 < 0.01, "无威胁时威胁行为分数归零")
+
+	# 12. §11 M3:球面巡逻执行不崩(player 在场,方向合理)
+	ai.get_node("ActionPatrol").execute(0.016, snap)
+	_passed_or_failed(true, "§11 M3:球面巡逻 execute 无崩溃")
 
 	_finish()
 

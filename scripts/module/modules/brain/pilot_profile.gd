@@ -20,3 +20,22 @@ class_name PilotProfile
 @export_range(0.0, 0.2) var randomness := 0.05
 ## 决策节流间隔(秒)
 @export_range(0.1, 0.6) var decision_interval := 0.25
+
+# --- 放水设计(.memo/ai_rework_plan.md §11,2026-09-12 用户审核通过) ---
+## 敌人 move 限速倍率(相对玩家:max_speed 60 / yaw 3.0 / pitch 2.0)
+@export_range(0.4, 1.0) var max_speed_mult := 0.75
+@export_range(0.4, 1.0) var turn_mult := 0.75
+## 决策失误:选次优的概率
+@export_range(0.0, 0.5) var blunder_probability := 0.15
+## 失误窗口间隔区间(秒,随机)
+@export_range(0.5, 6.0) var blunder_interval_min := 2.5
+@export_range(0.5, 6.0) var blunder_interval_max := 4.0
+## 失误窗口时长区间(秒,随机):期间转向迟钝 + 不开火(天然攻击窗口)
+@export_range(0.2, 2.0) var blunder_duration_min := 0.8
+@export_range(0.2, 2.0) var blunder_duration_max := 1.2
+## 球面巡逻半径(玩家为球心;无事可做时绕玩家规律飞行)
+@export_range(50.0, 2000.0) var orbit_radius := 500.0
+## 距离上限:离玩家超过此值强制回球面轨道
+@export_range(100.0, 3000.0) var max_engage_range := 800.0
+## 咬尾"跟丢"平均间隔(秒):周期性松口给玩家摆脱窗口
+@export_range(0.5, 6.0) var tail_lose_interval := 2.5
