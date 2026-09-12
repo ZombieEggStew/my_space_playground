@@ -6,6 +6,9 @@
 [ext_resource type="PackedScene" uid="uid://c2vpnamuf2w8x" path="res://scenes/component/able_to_be_locked.tscn" id="5_f8h0h"]
 [ext_resource type="Material" uid="uid://bcwpsthimbm7r" path="res://material/red.tres" id="6_1grbo"]
 [ext_resource type="PackedScene" uid="uid://clbmhved44n61" path="res://scenes/component/health_component.tscn" id="6_7fmft"]
+[ext_resource type="Script" uid="uid://durtpqo3gh0s3" path="res://scripts/module/core/modules_manager.gd" id="7_mmgr"]
+[ext_resource type="PackedScene" uid="uid://brgpgqvf2a5v" path="res://scenes/modules/module_radar.tscn" id="8_radr"]
+[ext_resource type="PackedScene" uid="uid://bpcmj0wad856n" path="res://scenes/modules/module_aim_mechanics.tscn" id="9_aimec"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_oihk3"]
 size = Vector3(5.145, 2.57, 10.24)
@@ -117,6 +120,11 @@ size = Vector3(5.989319, 3.4597168, 11.251831)
 collision_layer = 4
 collision_mask = 135
 script = ExtResource("1_oihk3")
+scene_module_radar = ExtResource("8_radr")
+scene_module_aim_mechanics = ExtResource("9_aimec")
+
+[node name="ModulesManager" type="Node3D" parent="." unique_id=777000101]
+script = ExtResource("7_mmgr")
 
 [node name="AI_Brain" parent="." unique_id=2066935084 instance=ExtResource("2_1grbo")]
 
