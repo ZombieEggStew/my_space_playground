@@ -19,7 +19,9 @@ var recover_rate := 5.0        # 每 0.1s 恢复
 func _ready() -> void:
 	if boost_particle:
 		boost_particle.emitting = false
-	GameManager.hud_manager.register_hud(hud_container).set_flow_effect(ControlGroup.Index.GROUP_2).set_rotation_effect().set_boost_offset_effect().set_boost_shake_effect()
+	# 敌人装配(ai_rework_plan §5.1)无 HUD 容器:跳过 HUD 注册,能量逻辑照常
+	if hud_container and GameManager.hud_manager:
+		GameManager.hud_manager.register_hud(hud_container).set_flow_effect(ControlGroup.Index.GROUP_2).set_rotation_effect().set_boost_offset_effect().set_boost_shake_effect()
 	
 	if energy_tick:
 		energy_tick.timeout.connect(_on_energy_tick)

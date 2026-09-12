@@ -26,6 +26,13 @@ func _enter_tree() -> void:
 	max_lifetime = 15.0
 	destroy_on_hit = true
 	team_id = TeamID.NEUTRAL 
+	# 敌人 AI 感知用(ai_rework_plan §3):进 "missile" 组供感知层扫描威胁
+	add_to_group("missile")
+
+
+func _exit_tree() -> void:
+	if is_in_group("missile"):
+		remove_from_group("missile")
 
 
 func set_target(target: AbleToBeLocked) -> Bullet:

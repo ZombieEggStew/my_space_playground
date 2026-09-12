@@ -10,6 +10,7 @@ var team_id := TeamID.ENEMY
 ## 敌我复用同一份共享模块(决策 #10/#14),AI 只输出归一化命令。
 @export_group("modules")
 @export var scene_module_move: PackedScene
+@export var scene_module_booster: PackedScene
 @export var scene_module_radar: PackedScene
 @export var scene_module_aim_mechanics: PackedScene
 @export var scene_module_laser: PackedScene
@@ -24,7 +25,9 @@ func _ready() -> void:
 
 	# 安装顺序:执行器(move)→ 感知/计算(radar/aim_mechanics)→ 武器(laser)→ 大脑(AIModule 最后)
 	if scene_module_move:
-		modules_manager.install_module(scene_module_move)
+		var engine_mod: EngineModule = modules_manager.install_module(scene_module_move) as EngineModule
+		if scene_module_booster:
+			engine_mod.install_booster_module(scene_module_booster)
 	if scene_module_radar:
 		modules_manager.install_module(scene_module_radar)
 	if scene_module_aim_mechanics:

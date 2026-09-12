@@ -60,20 +60,28 @@ func _setup_brain() -> void:
 	maneuvers.setup(self)
 
 	_actions = []
-	var patrol := ActionPatrol.new()
-	patrol.name = "ActionPatrol"
-	_actions.append(patrol)
-	var orbit := ActionOrbit.new()
-	orbit.name = "ActionOrbit"
-	_actions.append(orbit)
-	var tail_chase := ActionTailChase.new()
-	tail_chase.name = "ActionTailChase"
-	_actions.append(tail_chase)
+	for entry: Array in [
+		[ActionPatrol.new(), "ActionPatrol"],
+		[ActionOrbit.new(), "ActionOrbit"],
+		[ActionTailChase.new(), "ActionTailChase"],
+		[ActionEvadeFire.new(), "ActionEvadeFire"],
+		[ActionEvadeMissile.new(), "ActionEvadeMissile"],
+		[ActionDisengage.new(), "ActionDisengage"],
+	]:
+		var action: AIAction = entry[0] as AIAction
+		action.name = String(entry[1])
+		_actions.append(action)
 	for a: AIAction in _actions:
 		add_child(a)
 		a.setup(self)
 	_current_action = _actions[0]
 	_current_action.enter()
+
+
+## 敌人 booster(经 move 模块链式子模块访问;未装 → null,威胁行为自动降级不 boost)。
+func get_booster_module() -> BoosterModule:
+	var m := move_mod as EngineModule
+	return m.get_booster_module() if m != null else null
 
 
 func _physics_process(delta: float) -> void:

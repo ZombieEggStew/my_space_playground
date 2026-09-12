@@ -13,14 +13,38 @@ var ai: AIModule
 ## 当前快照(只读给行为打分/执行;每 refresh() 重建)
 var snapshot: Dictionary = {}
 
+## 最近一次被打的世界时间(HealthComponent.changed 驱动;Ph2 威胁感知)
+var last_hit_time := -INF
+## 最近一次被打的伤害量(封顶,供威胁强度)
+var last_hit_strength := 0.0
+## 最近一次 refresh 的世界时间(供信号回调记录时间戳)
+var _time := 0.0
+
 
 func setup(ai_mod: AIModule) -> void:
 	ai = ai_mod
+	var hc: Variant = ai.root.get_health_component() if ai.root.has_method("get_health_component") else null
+	if hc != null and hc is HealthComponent:
+		hc.changed.connect(_on_health_changed)
+
+
+func _exit_tree() -> void:
+	var hc: Variant = ai.root.get_health_component() if ai.root != null and ai.root.has_method("get_health_component") else null
+	if hc != null and hc is HealthComponent and hc.changed.is_connected(_on_health_changed):
+		hc.changed.disconnect(_on_health_changed)
+
+
+## 被打回调(决策节流只读快照;这里是事件脉冲,只记时间戳不重算)
+func _on_health_changed(_new_h: int, _new_max: int, changed_amount: int) -> void:
+	if changed_amount < 0:
+		last_hit_time = _time
+		last_hit_strength = min(float(-changed_amount), 50.0)
 
 
 ## 重建快照(决策节流时才调,不每帧)。targets 元素:
 ## {target: AbleToBeLocked, body: Node3D, dist: float, rel_pos: Vector3, rel_vel: Vector3}
 func refresh(time: float) -> void:
+	_time = time
 	var root := ai.root
 	var targets: Array = []
 	var nearest: Node3D = null
@@ -56,13 +80,36 @@ func refresh(time: float) -> void:
 			nearest = body
 			nearest_abl = t
 
+	# Ph2 威胁感知:血量比例 / 最近被打 / 最近导弹(组扫描,量小;导弹进组见 missile.gd)
+	var missile: Node3D = null
+	var missile_dist := INF
+	for m in get_tree().get_nodes_in_group("missile"):
+		if not is_instance_valid(m):
+			continue
+		var md: float = (m.global_position - root.global_position).length()
+		if md < missile_dist:
+			missile_dist = md
+			missile = m
+
 	snapshot = {
 		"targets": targets,
 		"nearest": nearest,
 		"nearest_abl": nearest_abl,
 		"nearest_dist": nearest_dist,
 		"time": time,
+		"health_ratio": _health_ratio(root),
+		"last_hit_time": last_hit_time,
+		"last_hit_strength": last_hit_strength,
+		"nearest_missile": missile,
+		"nearest_missile_dist": missile_dist,
 	}
+
+
+func _health_ratio(root: Node3D) -> float:
+	var hc: Variant = root.get_health_component() if root.has_method("get_health_component") else null
+	if hc != null and hc is HealthComponent and hc.get_max_health() > 0:
+		return float(hc.get_health()) / float(hc.get_max_health())
+	return 1.0
 
 
 func _body_velocity(body: Node3D) -> Vector3:

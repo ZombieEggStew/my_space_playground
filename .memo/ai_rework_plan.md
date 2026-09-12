@@ -14,6 +14,13 @@
 >   **实测发现(--script 测试模式坑)**:测试脚本若**静态引用新 class_name**(如 AIModule),
 >   编译时递归编译依赖链,此时 autoload 标识符(SignalBus/GameManager)未注册 → 连锁编译失败;
 >   测试改用 `load("...").new()` + resource_path 匹配避免静态引用(旧类如 TeamID 已缓存不受影响)。
+> - ✅ **Ph2**:威胁回避落地——perception 扩展(HealthComponent.changed 被打监听 + 血量比例 +
+>   "missile" 组扫描),`ActionEvadeFire/ActionEvadeMissile/ActionDisengage` 三个行为,
+>   booster 敌人适配(纯逻辑场景 `module_booster_enemy.tscn` + HUD 注册 null 防护)。
+>   **设计修正(实测/评审)**:威胁分数原设计乘 `caution`,默认 0.5 时压不过进攻行为(尾追 0.65
+>   + 滞后 0.15)导致"被打不躲";改为**生存硬约束**(`0.9*(0.4+0.6*intensity)` 等,不乘 caution),
+>   被打/导弹贴脸/残血时分数逼近紧急阈值(0.9)立即打断进攻,caution 留 Ph3 做差异化。
+>   p4 冒烟 28/28 + p5 回归 13/13 + 无头零错误。
 
 ---
 
@@ -228,7 +235,7 @@ pilot_profile.gd (Resource):
 |---|---|---|---|
 | **Ph0** | 敌人接入模块系统(只装不换行为,现有 AI 照跑) | 无头 `--import` + `--quit-after 15` 零 SCRIPT ERROR;敌人行为与接入前一致 | ✅ **已完成(2026-09-12)** |
 | **Ph1** | 建 Perception + Utility 决策器 + 首批行为(patrol/orbit/tail_chase)+ 机动原语 | 决策节流生效;单敌能巡航/绕后/咬尾,无抽搐 | ✅ **已完成(2026-09-12)**,p4 冒烟 21/21;编辑器手动待确认 |
-| **Ph2** | 威胁回避:evade_fire / evade_missile / disengage 接入 | 被打会躲、导弹接近会闪、低血脱离;旧 EVADE 正式退役 | 🔶 待做 |
+| **Ph2** | 威胁回避:evade_fire / evade_missile / disengage 接入 | 被打会躲、导弹接近会闪、低血脱离;旧 EVADE 正式退役 | ✅ **已完成(2026-09-12)**,p4 冒烟 28/28 + p5 回归 13/13;编辑器手动待确认 |
 | **Ph3** | 战术多样:kite / joust / intercept;开启 profile 差异化(可后延) | 同场多敌行为分工;玩家难以一招吃遍 | 🔶 待做 |
 | **Ph4** | 删旧 `scripts/ai/` + 子弹 spawn 收口 + 文档 | 全量回归:输入/调试键逐键 × 敌人行为;code-map 更新 | 🔶 待做 |
 

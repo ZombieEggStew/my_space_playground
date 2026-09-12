@@ -9,6 +9,7 @@
 [ext_resource type="PackedScene" uid="uid://brgpgqvf2a5v" path="res://scenes/modules/module_radar.tscn" id="8_radr"]
 [ext_resource type="PackedScene" uid="uid://bpcmj0wad856n" path="res://scenes/modules/module_aim_mechanics.tscn" id="9_aimec"]
 [ext_resource type="PackedScene" uid="uid://b4wmsv8bsyw60" path="res://scenes/modules/module_move_controller.tscn" id="10_move"]
+[ext_resource type="PackedScene" uid="uid://b7boosterenem1" path="res://scenes/modules/module_booster_enemy.tscn" id="10b_booster"]
 [ext_resource type="PackedScene" uid="uid://a4e9nemy0lasr" path="res://scenes/modules/module_laser_gun_enemy.tscn" id="11_lasr"]
 [ext_resource type="PackedScene" uid="uid://a7aiemodul000" path="res://scenes/modules/module_ai.tscn" id="12_ai"]
 [ext_resource type="Script" uid="uid://cwi1vp6d0ywp2" path="res://scripts/module/core/ship_bus.gd" id="13_shipbus"]
@@ -124,6 +125,7 @@ collision_layer = 4
 collision_mask = 135
 script = ExtResource("1_oihk3")
 scene_module_move = ExtResource("10_move")
+scene_module_booster = ExtResource("10b_booster")
 scene_module_radar = ExtResource("8_radr")
 scene_module_aim_mechanics = ExtResource("9_aimec")
 scene_module_laser = ExtResource("11_lasr")

@@ -1,0 +1,15 @@
+[gd_scene format=3 uid="uid://b7boosterenem1"]
+
+[ext_resource type="Script" uid="uid://bsm8xp5d2fb1c" path="res://scripts/module/modules/booster/module_booster.gd" id="1_hwryj"]
+
+[node name="module_booster_enemy" type="Node3D" node_paths=PackedStringArray("energy_tick", "recover_delay_timer")]
+script = ExtResource("1_hwryj")
+energy_tick = NodePath("energy_tick")
+recover_delay_timer = NodePath("recover_timer")
+
+[node name="energy_tick" type="Timer" parent="."]
+wait_time = 0.1
+autostart = true
+
+[node name="recover_timer" type="Timer" parent="."]
+one_shot = true

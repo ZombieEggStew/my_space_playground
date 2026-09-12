@@ -1,11 +1,11 @@
 extends SceneTree
 
-## P4/Ph1 敌人 AI 冒烟测试(无头,见 .memo/ai_rework_plan.md §8):
+## P4 敌人 AI 冒烟测试(无头,见 .memo/ai_rework_plan.md §8):
 ## 验证敌人船模块装配、AIModule 依赖解析、感知过滤、Utility 打分、命令输出、
-## laser AI 通道。运行:
+## laser AI 通道(Ph1)+ 威胁回避(Ph2:evade_fire/evade_missile/disengage)。运行:
 ##   godot --headless --path . --script res://scripts/test/p4_ai_smoke_test.gd
 ## 退出码:0 = 全部通过;1 = 有失败。
-## 覆盖范围:Ph1 = 敌人接模块系统 + AIModule 基础行为(patrol/orbit/tail_chase)。
+## 覆盖范围:Ph1 = 敌人接模块系统 + AIModule 基础行为;Ph2 = 威胁回避打分/装配。
 ## 2D 表现/机动自然度(急转、抽搐)由编辑器手动核对。
 
 var _results: Array[String] = []
@@ -102,6 +102,45 @@ func _run() -> void:
 
 	# 6. 决策循环运行过(旧 AI 退役后 AIPerception 已 refresh)
 	_passed_or_failed(float(snap.get("time", -1.0)) >= 0.0, "感知快照时间戳有效(决策循环在跑)")
+
+	# --- Ph2 威胁回避 ---
+	# 7. booster 已装(经 move 链式子模块)+ 威胁行为库 + 快照威胁字段
+	var booster: Node = move.get_booster_module() if move.has_method("get_booster_module") else null
+	_passed_or_failed(booster != null, "敌人已装 booster(move 链式子模块)")
+	_passed_or_failed(ai.get_node_or_null("ActionEvadeFire") != null and ai.get_node_or_null("ActionEvadeMissile") != null and ai.get_node_or_null("ActionDisengage") != null, "威胁行为库就位(evade_fire/evade_missile/disengage)")
+	_passed_or_failed(snap.has("health_ratio") and snap.has("last_hit_time") and snap.has("nearest_missile_dist"), "感知快照含 Ph2 威胁字段")
+
+	# 8. 被打瞬间 → evade_fire 分数逼近紧急阈值(0.9,可打断进攻)
+	var hit_ctx := {
+		"targets": [], "nearest": null, "nearest_abl": null, "nearest_dist": INF,
+		"time": 10.0, "health_ratio": 1.0,
+		"last_hit_time": 9.9, "last_hit_strength": 10.0,
+		"nearest_missile": null, "nearest_missile_dist": INF,
+	}
+	var s_evade_fire: float = ai.get_node("ActionEvadeFire").score(hit_ctx, profile)
+	_passed_or_failed(s_evade_fire > 0.8, "被打瞬间 evade_fire 分数 >0.8")
+
+	# 9. 导弹贴脸(50m)→ evade_missile 高分
+	var missile_ctx: Dictionary = hit_ctx.duplicate()
+	missile_ctx["nearest_missile_dist"] = 50.0
+	var s_evade_missile: float = ai.get_node("ActionEvadeMissile").score(missile_ctx, profile)
+	_passed_or_failed(s_evade_missile > 0.7, "导弹贴脸(50m) evade_missile 分数 >0.7")
+
+	# 10. 低血 → disengage 压过进攻行为
+	var low_hp_ctx: Dictionary = hit_ctx.duplicate()
+	low_hp_ctx["health_ratio"] = 0.1
+	var s_disengage: float = ai.get_node("ActionDisengage").score(low_hp_ctx, profile)
+	var s_orbit2: float = ai.get_node("ActionOrbit").score(low_hp_ctx, profile)
+	var s_tail2: float = ai.get_node("ActionTailChase").score(low_hp_ctx, profile)
+	_passed_or_failed(s_disengage > s_orbit2 and s_disengage > s_tail2, "低血时 disengage 压过进攻行为")
+
+	# 11. 无威胁时威胁行为分数归零(让位进攻)
+	var no_threat_ctx: Dictionary = hit_ctx.duplicate()
+	no_threat_ctx["last_hit_time"] = -INF
+	var s_ef2: float = ai.get_node("ActionEvadeFire").score(no_threat_ctx, profile)
+	var s_em2: float = ai.get_node("ActionEvadeMissile").score(no_threat_ctx, profile)
+	var s_d2: float = ai.get_node("ActionDisengage").score(no_threat_ctx, profile)
+	_passed_or_failed(s_ef2 < 0.01 and s_em2 < 0.01 and s_d2 < 0.01, "无威胁时威胁行为分数归零")
 
 	_finish()
 
