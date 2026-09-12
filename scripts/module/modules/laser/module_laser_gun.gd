@@ -1,8 +1,6 @@
 extends WeaponModule
 class_name LaserModule
 
-var cam_main: Camera3D
-
 @export var shoot_timer: Timer
 @export var bullet_scene: PackedScene
 @export var bullets_parent: Node
@@ -12,8 +10,6 @@ var cam_main: Camera3D
 @export var aim_system: LaserGunHudSystem
 @export var heat_manager: HeatManager
 
-# 存储机炮发射角度
-var forward: Vector3 = Vector3.FORWARD
 var damage := 10.0
 
 @export var gun_pivot_left : Node3D
@@ -37,25 +33,17 @@ func _ready() -> void:
 	aim_system.setup(aim_dead_zone_px)
 	set_bullet_speed(default_bullet_speed)
 
-	# 决策 #32:mechanics/camera 装卸事件驱动重取(重装立即生效)
-	watch_modules([AimMechanicsModule, ThirdCameraModule])
+	# 决策 #33:laser 不自持相机,射击完全由 aim 模块指导;缺 aim → 机炮直射降级(不硬崩)
+	watch_modules([AimMechanicsModule])
 	_resolve_module_refs()
-
-	if cam_main == null:
-		Log.log_error(self,"Main camera not found in CharacterBody3D.")
-		queue_free()
-		return
 	if aim_modrule == null:
-		# P5 装配矩阵:缺 aim_mechanics 不硬崩 —— 机炮直射降级(shoot 里回退机头朝向)
 		Log.log_missing_component(self, "aim mechanics module")
 
 	if heat_manager:
 		heat_manager.overheated.connect(_on_overheated)
 
-## 决策 #32:mechanics/camera 装卸事件触发时重取(null 安全;缺 mechanics → 机炮直射降级)。
+## 决策 #32/#33:aim 装卸事件触发时重取(null 安全;缺 aim → 机炮直射降级)。
 func _resolve_module_refs() -> void:
-	var cam_mod: ThirdCameraModule = modules_manager.get_camera_module() if modules_manager else null
-	cam_main = cam_mod.get_main_camera() if cam_mod else null
 	aim_modrule = modules_manager.get_aim_mechanics_module() if modules_manager else null
 
 	
@@ -136,21 +124,21 @@ func shoot() -> void:
 		if not heat_manager.add_heat():
 			return
 
-	var aim_screen_pos = aim_system.get_aim_point_screen_pos()
-	
-	if aim_screen_pos != Vector2.INF and aim_modrule != null:
-		forward = aim_modrule.get_aim_direction_from_crosshair(aim_screen_pos)
-	elif aim_modrule == null:
-		# 缺瞄准力学:机头朝向直射(世界系),避免沿用旧的船体系 Vector3.FORWARD
-		forward = -root.global_transform.basis.z.normalized()
-	
-	var right := cam_main.global_transform.basis.x.normalized() if cam_main else root.global_transform.basis.x.normalized()
-	var up := cam_main.global_transform.basis.y.normalized() if cam_main else root.global_transform.basis.y.normalized()
+	var aim_screen_pos := aim_system.get_aim_point_screen_pos()
+	var aim_basis := _get_aim_basis(aim_screen_pos)
 	var spread := deg_to_rad(bullet_spread_deg)
 	var offset_x := randf_range(-spread, spread)
 	var offset_y := randf_range(-spread, spread)
-	var shot_dir := (forward + right * offset_x + up * offset_y).normalized() as Vector3
+	var shot_dir := (aim_basis.z + aim_basis.x * offset_x + aim_basis.y * offset_y).normalized()
 	var muzzle_pos := _get_next_muzzle_pos()
 	spawn_bullet(muzzle_pos, shot_dir)
+
+## 决策 #33:laser 不自持相机,射击方向/散布基完全由 aim 模块给出;
+## 缺 aim(或准星无效)→ 机头朝向直射,散布基取机体轴(世界系)。
+func _get_aim_basis(aim_screen_pos: Vector2) -> Basis:
+	if aim_screen_pos != Vector2.INF and aim_modrule != null:
+		return aim_modrule.get_aim_basis_from_crosshair(aim_screen_pos)
+	var b := root.global_transform.basis
+	return Basis(b.x, b.y, -b.z)
 
 

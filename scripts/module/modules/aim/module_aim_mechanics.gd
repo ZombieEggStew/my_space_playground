@@ -54,6 +54,20 @@ func get_aim_direction_from_crosshair(aim_screen_pos: Vector2) -> Vector3:
 	return (aim_point - root.global_transform.origin).normalized()
 
 
+## 决策 #33:laser 不自持相机,射击的完整"瞄准解"(方向 + 散布平面)由本模块给出。
+## 返回右手正交基 Basis(x=right, y=up, z=forward 射击方向);缺相机 → 机头朝向降级
+## (forward 复用 get_aim_direction_from_crosshair 的回退逻辑)。P4 AI 侧同样可由此拿射击解。
+func get_aim_basis_from_crosshair(aim_screen_pos: Vector2) -> Basis:
+	var forward := get_aim_direction_from_crosshair(aim_screen_pos)
+	# 由 forward 造右手正交基:right = up0 × forward;forward 近乎垂直时回退
+	var right := Vector3.UP.cross(forward)
+	if right.length() < 0.0001:
+		right = Vector3.RIGHT
+	right = right.normalized()
+	var up := forward.cross(right).normalized()
+	return Basis(right, up, forward)
+
+
 ## 给定目标与弹速,算 3D 预测点/拦截时间(决策 #18/#23:只算 3D,投影由 aim_view 自理)。
 ## 返回 {valid, world_pos, time, distance};目标失效/弹速非法 → valid=false。
 func get_predicted_aim_data(target: AbleToBeLocked, bullet_speed: float) -> Dictionary:

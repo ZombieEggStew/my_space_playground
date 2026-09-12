@@ -86,6 +86,17 @@ func _run() -> void:
 	var dir: Vector3 = _mechanics.get_aim_direction_from_crosshair(Vector2(960, 540))
 	_passed_or_failed(dir.length() > 0.99 and dir.length() < 1.01, "get_aim_direction_from_crosshair 返回归一化方向")
 
+	# 5b. 射击 Basis(决策 #33:laser 不自持相机,aim 给完整瞄准解):右手正交基
+	var aim_basis: Basis = _mechanics.get_aim_basis_from_crosshair(Vector2(960, 540))
+	var ortho_ok: bool = aim_basis.x.length() > 0.99 and aim_basis.x.length() < 1.01 \
+		and aim_basis.y.length() > 0.99 and aim_basis.y.length() < 1.01 \
+		and aim_basis.z.length() > 0.99 and aim_basis.z.length() < 1.01 \
+		and abs(aim_basis.x.dot(aim_basis.y)) < 0.01 \
+		and abs(aim_basis.y.dot(aim_basis.z)) < 0.01 \
+		and abs(aim_basis.z.dot(aim_basis.x)) < 0.01 \
+		and aim_basis.x.cross(aim_basis.y).normalized().dot(aim_basis.z.normalized()) > 0.99
+	_passed_or_failed(ortho_ok, "get_aim_basis_from_crosshair 返回右手正交基(决策 #33)")
+
 	# 6. 解锁 → 清理同步
 	if target != null:
 		_selection.set_locked_target(null)
